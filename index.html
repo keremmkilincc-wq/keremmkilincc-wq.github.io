@@ -199,14 +199,31 @@ body{background:#070709}
         <div class="flex items-center justify-between rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3"><span class="text-zinc-500">Discord</span><span class="text-white">keremmkilincc-wq</span></div>
       </div>
     </div>
-    <form onsubmit="event.preventDefault(); alert('Mesaj alındı Kerem! Formspree bağlayınca mailine düşecek.');" class="md:col-span-7 grid gap-3">
-      <div class="grid sm:grid-cols-2 gap-3">
-        <input required placeholder="Ad Soyad" class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
-        <input required type="email" placeholder="E-posta" class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+    <form id="contactForm" action="https://formsubmit.co/keremmkilincc@gmail.com" method="POST" class="md:col-span-7 grid gap-3">
+      <!-- FormSubmit ayarları -->
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="https://keremmkilincc-wq.github.io/?tesekkur=1">
+      <input type="hidden" name="_subject" value="Portfolyodan yeni mesaj!">
+      <input type="text" name="_honey" style="display:none">
+      
+      <!-- Hedef seçici -->
+      <div class="flex items-center gap-2 p-1 bg-white/[0.04] border border-white/10 rounded-full w-fit">
+        <span class="text-xs font-mono tracking-widest text-zinc-500 px-2">GÖNDERİM HEDEFİ:</span>
+        <button type="button" id="btn-gmail" onclick="setDestination('gmail')" class="px-5 py-1.5 rounded-full bg-white text-black text-sm font-semibold transition">Gmail'e Gönder</button>
+        <button type="button" id="btn-hotmail" onclick="setDestination('hotmail')" class="px-5 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white transition">Hotmail'e Gönder</button>
       </div>
-      <input placeholder="Konu" class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
-      <textarea rows="4" required placeholder="Mesajın..." class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></textarea>
-      <button class="bg-gradient-to-r from-violet-600 to-cyan-500 hover:opacity-90 text-white font-semibold py-3.5 rounded-xl transition">Gönder — 24 saatte dönüş →</button>
+      <div class="text-xs text-zinc-500">Seçime göre mesaj <span id="dest-label" class="text-violet-400 font-medium">keremmkilincc@gmail.com</span> adresine gider. İlk gönderimde FormSubmit doğrulama maili gelir — Confirm etmen yeterli.</div>
+
+      <div class="grid sm:grid-cols-2 gap-3">
+        <input name="name" required placeholder="Ad Soyad" class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+        <input name="email" required type="email" placeholder="E-posta (cevabın buraya gelecek)" class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+      </div>
+      <input name="_subject" value="Portfolyodan yeni mesaj" type="hidden">
+      <input name="subject" placeholder="Konu (örn: Oyun iş birliği)" class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+      <textarea name="message" rows="4" required placeholder="Mesajın..." class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></textarea>
+      <button type="submit" class="bg-gradient-to-r from-violet-600 to-cyan-500 hover:opacity-90 text-white font-semibold py-3.5 rounded-xl transition">Gönder — 24 saatte dönüş →</button>
+      <div class="text-xs text-center text-zinc-500">Gmail ve Hotmail için ayrı ayrı ilk seferde onay mailini doğrulaman gerekir.</div>
     </form>
   </div>
 </section>
@@ -291,6 +308,29 @@ window.addEventListener('mousemove',e=>{
   aurora.style.setProperty('--x', e.clientX+'px');
   aurora.style.setProperty('--y', e.clientY+'px');
 });
+
+// İletişim hedef değiştirme
+function setDestination(target){
+  const form=document.getElementById('contactForm');
+  const label=document.getElementById('dest-label');
+  const btnG=document.getElementById('btn-gmail');
+  const btnH=document.getElementById('btn-hotmail');
+  if(target==='hotmail'){
+    form.action='https://formsubmit.co/keremmkilincc@hotmail.com';
+    label.textContent='keremmkilincc@hotmail.com';
+    btnH.className='px-5 py-1.5 rounded-full bg-white text-black text-sm font-semibold transition';
+    btnG.className='px-5 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white transition';
+  } else {
+    form.action='https://formsubmit.co/keremmkilincc@gmail.com';
+    label.textContent='keremmkilincc@gmail.com';
+    btnG.className='px-5 py-1.5 rounded-full bg-white text-black text-sm font-semibold transition';
+    btnH.className='px-5 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white transition';
+  }
+}
+// teşekkür parametresi
+if(new URLSearchParams(window.location.search).get('tesekkur')==='1'){
+  setTimeout(()=>alert('Mesajın gönderildi Kerem! Mail kutunu kontrol et.'),300);
+}
 </script>
 </body>
 </html>
