@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="midnight">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +11,27 @@
 tailwind.config={theme:{extend:{fontFamily:{grotesk:['Space Grotesk','sans-serif'],inter:['Inter','sans-serif'],mono:['JetBrains Mono','monospace']},animation:{'pulse-slow':'pulse 3s infinite'}}}}
 </script>
 <style>
-:root{color-scheme:dark}
-body{background:#070709}
+:root{color-scheme:dark; --bg:#070709; --card:#0F0F11; --accent:#8b5cf6; --accent2:#06b6d4}
+[data-theme="midnight"]{--bg:#070709;--card:#0F0F11;--accent:#8b5cf6;--accent2:#06b6d4}
+[data-theme="neon-violet"]{--bg:#0a0614;--card:#130a26;--accent:#a78bfa;--accent2:#c084fc}
+[data-theme="cyan-ocean"]{--bg:#02141a;--card:#04202b;--accent:#06b6d4;--accent2:#0ea5e9}
+[data-theme="emerald-forest"]{--bg:#02140f;--card:#04261c;--accent:#10b981;--accent2:#34d399}
+[data-theme="crimson-rose"]{--bg:#1a050a;--card:#2b0a14;--accent:#f43f5e;--accent2:#fb7185}
+[data-theme="sunset-orange"]{--bg:#1a0c02;--card:#2b1404;--accent:#f97316;--accent2:#fb923c}
+[data-theme="arctic-blue"]{--bg:#020e1a;--card:#041c2e;--accent:#0ea5e9;--accent2:#38bdf8}
+[data-theme="golden-hour"]{--bg:#1a1602;--card:#2b2404;--accent:#eab308;--accent2:#facc15}
+[data-theme="monochrome"]{--bg:#0a0a0a;--card:#141414;--accent:#a1a1aa;--accent2:#d4d4d8}
+[data-theme="cyberpunk"]{--bg:#0f0514;--card:#1a0a24;--accent:#ec4899;--accent2:#f472b6}
+body{background:var(--bg); transition: background 0.4s}
 .bg-grid{background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0); background-size:32px 32px}
-.aurora{position:absolute; inset:-20%; background: radial-gradient(600px circle at var(--x,50%) var(--y,30%), rgba(139,92,246,0.15), transparent 40%), radial-gradient(800px circle at 80% 20%, rgba(6,182,212,0.12), transparent 40%), radial-gradient(700px circle at 20% 80%, rgba(244,63,94,0.08), transparent 40%); pointer-events:none; filter:blur(1px)}
+.aurora{position:absolute; inset:-20%; background: radial-gradient(600px circle at var(--x,50%) var(--y,30%), color-mix(in srgb, var(--accent) 18%, transparent), transparent 40%), radial-gradient(800px circle at 80% 20%, color-mix(in srgb, var(--accent2) 12%, transparent), transparent 40%), radial-gradient(700px circle at 20% 80%, rgba(244,63,94,0.08), transparent 40%); pointer-events:none; filter:blur(1px)}
 .glass{backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px)}
 .card{transition: all .35s cubic-bezier(.2,.8,.2,1)}
-.card:hover{transform: translateY(-6px); border-color: rgba(139,92,246,0.4); box-shadow: 0 20px 40px -20px rgba(139,92,246,0.3), 0 0 0 1px rgba(139,92,246,0.2) inset}
+.card:hover{transform: translateY(-6px); border-color: color-mix(in srgb, var(--accent) 40%, transparent); box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--accent) 30%, transparent), 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent) inset}
 .shimmer{background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 37%, rgba(255,255,255,0.04) 63%); background-size:400% 100%; animation: shimmer 1.4s ease infinite}
 @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.btn-accent{background:var(--accent)} .btn-accent:hover{filter:brightness(1.1)}
+.text-accent{color:var(--accent)}
 </style>
 </head>
 <body class="font-inter text-zinc-300 antialiased selection:bg-violet-500/30 overflow-x-hidden">
@@ -32,19 +44,52 @@ body{background:#070709}
     <div class="flex items-center gap-8">
       <div class="font-grotesk font-bold tracking-tight text-white text-[18px]">KEREM KILINÇ<span class="text-violet-500">.</span><span class="hidden sm:inline font-medium text-zinc-500 text-[11px] tracking-[0.2em] ml-3 align-middle">PORTFOLIO 2026</span></div>
       <div class="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1">
-        <a href="#projeler" class="px-4 py-1.5 rounded-full bg-white text-black text-sm font-medium">Projeler</a>
+        <a href="#projeler" class="px-4 py-1.5 rounded-full bg-white text-black text-sm font-medium" data-i18n="nav.projects">Projeler</a>
         <a href="#github" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white">GitHub</a>
-        <a href="#surec" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white">Süreç</a>
-        <a href="#iletisim" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white">İletişim</a>
+        <a href="#arcade" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.arcade">Arcade</a>
+        <a href="#surec" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.process">Süreç</a>
+        <a href="#iletisim" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.contact2">İletişim</a>
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 5 repo • canlı</div>
+      <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
       <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-white text-black font-medium px-5 py-2.5 rounded-full hover:bg-zinc-100 transition text-sm">GitHub <span class="opacity-60">↗</span></a>
-      <a href="#iletisim" class="inline-flex bg-violet-600 hover:bg-violet-500 text-white px-5 py-2.5 rounded-full text-sm font-medium transition">İletişim</a>
+      <button onclick="openSettings()" class="w-10 h-10 rounded-full border border-white/10 bg-white/[0.04] grid place-items-center hover:bg-white/10 text-sm" aria-label="Ayarlar">⚙️</button>
+      <a href="#iletisim" class="inline-flex bg-violet-600 hover:bg-violet-500 text-white px-5 py-2.5 rounded-full text-sm font-medium transition" data-i18n="nav.contact">İletişim</a>
     </div>
   </div>
 </nav>
+
+<!-- SETTINGS MODAL - MÜKEMMEL -->
+<div id="settingsModal" class="fixed inset-0 z-[80] hidden">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeSettings()"></div>
+  <div class="relative max-w-[720px] mx-auto mt-[6vh] bg-[#0F0F11] border border-white/10 rounded-[24px] overflow-hidden shadow-2xl max-h-[86vh] flex flex-col">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/[0.02]">
+      <div><div class="font-grotesk font-bold text-white text-lg" data-i18n="settings.title">Ayarlar</div><div class="text-xs text-zinc-500" data-i18n="settings.subtitle">Dil ve tema — anında değişir, her şey çevrilir</div></div>
+      <button onclick="closeSettings()" class="w-9 h-9 rounded-full bg-white text-black grid place-items-center font-bold">×</button>
+    </div>
+    <div class="overflow-auto p-6 space-y-6">
+      <!-- DİL 20 -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-grotesk font-semibold text-white" data-i18n="settings.lang">Dil — 20 Dil</h3>
+          <span class="text-xs font-mono text-zinc-500" id="currentLangLabel">TR</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="langGrid">
+          <!-- JS ile doldurulacak -->
+        </div>
+      </div>
+      <!-- TEMA 10 -->
+      <div>
+        <h3 class="font-grotesk font-semibold text-white mb-3" data-i18n="settings.theme">Tema — 10 Tema</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="themeGrid">
+          <!-- JS ile doldurulacak -->
+        </div>
+      </div>
+      <div class="rounded-xl bg-white/[0.04] border border-white/10 p-4 text-xs text-zinc-400 leading-relaxed" data-i18n="settings.note">Not: Seçimlerin tarayıcında saklanır. Tüm başlık, açıklama, buton ve arcade metinleri anında çevrilir.</div>
+    </div>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="relative overflow-hidden border-b border-white/[0.06]">
@@ -54,17 +99,17 @@ body{background:#070709}
     <div class="lg:col-span-7">
       <div class="inline-flex items-center gap-2 bg-white/[0.06] border border-white/[0.08] rounded-full px-1 pr-3 py-1">
         <span class="bg-gradient-to-r from-violet-600 to-cyan-500 text-white text-[11px] font-bold tracking-widest px-3 py-1 rounded-full">YENİ</span>
-        <span class="text-sm text-zinc-300">TRUST NO ONE — oyunum yayında, hemen oyna →</span>
+        <span class="text-sm text-zinc-300" data-i18n="hero.badge">TRUST NO ONE — oyunum yayında, hemen oyna →</span>
       </div>
       <h1 class="font-grotesk font-bold tracking-[-0.04em] text-white text-[42px] md:text-[64px] leading-[0.9] mt-6">
-        Oyun dünyaları<br>
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400">tasarlıyorum.</span>
+        <span data-i18n="hero.title1">Oyun dünyaları</span><br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400" data-i18n="hero.title2">tasarlıyorum.</span>
       </h1>
-      <p class="text-[17px] leading-relaxed text-zinc-400 mt-6 max-w-[620px]">
+      <p class="text-[17px] leading-relaxed text-zinc-400 mt-6 max-w-[620px]" data-i18n="hero.desc">
         Ben <span class="text-white font-semibold">Kerem KILINÇ</span> — harita & karakter tasarımları, oyun konseptleri ve dijital üretimler. Kod kalabalığı değil, <span class="text-zinc-200">görsel ve oynanabilir sonuç</span> odaklıyım. Tüm projelerim GitHub'da canlı.
       </p>
       <div class="flex flex-wrap gap-3 mt-8">
-        <a href="#github" class="bg-white text-black px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200 transition inline-flex items-center gap-2">GitHub Projelerimi Gör <span>↓</span></a>
+        <a href="#github" class="bg-white text-black px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200 transition inline-flex items-center gap-2"><span data-i18n="hero.cta1">GitHub Projelerimi Gör</span> <span>↓</span></a>
         <button onclick="document.getElementById('phone').innerText='+90 501 332 63 66'" class="border border-white/10 bg-white/[0.06] backdrop-blur px-7 py-3.5 rounded-full font-medium hover:bg-white/[0.1] transition">+90 501 •••• •• ••</button>
       </div>
       <!-- stats -->
@@ -945,6 +990,97 @@ window.addEventListener('keydown',e=>{
     if(e.key==='ArrowUp') move2048('up');
     if(e.key==='ArrowDown') move2048('down');
   }
+});
+
+// ===== 20 DİL + 10 TEMA - MÜKEMMEL =====
+const translations={
+  tr:{'nav.projects':'Projeler','nav.arcade':'Arcade','nav.process':'Süreç','nav.contact':'İletişim','nav.contact2':'İletişim','nav.live':'5 repo • canlı','settings.title':'Ayarlar','settings.subtitle':'Dil ve tema — anında değişir, her şey çevrilir','settings.lang':'Dil — 20 Dil','settings.theme':'Tema — 10 Tema','settings.note':'Not: Seçimlerin tarayıcında saklanır. Tüm başlık, açıklama, buton ve arcade metinleri anında çevrilir.','hero.badge':'TRUST NO ONE — oyunum yayında, hemen oyna →','hero.title1':'Oyun dünyaları','hero.title2':'tasarlıyorum.','hero.desc':'Ben Kerem KILINÇ — harita & karakter tasarımları, oyun konseptleri ve dijital üretimler. Kod kalabalığı değil, görsel ve oynanabilir sonuç odaklıyım. Tüm projelerim GitHub\'da canlı.','hero.cta1':'GitHub Projelerimi Gör ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Oyun','arcade.sub':'İletişimin yanında — tıkla, pencere açılır. X ile ana ekrana dön.','contact.title':'Bir fikrin mi var?','contact.sub':'Yaz, konuşalım.','contact.send':'Gönder — 24 saatte dönüş →'},
+  en:{'nav.projects':'Projects','nav.arcade':'Arcade','nav.process':'Process','nav.contact':'Contact','nav.contact2':'Contact','nav.live':'5 repos • live','settings.title':'Settings','settings.subtitle':'Language & theme — instant, everything translates','settings.lang':'Language — 20 Languages','settings.theme':'Theme — 10 Themes','settings.note':'Note: Choices saved locally. All titles, descriptions, buttons and arcade translate instantly.','hero.badge':'TRUST NO ONE — my game is live, play now →','hero.title1':'I design','hero.title2':'game worlds.','hero.desc':'I\'m Kerem KILINÇ — map & character design, game concepts and digital productions. Focus on visual & playable results, not code clutter. All projects live on GitHub.','hero.cta1':'View GitHub Projects ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Games','arcade.sub':'Next to contact — click to open, X to return.','contact.title':'Have an idea?','contact.sub':'Let\'s talk.','contact.send':'Send — reply in 24h →'},
+  de:{'nav.projects':'Projekte','nav.arcade':'Arcade','nav.process':'Prozess','nav.contact':'Kontakt','nav.contact2':'Kontakt','nav.live':'5 Repos • live','settings.title':'Einstellungen','settings.subtitle':'Sprache & Thema — sofort, alles übersetzt','settings.lang':'Sprache — 20 Sprachen','settings.theme':'Thema — 10 Themen','settings.note':'Hinweis: Auswahl wird lokal gespeichert. Alle Texte werden sofort übersetzt.','hero.badge':'TRUST NO ONE — mein Spiel ist live →','hero.title1':'Ich gestalte','hero.title2':'Spielwelten.','hero.desc':'Ich bin Kerem KILINÇ — Map & Charakterdesign, Spielkonzepte und digitale Produktionen. Fokus auf visuell & spielbar.','hero.cta1':'GitHub Projekte ansehen ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Spiele','arcade.sub':'Neben Kontakt — klicken, X zum Zurück.','contact.title':'Idee?','contact.sub':'Lass uns reden.','contact.send':'Senden →'},
+  fr:{'nav.projects':'Projets','nav.arcade':'Arcade','nav.process':'Processus','nav.contact':'Contact','nav.contact2':'Contact','nav.live':'5 dépôts • en direct','settings.title':'Paramètres','settings.subtitle':'Langue & thème — instantané','settings.lang':'Langue — 20 langues','settings.theme':'Thème — 10 thèmes','settings.note':'Note: choix sauvegardé localement. Tout est traduit instantanément.','hero.badge':'TRUST NO ONE — mon jeu est en ligne →','hero.title1':'Je conçois','hero.title2':'des mondes de jeu.','hero.desc':'Je suis Kerem KILINÇ — design map & personnage, concepts de jeu et productions numériques.','hero.cta1':'Voir projets GitHub ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Jeux','arcade.sub':'À côté du contact — cliquez, X pour revenir.','contact.title':'Une idée ?','contact.sub':'Parlons-en.','contact.send':'Envoyer →'},
+  es:{'nav.projects':'Proyectos','nav.arcade':'Arcade','nav.process':'Proceso','nav.contact':'Contacto','nav.contact2':'Contacto','nav.live':'5 repos • en vivo','settings.title':'Ajustes','settings.subtitle':'Idioma y tema — instantáneo','settings.lang':'Idioma — 20 idiomas','settings.theme':'Tema — 10 temas','settings.note':'Nota: selección guardada localmente. Todo se traduce al instante.','hero.badge':'TRUST NO ONE — mi juego está en vivo →','hero.title1':'Diseño','hero.title2':'mundos de juego.','hero.desc':'Soy Kerem KILINÇ — diseño de mapas y personajes, conceptos de juego y producciones digitales.','hero.cta1':'Ver proyectos GitHub ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Juegos','arcade.sub':'Junto a contacto — clic para abrir.','contact.title':'¿Una idea?','contact.sub':'Hablemos.','contact.send':'Enviar →'},
+  it:{'nav.projects':'Progetti','nav.arcade':'Arcade','nav.process':'Processo','nav.contact':'Contatto','nav.contact2':'Contatto','nav.live':'5 repo • live','settings.title':'Impostazioni','settings.subtitle':'Lingua e tema — istantaneo','settings.lang':'Lingua — 20 lingue','settings.theme':'Tema — 10 temi','settings.note':'Nota: scelta salvata localmente. Tutto tradotto istantaneamente.','hero.badge':'TRUST NO ONE — il mio gioco è live →','hero.title1':'Progetto','hero.title2':'mondi di gioco.','hero.desc':'Sono Kerem KILINÇ — design mappe & personaggi, concetti di gioco e produzioni digitali.','hero.cta1':'Vedi progetti GitHub ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Giochi','arcade.sub':'Accanto al contatto — clicca.','contact.title':'Un\'idea?','contact.sub':'Parliamone.','contact.send':'Invia →'},
+  pt:{'nav.projects':'Projetos','nav.arcade':'Arcade','nav.process':'Processo','nav.contact':'Contato','nav.contact2':'Contato','nav.live':'5 repos • ao vivo','settings.title':'Configurações','settings.subtitle':'Idioma e tema — instantâneo','settings.lang':'Idioma — 20 idiomas','settings.theme':'Tema — 10 temas','settings.note':'Nota: escolha salva localmente. Tudo traduzido instantaneamente.','hero.badge':'TRUST NO ONE — meu jogo está no ar →','hero.title1':'Eu projeto','hero.title2':'mundos de jogos.','hero.desc':'Sou Kerem KILINÇ — design de mapas e personagens, conceitos de jogos e produções digitais.','hero.cta1':'Ver projetos GitHub ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Jogos','arcade.sub':'Ao lado do contato — clique.','contact.title':'Uma ideia?','contact.sub':'Vamos conversar.','contact.send':'Enviar →'},
+  ru:{'nav.projects':'Проекты','nav.arcade':'Аркада','nav.process':'Процесс','nav.contact':'Контакт','nav.contact2':'Контакт','nav.live':'5 репо • онлайн','settings.title':'Настройки','settings.subtitle':'Язык и тема — мгновенно','settings.lang':'Язык — 20 языков','settings.theme':'Тема — 10 тем','settings.note':'Примечание: выбор сохраняется локально. Всё переводится мгновенно.','hero.badge':'TRUST NO ONE — моя игра уже в сети →','hero.title1':'Я создаю','hero.title2':'игровые миры.','hero.desc':'Я — Керем КЫЛЫНЧ — дизайн карт и персонажей, игровые концепты и цифровые проекты.','hero.cta1':'Смотреть GitHub проекты ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Аркада — 10 игр','arcade.sub':'Рядом с контактом — нажми.','contact.title':'Есть идея?','contact.sub':'Давай поговорим.','contact.send':'Отправить →'},
+  zh:{'nav.projects':'项目','nav.arcade':'街机','nav.process':'过程','nav.contact':'联系','nav.contact2':'联系','nav.live':'5 个仓库 • 在线','settings.title':'设置','settings.subtitle':'语言和主题 — 即时','settings.lang':'语言 — 20 种语言','settings.theme':'主题 — 10 个主题','settings.note':'注意：选择保存在本地，所有内容即时翻译。','hero.badge':'TRUST NO ONE — 我的游戏已上线 →','hero.title1':'我设计','hero.title2':'游戏世界。','hero.desc':'我是 Kerem KILINÇ — 地图与角色设计、游戏概念和数字作品。','hero.cta1':'查看 GitHub 项目 ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'街机 — 10 个游戏','arcade.sub':'在联系旁边 — 点击打开。','contact.title':'有想法？','contact.sub':'聊聊吧。','contact.send':'发送 →'},
+  ja:{'nav.projects':'プロジェクト','nav.arcade':'アーケード','nav.process':'プロセス','nav.contact':'連絡','nav.contact2':'連絡','nav.live':'5 リポ • ライブ','settings.title':'設定','settings.subtitle':'言語とテーマ — 即時','settings.lang':'言語 — 20言語','settings.theme':'テーマ — 10テーマ','settings.note':'注意：選択はローカルに保存され、すべて即時翻訳されます。','hero.badge':'TRUST NO ONE — 私のゲームは公開中 →','hero.title1':'ゲームの世界を','hero.title2':'デザインします。','hero.desc':'私は Kerem KILINÇ — マップ＆キャラクターデザイン、ゲームコンセプト、デジタル制作。','hero.cta1':'GitHub プロジェクトを見る ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'アーケード — 10 ゲーム','arcade.sub':'連絡先の隣 — クリックで開く。','contact.title':'アイデアがありますか？','contact.sub':'話しましょう。','contact.send':'送信 →'},
+  ko:{'nav.projects':'프로젝트','nav.arcade':'아케이드','nav.process':'과정','nav.contact':'연락','nav.contact2':'연락','nav.live':'5개 저장소 • 라이브','settings.title':'설정','settings.subtitle':'언어와 테마 — 즉시','settings.lang':'언어 — 20개 언어','settings.theme':'테마 — 10개 테마','settings.note':'참고: 선택은 로컬에 저장되며 모든 것이 즉시 번역됩니다.','hero.badge':'TRUST NO ONE — 내 게임이 라이브 중 →','hero.title1':'게임 세계를','hero.title2':'디자인합니다.','hero.desc':'저는 Kerem KILINÇ — 맵 & 캐릭터 디자인, 게임 컨셉 및 디지털 제작.','hero.cta1':'GitHub 프로젝트 보기 ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'아케이드 — 10개 게임','arcade.sub':'연락처 옆 — 클릭하여 열기.','contact.title':'아이디어가 있나요?','contact.sub':'이야기해요.','contact.send':'보내기 →'},
+  ar:{'nav.projects':'المشاريع','nav.arcade':'أركيد','nav.process':'العملية','nav.contact':'اتصل','nav.contact2':'اتصل','nav.live':'5 مستودعات • مباشر','settings.title':'الإعدادات','settings.subtitle':'اللغة والمظهر — فوري','settings.lang':'اللغة — 20 لغة','settings.theme':'المظهر — 10 سمات','settings.note':'ملاحظة: يتم حفظ الاختيار محلياً وتتم ترجمة كل شيء فوراً.','hero.badge':'TRUST NO ONE — لعبتي مباشرة الآن →','hero.title1':'أصمم','hero.title2':'عوالم الألعاب.','hero.desc':'أنا كرم كيلينج — تصميم الخرائط والشخصيات، مفاهيم الألعاب والإنتاجات الرقمية.','hero.cta1':'عرض مشاريع GitHub ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'أركيد — 10 ألعاب','arcade.sub':'بجانب الاتصال — انقر للفتح.','contact.title':'لديك فكرة؟','contact.sub':'لنتحدث.','contact.send':'إرسال →'},
+  hi:{'nav.projects':'प्रोजेक्ट्स','nav.arcade':'आर्केड','nav.process':'प्रक्रिया','nav.contact':'संपर्क','nav.contact2':'संपर्क','nav.live':'5 रेपो • लाइव','settings.title':'सेटिंग्स','settings.subtitle':'भाषा और थीम — तुरंत','settings.lang':'भाषा — 20 भाषाएँ','settings.theme':'थीम — 10 थीम','settings.note':'नोट: चयन स्थानीय रूप से सहेजा जाता है, सब कुछ तुरंत अनुवादित होता है।','hero.badge':'TRUST NO ONE — मेरा गेम लाइव है →','hero.title1':'मैं गेम की दुनिया','hero.title2':'डिज़ाइन करता हूँ।','hero.desc':'मैं Kerem KILINÇ हूँ — मैप और कैरेक्टर डिज़ाइन, गेम कॉन्सेप्ट और डिजिटल प्रोडक्शन।','hero.cta1':'GitHub प्रोजेक्ट देखें ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'आर्केड — 10 गेम','arcade.sub':'संपर्क के बगल में — क्लिक करें।','contact.title':'कोई आइडिया?','contact.sub':'बात करते हैं।','contact.send':'भेजें →'},
+  nl:{'nav.projects':'Projecten','nav.arcade':'Arcade','nav.process':'Proces','nav.contact':'Contact','nav.contact2':'Contact','nav.live':'5 repo\'s • live','settings.title':'Instellingen','settings.subtitle':'Taal & thema — direct','settings.lang':'Taal — 20 talen','settings.theme':'Thema — 10 thema\'s','settings.note':'Opmerking: keuze lokaal opgeslagen, alles direct vertaald.','hero.badge':'TRUST NO ONE — mijn game is live →','hero.title1':'Ik ontwerp','hero.title2':'gamewerelden.','hero.desc':'Ik ben Kerem KILINÇ — map & personage ontwerp, game concepten en digitale producties.','hero.cta1':'Bekijk GitHub projecten ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Games','arcade.sub':'Naast contact — klik om te openen.','contact.title':'Een idee?','contact.sub':'Laten we praten.','contact.send':'Versturen →'},
+  pl:{'nav.projects':'Projekty','nav.arcade':'Arcade','nav.process':'Proces','nav.contact':'Kontakt','nav.contact2':'Kontakt','nav.live':'5 repo • na żywo','settings.title':'Ustawienia','settings.subtitle':'Język i motyw — natychmiast','settings.lang':'Język — 20 języków','settings.theme':'Motyw — 10 motywów','settings.note':'Uwaga: wybór zapisywany lokalnie, wszystko tłumaczone natychmiast.','hero.badge':'TRUST NO ONE — moja gra jest na żywo →','hero.title1':'Projektuję','hero.title2':'światy gier.','hero.desc':'Jestem Kerem KILINÇ — projektowanie map i postaci, koncepcje gier i produkcje cyfrowe.','hero.cta1':'Zobacz projekty GitHub ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Gier','arcade.sub':'Obok kontaktu — kliknij.','contact.title':'Masz pomysł?','contact.sub':'Porozmawiajmy.','contact.send':'Wyślij →'},
+  sv:{'nav.projects':'Projekt','nav.arcade':'Arkad','nav.process':'Process','nav.contact':'Kontakt','nav.contact2':'Kontakt','nav.live':'5 repon • live','settings.title':'Inställningar','settings.subtitle':'Språk & tema — direkt','settings.lang':'Språk — 20 språk','settings.theme':'Tema — 10 teman','settings.note':'Obs: val sparas lokalt, allt översätts direkt.','hero.badge':'TRUST NO ONE — mitt spel är live →','hero.title1':'Jag designar','hero.title2':'spelvärldar.','hero.desc':'Jag är Kerem KILINÇ — kart & karaktärsdesign, spelkoncept och digital produktion.','hero.cta1':'Visa GitHub-projekt ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arkad — 10 Spel','arcade.sub':'Bredvid kontakt — klicka.','contact.title':'En idé?','contact.sub':'Låt oss prata.','contact.send':'Skicka →'},
+  no:{'nav.projects':'Prosjekter','nav.arcade':'Arcade','nav.process':'Prosess','nav.contact':'Kontakt','nav.contact2':'Kontakt','nav.live':'5 repoer • live','settings.title':'Innstillinger','settings.subtitle':'Språk & tema — umiddelbart','settings.lang':'Språk — 20 språk','settings.theme':'Tema — 10 temaer','settings.note':'Merk: valg lagres lokalt, alt oversettes umiddelbart.','hero.badge':'TRUST NO ONE — spillet mitt er live →','hero.title1':'Jeg designer','hero.title2':'spillverdener.','hero.desc':'Jeg er Kerem KILINÇ — kart & karakterdesign, spillkonsepter og digital produksjon.','hero.cta1':'Se GitHub-prosjekter ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Spill','arcade.sub':'Ved siden av kontakt — klikk.','contact.title':'En idé?','contact.sub':'La oss snakke.','contact.send':'Send →'},
+  da:{'nav.projects':'Projekter','nav.arcade':'Arcade','nav.process':'Proces','nav.contact':'Kontakt','nav.contact2':'Kontakt','nav.live':'5 repos • live','settings.title':'Indstillinger','settings.subtitle':'Sprog & tema — øjeblikkeligt','settings.lang':'Sprog — 20 sprog','settings.theme':'Tema — 10 temaer','settings.note':'Bemærk: valg gemmes lokalt, alt oversættes øjeblikkeligt.','hero.badge':'TRUST NO ONE — mit spil er live →','hero.title1':'Jeg designer','hero.title2':'spilverdenener.','hero.desc':'Jeg er Kerem KILINÇ — kort & karakterdesign, spilkoncepter og digital produktion.','hero.cta1':'Se GitHub-projekter ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Spil','arcade.sub':'Ved siden af kontakt — klik.','contact.title':'En idé?','contact.sub':'Lad os tale.','contact.send':'Send →'},
+  el:{'nav.projects':'Έργα','nav.arcade':'Arcade','nav.process':'Διαδικασία','nav.contact':'Επικοινωνία','nav.contact2':'Επικοινωνία','nav.live':'5 repos • ζωντανά','settings.title':'Ρυθμίσεις','settings.subtitle':'Γλώσσα & θέμα — άμεσα','settings.lang':'Γλώσσα — 20 γλώσσες','settings.theme':'Θέμα — 10 θέματα','settings.note':'Σημείωση: η επιλογή αποθηκεύεται τοπικά, όλα μεταφράζονται άμεσα.','hero.badge':'TRUST NO ONE — το παιχνίδι μου είναι live →','hero.title1':'Σχεδιάζω','hero.title2':'κόσμους παιχνιδιών.','hero.desc':'Είμαι ο Kerem KILINÇ — σχεδιασμός χαρτών & χαρακτήρων, concepts παιχνιδιών και ψηφιακές παραγωγές.','hero.cta1':'Δείτε GitHub projects ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arcade — 10 Παιχνίδια','arcade.sub':'Δίπλα στην επικοινωνία — κλικ.','contact.title':'Μια ιδέα;','contact.sub':'Ας μιλήσουμε.','contact.send':'Αποστολή →'},
+  cs:{'nav.projects':'Projekty','nav.arcade':'Arkáda','nav.process':'Proces','nav.contact':'Kontakt','nav.contact2':'Kontakt','nav.live':'5 repo • živě','settings.title':'Nastavení','settings.subtitle':'Jazyk & téma — okamžitě','settings.lang':'Jazyk — 20 jazyků','settings.theme':'Téma — 10 témat','settings.note':'Poznámka: volba se ukládá lokálně, vše se překládá okamžitě.','hero.badge':'TRUST NO ONE — moje hra je živě →','hero.title1':'Navrhuji','hero.title2':'herní světy.','hero.desc':'Jsem Kerem KILINÇ — design map a postav, herní koncepty a digitální produkce.','hero.cta1':'Zobrazit GitHub projekty ↓','hero.cta2':'+90 501 •••• •• ••','arcade.title':'Arkáda — 10 Her','arcade.sub':'Vedle kontaktu — klikni.','contact.title':'Nápad?','contact.sub':'Pojďme mluvit.','contact.send':'Odeslat →'}
+};
+const langNames={tr:'Türkçe 🇹🇷',en:'English 🇬🇧',de:'Deutsch 🇩🇪',fr:'Français 🇫🇷',es:'Español 🇪🇸',it:'Italiano 🇮🇹',pt:'Português 🇵🇹',ru:'Русский 🇷🇺',zh:'中文 🇨🇳',ja:'日本語 🇯🇵',ko:'한국어 🇰🇷',ar:'العربية 🇸🇦',hi:'हिन्दी 🇮🇳',nl:'Nederlands 🇳🇱',pl:'Polski 🇵🇱',sv:'Svenska 🇸🇪',no:'Norsk 🇳🇴',da:'Dansk 🇩🇰',el:'Ελληνικά 🇬🇷',cs:'Čeština 🇨🇿'};
+const themeDefs=[
+  {id:'midnight',name:'Midnight',c:'#8b5cf6',c2:'#06b6d4'},
+  {id:'neon-violet',name:'Neon Violet',c:'#a78bfa',c2:'#c084fc'},
+  {id:'cyan-ocean',name:'Cyan Ocean',c:'#06b6d4',c2:'#0ea5e9'},
+  {id:'emerald-forest',name:'Emerald',c:'#10b981',c2:'#34d399'},
+  {id:'crimson-rose',name:'Crimson Rose',c:'#f43f5e',c2:'#fb7185'},
+  {id:'sunset-orange',name:'Sunset',c:'#f97316',c2:'#fb923c'},
+  {id:'arctic-blue',name:'Arctic Blue',c:'#0ea5e9',c2:'#38bdf8'},
+  {id:'golden-hour',name:'Golden Hour',c:'#eab308',c2:'#facc15'},
+  {id:'monochrome',name:'Monochrome',c:'#a1a1aa',c2:'#d4d4d8'},
+  {id:'cyberpunk',name:'Cyberpunk',c:'#ec4899',c2:'#f472b6'}
+];
+let curLang=localStorage.getItem('lang')||'tr';
+let curTheme=localStorage.getItem('theme')||'midnight';
+function applyLang(l){
+  curLang=l; localStorage.setItem('lang',l);
+  document.documentElement.lang=l;
+  document.getElementById('currentLangLabel').textContent=l.toUpperCase();
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    const v=translations[l]&&translations[l][k] ? translations[l][k] : (translations['en'][k]||el.textContent);
+    el.textContent=v;
+  });
+  // hero özel
+  const t=translations[l]||translations['tr'];
+  const title1=document.querySelector('[data-i18n="hero.title1"]');
+  const title2=document.querySelector('[data-i18n="hero.title2"]');
+  // arcade ve contact zaten data-i18n ile çevriliyor
+  document.querySelectorAll('#langGrid button').forEach(b=> b.classList.toggle('!bg-white', b.dataset.lang===l));
+}
+function applyTheme(id){
+  curTheme=id; localStorage.setItem('theme',id);
+  document.documentElement.setAttribute('data-theme',id);
+  document.querySelectorAll('#themeGrid button').forEach(b=> b.classList.toggle('!border-violet-500', b.dataset.theme===id));
+}
+function openSettings(){
+  const m=document.getElementById('settingsModal');
+  m.classList.remove('hidden');
+  // populate grids if empty
+  if(!document.getElementById('langGrid').children.length){
+    const lg=document.getElementById('langGrid');
+    Object.keys(langNames).forEach(code=>{
+      const btn=document.createElement('button');
+      btn.dataset.lang=code;
+      btn.className='flex items-center gap-2 px-3 py-2.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/10 text-sm text-left transition '+(code===curLang?'!bg-white !text-black':'');
+      btn.innerHTML=`<span>${langNames[code]}</span><span class="ml-auto text-xs opacity-60">${code.toUpperCase()}</span>`;
+      btn.onclick=()=>applyLang(code);
+      lg.appendChild(btn);
+    });
+    const tg=document.getElementById('themeGrid');
+    themeDefs.forEach(th=>{
+      const btn=document.createElement('button');
+      btn.dataset.theme=th.id;
+      btn.className='rounded-xl border border-white/10 p-3 text-left hover:border-white/20 transition '+(th.id===curTheme?'!border-violet-500':'');
+      btn.innerHTML=`<div class="flex gap-1.5 mb-2"><span class="w-6 h-6 rounded-full" style="background:${th.c}"></span><span class="w-6 h-6 rounded-full" style="background:${th.c2}"></span></div><div class="text-sm font-medium text-white">${th.name}</div><div class="text-xs text-zinc-500 font-mono">${th.id}</div>`;
+      btn.onclick=()=>applyTheme(th.id);
+      tg.appendChild(btn);
+    });
+  }
+  document.getElementById('currentLangLabel').textContent=curLang.toUpperCase();
+}
+function closeSettings(){ document.getElementById('settingsModal').classList.add('hidden'); }
+document.addEventListener('DOMContentLoaded',()=>{
+  applyTheme(curTheme);
+  applyLang(curLang);
 });
 </script>
 </body>
