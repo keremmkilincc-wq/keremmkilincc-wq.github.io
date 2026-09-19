@@ -458,7 +458,7 @@ window.addEventListener('keydown',e=>{
   if(e.key==='Escape') closeGame();
 });
 window.addEventListener('keyup',e=> keys[e.key.toLowerCase()]=false);
-canvas.addEventListener('click',()=>{ if(currentGame==='flappy3d') flappyFlap(); if(currentGame==='memory') memoryClick(); });
+canvas.addEventListener('click',()=>{ if(currentGame==='flappy3d') flappyFlap(); });
 canvas.addEventListener('mousemove',e=>{
   const rect=canvas.getBoundingClientRect();
   const x=(e.clientX-rect.left)/rect.width*canvas.width;
@@ -478,7 +478,7 @@ function loopTetris(){
   if(keys['arrowleft'] && !collideTetris(-1,0)){ tetrisPiece.x--; keys['arrowleft']=false; }
   if(keys['arrowright'] && !collideTetris(1,0)){ tetrisPiece.x++; keys['arrowright']=false; }
   if(keys['arrowdown'] && !collideTetris(0,1)){ tetrisPiece.y++; }
-  if(keys['arrowup']){ const ns=tetrisPiece.s[0].length> tetrisPiece.s.length ? tetrisPiece.s[0].map((_,i)=>tetrisPiece.s.map(r=>r[i]).reverse()) : tetrisPiece.s[0].map((_,i)=>tetrisPiece.s.map(r=>r[i]).reverse()); if(!collideTetris(0,0,ns)) tetrisPiece.s=ns; keys['arrowup']=false; }
+  if(keys['arrowup']){ const ns=tetrisPiece.s[0].map((_,i)=>tetrisPiece.s.map(r=>r[i]).reverse()); let ok=false; for(let k of [0,-1,1,2,-2]){ if(!collideTetris(k,0,ns)){ tetrisPiece.x+=k; tetrisPiece.s=ns; ok=true; break; }} keys['arrowup']=false; }
   if(keys[' ']){ while(!collideTetris(0,1)) tetrisPiece.y++; mergeTetris(); spawnTetris(); keys[' ']=false; }
   drawTetris();
   gameLoop=requestAnimationFrame(loopTetris);
@@ -535,7 +535,7 @@ function loopSnake(){
     if(head.x<0) head.x=39; if(head.x>39) head.x=0; if(head.y<0) head.y=23; if(head.y>23) head.y=0;
     if(snake.some(s=>s.x===head.x&&s.y===head.y)){ snake=[{x:10,y:10}]; updateScore(0); }
     snake.unshift(head);
-    if(head.x===snakeFood.x && head.y===snakeFood.y){ snakeFood={x:Math.floor(Math.random()*40),y:Math.floor(Math.random()*24)}; updateScore(score+10); } else snake.pop();
+    if(head.x===snakeFood.x && head.y===snakeFood.y){ do{ snakeFood={x:Math.floor(Math.random()*40),y:Math.floor(Math.random()*24)}; } while(snake.some(s=>s.x===snakeFood.x&&s.y===snakeFood.y)); updateScore(score+10); } else snake.pop();
   }
   if(keys['arrowup'] && snakeDir.y===0) snakeDir={x:0,y:-1};
   if(keys['arrowdown'] && snakeDir.y===0) snakeDir={x:0,y:1};
@@ -625,16 +625,17 @@ function drawInvaders(){
 }
 
 // --- ASTEROIDS DODGE ---
-let asteroidY=0, asteroids=[], asteroidPlayerX=400;
-function initAsteroids(){ asteroids=[]; asteroidY=0; asteroidPlayerX=400; updateScore(0); loopAsteroids(); }
+let asteroidY=0, asteroids=[], asteroidPlayerX=400, asteroidTick=0;
+function initAsteroids(){ asteroids=[]; asteroidY=0; asteroidPlayerX=400; asteroidTick=0; updateScore(0); loopAsteroids(); }
 function loopAsteroids(){
+  asteroidTick++;
   if(keys['arrowleft']) asteroidPlayerX=Math.max(20,asteroidPlayerX-6);
   if(keys['arrowright']) asteroidPlayerX=Math.min(780,asteroidPlayerX+6);
   if(Math.random()<0.08) asteroids.push({x:Math.random()*760+20,y:-20,s:12+Math.random()*18,v:3+Math.random()*4});
   asteroids.forEach(a=>a.y+=a.v);
   asteroids=asteroids.filter(a=>a.y<500);
   for(let a of asteroids){ if(Math.abs(a.x-asteroidPlayerX)<20+a.s/2 && Math.abs(a.y-420)<18){ asteroids=[]; updateScore(0); break; } }
-  updateScore(score+1);
+  if(asteroidTick%6===0) updateScore(score+1);
   drawAsteroids();
   gameLoop=requestAnimationFrame(loopAsteroids);
 }
@@ -645,15 +646,16 @@ function drawAsteroids(){
 }
 
 // --- RUNNER ---
-let runnerY=380, runnerVy=0, runnerObs=[], runnerGrounded=true;
-function initRunner(){ runnerY=380; runnerVy=0; runnerObs=[]; runnerGrounded=true; updateScore(0); loopRunner(); }
+let runnerY=380, runnerVy=0, runnerObs=[], runnerGrounded=true, runnerTick=0;
+function initRunner(){ runnerY=380; runnerVy=0; runnerObs=[]; runnerGrounded=true; runnerTick=0; updateScore(0); loopRunner(); }
 function loopRunner(){
+  runnerTick++;
   if((keys[' ']||keys['arrowup']) && runnerGrounded){ runnerVy=-13; runnerGrounded=false; keys[' ']=false; keys['arrowup']=false; }
   runnerVy+=0.8; runnerY+=runnerVy; if(runnerY>380){ runnerY=380; runnerVy=0; runnerGrounded=true; }
   if(Math.random()<0.04) runnerObs.push({x:800,w:22+Math.random()*22,h:30+Math.random()*30});
   runnerObs.forEach(o=>o.x-=6); runnerObs=runnerObs.filter(o=>o.x>-30);
   for(let o of runnerObs){ if(120>o.x && 120<o.x+o.w && runnerY+20>400-o.h){ runnerObs=[]; updateScore(0); runnerY=380; } }
-  updateScore(score+1);
+  if(runnerTick%6===0) updateScore(score+1);
   drawRunner();
   gameLoop=requestAnimationFrame(loopRunner);
 }
@@ -693,9 +695,6 @@ function draw2048(){
 // --- MEMORY ---
 let memCards=[], memPick=[];
 function initMemory(){ const vals=['◈','⬡','⬢','⬣','⬤','⬥','⬦','⬧']; let deck=[...vals,...vals].sort(()=>Math.random()-0.5); memCards=deck.map((v,i)=>({v,open:false,matched:false})); memPick=[]; updateScore(0); drawMemory(); }
-function memoryClick(){
-  const rect=canvas.getBoundingClientRect(); // click handled via canvas click, find card
-}
 canvas.addEventListener('click',e=>{
   if(currentGame!=='memory') return;
   const rect=canvas.getBoundingClientRect();
