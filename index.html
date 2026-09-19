@@ -417,10 +417,28 @@ const canvas=document.getElementById('gameCanvas');
 const ctx=canvas.getContext('2d');
 let gameLoop=null, currentGame=null, keys={}, score=0;
 const bestKey=g=>`best_${g}`;
-function updateScore(v){ score=v; document.getElementById('gameScore').textContent=score; const b=parseInt(localStorage.getItem(bestKey(currentGame))||0); if(score>b) localStorage.setItem(bestKey(currentGame),score); document.getElementById('gameBest').textContent=localStorage.getItem(bestKey(currentGame))||0; }
-let loseUntil=0;
-function triggerLose(){ loseUntil=Date.now()+1200; }
+function updateScore(v){
+  score=v;
+  document.getElementById('gameScore').textContent=score;
+  if(!currentGame) return;
+  try{
+    const key=bestKey(currentGame);
+    const b=parseInt(localStorage.getItem(key)||0);
+    if(score>b) localStorage.setItem(key, String(score));
+    document.getElementById('gameBest').textContent=localStorage.getItem(key)||0;
+  }catch(e){ document.getElementById('gameBest').textContent=score; }
+}
+let loseUntil=0, isGameOver=false;
+function triggerLose(){ isGameOver=true; loseUntil=Date.now()+1200; }
 function drawLoseOverlay(){
+  if(isGameOver){
+    ctx.fillStyle='rgba(239,68,68,0.92)'; ctx.fillRect(0,0,800,480);
+    ctx.fillStyle='#fff'; ctx.font='bold 38px Space Grotesk'; ctx.textAlign='center';
+    ctx.fillText('KAYBETTİN!',400,230);
+    ctx.font='15px Inter'; ctx.fillText('Yeniden Başlat veya R tuşu ile devam',400,260);
+    ctx.font='12px JetBrains Mono'; ctx.fillText('Skor: '+score+'  •  En iyi: '+(localStorage.getItem(bestKey(currentGame))||0),400,285);
+    ctx.textAlign='left'; return true;
+  }
   if(Date.now()<loseUntil){
     ctx.fillStyle='rgba(239,68,68,0.88)'; ctx.fillRect(0,0,800,480);
     ctx.fillStyle='#fff'; ctx.font='bold 38px Space Grotesk'; ctx.textAlign='center';
@@ -444,7 +462,7 @@ const gameMeta={
   memory:{title:'Memory Flip',sub:'Kartlara tıkla: eşleştir',icon:'M'}
 };
 function openGame(name){
-  currentGame=name;
+  currentGame=name; isGameOver=false; loseUntil=0;
   const m=gameMeta[name];
   document.getElementById('modalTitle').textContent=m.title;
   document.getElementById('modalSub').textContent=m.sub;
@@ -484,11 +502,12 @@ let tetrisBoard, tetrisPiece, tetrisNext=null, tetrisDrop=0, tetrisLevel=1, tetr
 const tetros=[{s:[[1,1,1,1]],c:'#06b6d4'},{s:[[1,1],[1,1]],c:'#f472b6'},{s:[[0,1,0],[1,1,1]],c:'#a78bfa'},{s:[[1,0],[1,0],[1,1]],c:'#f59e0b'},{s:[[0,1],[0,1],[1,1]],c:'#10b981'},{s:[[1,1,0],[0,1,1]],c:'#ef4444'},{s:[[0,1,1],[1,1,0]],c:'#22c55e'}];
 function pickTetro(){ return tetros[Math.floor(Math.random()*tetros.length)]; }
 function initTetris(){ tetrisBoard=Array(20).fill(0).map(()=>Array(10).fill(0)); tetrisLevel=1; tetrisLines=0; tetrisNext=pickTetro(); spawnTetris(); tetrisDrop=0; updateScore(0); loopTetris(); }
-function spawnTetris(){ const t=tetrisNext||pickTetro(); tetrisNext=pickTetro(); tetrisPiece={x:3,y:0,s:t.s,c:t.c}; if(collideTetris(0,0)){ tetrisBoard=Array(20).fill(0).map(()=>Array(10).fill(0)); tetrisLevel=1; triggerLose(); updateScore(0); } }
+function spawnTetris(){ const t=tetrisNext||pickTetro(); tetrisNext=pickTetro(); tetrisPiece={x:3,y:0,s:t.s,c:t.c}; if(collideTetris(0,0)){ triggerLose(); } }
 function collideTetris(dx,dy,ns){ const s=ns||tetrisPiece.s; for(let y=0;y<s.length;y++) for(let x=0;x<s[y].length;x++) if(s[y][x]){ const nx=tetrisPiece.x+x+dx, ny=tetrisPiece.y+y+dy; if(nx<0||nx>=10||ny>=20|| (ny>=0&&tetrisBoard[ny][nx])) return true; } return false; }
 function mergeTetris(){ tetrisPiece.s.forEach((row,y)=>row.forEach((v,x)=>{ if(v && tetrisPiece.y+y>=0) tetrisBoard[tetrisPiece.y+y][tetrisPiece.x+x]=tetrisPiece.c; })); let cleared=0; for(let y=19;y>=0;y--) if(tetrisBoard[y].every(c=>c)){ tetrisBoard.splice(y,1); tetrisBoard.unshift(Array(10).fill(0)); cleared++; y++; } if(cleared){ tetrisLines+=cleared; tetrisLevel=Math.floor(tetrisLines/10)+1; updateScore(score+cleared*100*cleared); } }
 function getGhostY(){ let gy=tetrisPiece.y; while(!collideTetris(0,gy-tetrisPiece.y+1)) gy++; return gy; }
 function loopTetris(){
+  if(isGameOver){ drawTetris(); gameLoop=requestAnimationFrame(loopTetris); return; }
   const speed=Math.max(4,20-tetrisLevel*2);
   tetrisDrop++; if(tetrisDrop>speed){ if(!collideTetris(0,1)){ tetrisPiece.y++; } else { mergeTetris(); spawnTetris(); } tetrisDrop=0; }
   if(keys['arrowleft'] && !collideTetris(-1,0)){ tetrisPiece.x--; keys['arrowleft']=false; }
@@ -529,6 +548,7 @@ let flappyY, flappyVy, flappyPipes, flappyScore, flappyFrame, flappyClouds=[], f
 function initFlappy(){ flappyY=240; flappyVy=0; flappyPipes=[]; flappyScore=0; flappyFrame=0; flappyClouds=[{x:100,y:70},{x:400,y:50},{x:650,y:80}]; flappyTrail=[]; loopFlappy(); }
 function flappyFlap(){ flappyVy=-7.5; flappyTrail.push({y:flappyY,a:1}); }
 function loopFlappy(){
+  if(isGameOver){ drawFlappy(); gameLoop=requestAnimationFrame(loopFlappy); return; }
   flappyFrame++; flappyVy+=0.48; flappyY+=flappyVy;
   flappyClouds.forEach(c=>{ c.x-=0.6; if(c.x<-80) c.x=880; });
   if(flappyTrail.length>6) flappyTrail.shift();
@@ -536,8 +556,8 @@ function loopFlappy(){
   if(flappyFrame%86===0){ const h=70+Math.random()*170; flappyPipes.push({x:800,y:h,w:62,gap:148}); }
   flappyPipes.forEach(p=>p.x-=3.2);
   flappyPipes=flappyPipes.filter(p=>p.x>-70);
-  for(let p of flappyPipes){ if(225>p.x && 225<p.x+p.w){ if(flappyY-14 < p.y || flappyY+14 > p.y+p.gap) { triggerLose(); updateScore(0); flappyY=240; flappyVy=0; flappyPipes=[]; flappyScore=0; } } if(p.x===218) { flappyScore++; updateScore(flappyScore); } }
-  if(flappyY>468||flappyY<0){ triggerLose(); flappyY=240; flappyVy=0; flappyPipes=[]; flappyScore=0; updateScore(0); }
+  for(let p of flappyPipes){ if(225>p.x && 225<p.x+p.w){ if(flappyY-14 < p.y || flappyY+14 > p.y+p.gap) { triggerLose(); } } if(p.x===218) { flappyScore++; updateScore(flappyScore); } }
+  if(flappyY>468||flappyY<0){ triggerLose(); }
   if(keys[' '] ) { flappyFlap(); keys[' ']=false; }
   drawFlappy();
   gameLoop=requestAnimationFrame(loopFlappy);
@@ -590,10 +610,11 @@ function drawFlappy(){
 let snake, snakeDir, snakeFood, snakeTick;
 function initSnake(){ snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}]; snakeDir={x:1,y:0}; snakeFood={x:15,y:10}; snakeTick=0; updateScore(0); loopSnake(); }
 function loopSnake(){
+  if(isGameOver){ drawSnake(); gameLoop=requestAnimationFrame(loopSnake); return; }
   snakeTick++; if(snakeTick%8===0){
     const head={x:snake[0].x+snakeDir.x, y:snake[0].y+snakeDir.y};
-    if(head.x<0) head.x=39; if(head.x>39) head.x=0; if(head.y<0) head.y=23; if(head.y>23) head.y=0;
-    if(snake.some(s=>s.x===head.x&&s.y===head.y)){ triggerLose(); snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}]; snakeDir={x:1,y:0}; updateScore(0); }
+    if(head.x<0||head.x>39||head.y<0||head.y>23){ triggerLose(); updateScore(score); return; }
+    if(snake.some(s=>s.x===head.x&&s.y===head.y)){ triggerLose(); updateScore(score); return; }
     snake.unshift(head);
     if(head.x===snakeFood.x && head.y===snakeFood.y){ do{ snakeFood={x:Math.floor(Math.random()*40),y:Math.floor(Math.random()*24)}; } while(snake.some(s=>s.x===snakeFood.x&&s.y===snakeFood.y)); updateScore(score+10); } else snake.pop();
   }
@@ -633,11 +654,12 @@ function drawSnake(){
 let breakoutX=400, breakoutBall={x:400,y:300,vx:4,vy:-4}, breakoutBricks=[];
 function initBreakout(){ breakoutBricks=[]; for(let y=0;y<5;y++) for(let x=0;x<10;x++) breakoutBricks.push({x:x*78+10,y:y*28+40,alive:true}); breakoutBall={x:400,y:300,vx:4,vy:-4}; updateScore(0); loopBreakout(); }
 function loopBreakout(){
+  if(isGameOver){ drawBreakout(); gameLoop=requestAnimationFrame(loopBreakout); return; }
   breakoutBall.x+=breakoutBall.vx; breakoutBall.y+=breakoutBall.vy;
   if(breakoutBall.x<8||breakoutBall.x>792) breakoutBall.vx*=-1;
   if(breakoutBall.y<8) breakoutBall.vy*=-1;
   if(breakoutBall.y>460 && breakoutBall.x>breakoutX-50 && breakoutBall.x<breakoutX+50){ breakoutBall.vy=-Math.abs(breakoutBall.vy); breakoutBall.vx+=(breakoutBall.x-breakoutX)*0.05; }
-  if(breakoutBall.y>480){ triggerLose(); breakoutBall={x:400,y:300,vx:4,vy:-4}; updateScore(0); }
+  if(breakoutBall.y>480){ triggerLose(); }
   breakoutBricks.forEach(b=>{ if(b.alive && breakoutBall.x>b.x && breakoutBall.x<b.x+76 && breakoutBall.y>b.y && breakoutBall.y<b.y+24){ b.alive=false; breakoutBall.vy*=-1; updateScore(score+10); }});
   if(keys['arrowleft']) breakoutX=Math.max(50,breakoutX-7);
   if(keys['arrowright']) breakoutX=Math.min(750,breakoutX+7);
@@ -665,16 +687,16 @@ function drawBreakout(){
 let pongBall={x:400,y:240,vx:5,vy:3}, pongPlayerY=240, pongCpuY=240, pongScoreP=0, pongScoreC=0;
 function initPong(){ pongBall={x:400,y:240,vx:5,vy:3}; pongPlayerY=240; pongCpuY=240; loopPong(); }
 function loopPong(){
+  if(isGameOver){ drawPong(); gameLoop=requestAnimationFrame(loopPong); return; }
   pongBall.x+=pongBall.vx; pongBall.y+=pongBall.vy;
   if(pongBall.y<10||pongBall.y>470) pongBall.vy*=-1;
   if(pongBall.x<30 && pongBall.y>pongPlayerY-40 && pongBall.y<pongPlayerY+40){ pongBall.vx=5; pongBall.x=30; }
   if(pongBall.x>770 && pongBall.y>pongCpuY-40 && pongBall.y<pongCpuY+40){ pongBall.vx=-5; pongBall.x=770; }
   if(pongBall.x<0){ pongScoreC++; pongBall={x:400,y:240,vx:5,vy:3}; updateScore(pongScoreP); }
   if(pongBall.x>800){ pongScoreP++; pongBall={x:400,y:240,vx:-5,vy:3}; updateScore(pongScoreP); }
-  // zayıf AI: yavaş takip + hata
-  pongCpuY += (pongBall.y - pongCpuY)*0.032;
-  if(Math.random()<0.015) pongCpuY += (Math.random()-0.5)*40;
-  pongCpuY += (Math.random()-0.5)*2;
+  // güçlü AI: hızlı ve isabetli
+  const targetY = pongBall.y + pongBall.vy*6;
+  pongCpuY += (targetY - pongCpuY)*0.11;
   if(keys['w']) pongPlayerY-=6;
   if(keys['s']) pongPlayerY+=6;
   pongPlayerY=Math.max(40,Math.min(440,pongPlayerY));
@@ -702,6 +724,7 @@ function drawPong(){
 let invaders=[], invaderBullets=[], playerX=400, invaderDir=1;
 function initInvaders(){ invaders=[]; for(let y=0;y<4;y++) for(let x=0;x<8;x++) invaders.push({x:100+x*70,y:60+y*40,alive:true}); invaderBullets=[]; playerX=400; updateScore(0); loopInvaders(); }
 function loopInvaders(){
+  if(isGameOver){ drawInvaders(); gameLoop=requestAnimationFrame(loopInvaders); return; }
   if(keys['arrowleft']) playerX=Math.max(20,playerX-5);
   if(keys['arrowright']) playerX=Math.min(780,playerX+5);
   if(keys[' '] && invaderBullets.filter(b=>b.py).length<3){ invaderBullets.push({x:playerX,y:440,py:true}); keys[' ']=false; }
@@ -709,7 +732,7 @@ function loopInvaders(){
   if(Math.random()<0.02) invaders.filter(i=>i.alive).forEach(i=>{ if(Math.random()<0.02) invaderBullets.push({x:i.x,y:i.y,py:false}); });
   invaders.forEach(i=>{ if(i.alive) i.x+=invaderDir*1.2; });
   if(invaders.some(i=>i.alive && (i.x>740||i.x<20))) { invaderDir*=-1; invaders.forEach(i=>i.y+=18); }
-  if(invaders.some(i=>i.alive && i.y>410)){ triggerLose(); invaders=[]; for(let y=0;y<4;y++) for(let x=0;x<8;x++) invaders.push({x:100+x*70,y:60+y*40,alive:true}); updateScore(0); }
+  if(invaders.some(i=>i.alive && i.y>410)){ triggerLose(); }
   invaderBullets.forEach(b=> b.y+= b.py?-7:3);
   invaderBullets=invaderBullets.filter(b=>b.y>0&&b.y<480);
   // collisions
@@ -740,13 +763,14 @@ function drawInvaders(){
 let asteroidY=0, asteroids=[], asteroidPlayerX=400, asteroidTick=0;
 function initAsteroids(){ asteroids=[]; asteroidY=0; asteroidPlayerX=400; asteroidTick=0; updateScore(0); loopAsteroids(); }
 function loopAsteroids(){
+  if(isGameOver){ drawAsteroids(); gameLoop=requestAnimationFrame(loopAsteroids); return; }
   asteroidTick++;
   if(keys['arrowleft']) asteroidPlayerX=Math.max(20,asteroidPlayerX-6);
   if(keys['arrowright']) asteroidPlayerX=Math.min(780,asteroidPlayerX+6);
   if(Math.random()<0.08) asteroids.push({x:Math.random()*760+20,y:-20,s:12+Math.random()*18,v:3+Math.random()*4});
   asteroids.forEach(a=>a.y+=a.v);
   asteroids=asteroids.filter(a=>a.y<500);
-  for(let a of asteroids){ if(Math.abs(a.x-asteroidPlayerX)<20+a.s/2 && Math.abs(a.y-420)<18){ triggerLose(); asteroids=[]; updateScore(0); break; } }
+  for(let a of asteroids){ if(Math.abs(a.x-asteroidPlayerX)<20+a.s/2 && Math.abs(a.y-420)<18){ triggerLose(); break; } }
   if(asteroidTick%6===0) updateScore(score+1);
   drawAsteroids();
   gameLoop=requestAnimationFrame(loopAsteroids);
@@ -774,12 +798,13 @@ function drawAsteroids(){
 let runnerY=380, runnerVy=0, runnerObs=[], runnerGrounded=true, runnerTick=0;
 function initRunner(){ runnerY=380; runnerVy=0; runnerObs=[]; runnerGrounded=true; runnerTick=0; updateScore(0); loopRunner(); }
 function loopRunner(){
+  if(isGameOver){ drawRunner(); gameLoop=requestAnimationFrame(loopRunner); return; }
   runnerTick++;
   if((keys[' ']||keys['arrowup']) && runnerGrounded){ runnerVy=-13; runnerGrounded=false; keys[' ']=false; keys['arrowup']=false; }
   runnerVy+=0.8; runnerY+=runnerVy; if(runnerY>380){ runnerY=380; runnerVy=0; runnerGrounded=true; }
-  if(Math.random()<0.04) runnerObs.push({x:800,w:22+Math.random()*22,h:30+Math.random()*30});
+  if(Math.random()<0.04 && (runnerObs.length===0 || runnerObs[runnerObs.length-1].x < 560)) runnerObs.push({x:800,w:22+Math.random()*22,h:30+Math.random()*30});
   runnerObs.forEach(o=>o.x-=6); runnerObs=runnerObs.filter(o=>o.x>-30);
-  for(let o of runnerObs){ if(120>o.x && 120<o.x+o.w && runnerY+20>400-o.h){ triggerLose(); runnerObs=[]; updateScore(0); runnerY=380; } }
+  for(let o of runnerObs){ if(120>o.x && 120<o.x+o.w && runnerY+20>400-o.h){ triggerLose(); break; } }
   if(runnerTick%6===0) updateScore(score+1);
   drawRunner();
   gameLoop=requestAnimationFrame(loopRunner);
