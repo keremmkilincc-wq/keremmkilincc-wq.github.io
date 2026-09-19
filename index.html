@@ -418,6 +418,19 @@ const ctx=canvas.getContext('2d');
 let gameLoop=null, currentGame=null, keys={}, score=0;
 const bestKey=g=>`best_${g}`;
 function updateScore(v){ score=v; document.getElementById('gameScore').textContent=score; const b=parseInt(localStorage.getItem(bestKey(currentGame))||0); if(score>b) localStorage.setItem(bestKey(currentGame),score); document.getElementById('gameBest').textContent=localStorage.getItem(bestKey(currentGame))||0; }
+let loseUntil=0;
+function triggerLose(){ loseUntil=Date.now()+1200; }
+function drawLoseOverlay(){
+  if(Date.now()<loseUntil){
+    ctx.fillStyle='rgba(239,68,68,0.88)'; ctx.fillRect(0,0,800,480);
+    ctx.fillStyle='#fff'; ctx.font='bold 38px Space Grotesk'; ctx.textAlign='center';
+    ctx.fillText('KAYBETTİN!',400,230);
+    ctx.font='15px Inter'; ctx.fillText('Yeniden Başlat veya R tuşu ile devam',400,260);
+    ctx.textAlign='left'; return true;
+  }
+  return false;
+}
+window.addEventListener('keydown',e=>{ if(e.key.toLowerCase()==='r' && currentGame) restartGame(); });
 const gameMeta={
   tetris3d:{title:'3D Tetris — Neon Stack',sub:'← → hareket • ↓ hızlandır • ↑ döndür • Space düşür',icon:'3D'},
   flappy3d:{title:'3D Flappy Bird — Voxel Hop',sub:'Space / Tıkla: zıpla',icon:'F3'},
@@ -470,7 +483,7 @@ canvas.addEventListener('mousemove',e=>{
 let tetrisBoard, tetrisPiece, tetrisDrop=0;
 const tetros=[{s:[[1,1,1,1]],c:'#06b6d4'},{s:[[1,1],[1,1]],c:'#f472b6'},{s:[[0,1,0],[1,1,1]],c:'#a78bfa'},{s:[[1,0],[1,0],[1,1]],c:'#f59e0b'},{s:[[0,1],[0,1],[1,1]],c:'#10b981'},{s:[[1,1,0],[0,1,1]],c:'#ef4444'},{s:[[0,1,1],[1,1,0]],c:'#22c55e'}];
 function initTetris(){ tetrisBoard=Array(20).fill(0).map(()=>Array(10).fill(0)); spawnTetris(); tetrisDrop=0; loopTetris(); }
-function spawnTetris(){ const t=tetros[Math.floor(Math.random()*tetros.length)]; tetrisPiece={x:3,y:0,s:t.s,c:t.c}; if(collideTetris(0,0)) tetrisBoard=Array(20).fill(0).map(()=>Array(10).fill(0)); }
+function spawnTetris(){ const t=tetros[Math.floor(Math.random()*tetros.length)]; tetrisPiece={x:3,y:0,s:t.s,c:t.c}; if(collideTetris(0,0)){ tetrisBoard=Array(20).fill(0).map(()=>Array(10).fill(0)); triggerLose(); updateScore(0); } }
 function collideTetris(dx,dy,ns){ const s=ns||tetrisPiece.s; for(let y=0;y<s.length;y++) for(let x=0;x<s[y].length;x++) if(s[y][x]){ const nx=tetrisPiece.x+x+dx, ny=tetrisPiece.y+y+dy; if(nx<0||nx>=10||ny>=20|| (ny>=0&&tetrisBoard[ny][nx])) return true; } return false; }
 function mergeTetris(){ tetrisPiece.s.forEach((row,y)=>row.forEach((v,x)=>{ if(v && tetrisPiece.y+y>=0) tetrisBoard[tetrisPiece.y+y][tetrisPiece.x+x]=tetrisPiece.c; })); let cleared=0; for(let y=19;y>=0;y--) if(tetrisBoard[y].every(c=>c)){ tetrisBoard.splice(y,1); tetrisBoard.unshift(Array(10).fill(0)); cleared++; y++; } if(cleared) updateScore(score+cleared*100); }
 function loopTetris(){
@@ -491,6 +504,7 @@ function drawTetris(){
   tetrisBoard.forEach((row,y)=>row.forEach((c,x)=>{ if(c){ ctx.fillStyle=c; ctx.fillRect(ox+x*bs+1,oy+y*bs+1,bs-2,bs-2); ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillRect(ox+x*bs+1,oy+y*bs+1,bs-2,4); }}));
   tetrisPiece.s.forEach((row,y)=>row.forEach((v,x)=>{ if(v){ ctx.fillStyle=tetrisPiece.c; const px=ox+(tetrisPiece.x+x)*bs, py=oy+(tetrisPiece.y+y)*bs; ctx.fillRect(px+1,py+1,bs-2,bs-2); ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.fillRect(px+1,py+1,bs-2,4); }}));
   ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.strokeRect(ox,oy,10*bs,20*bs);
+  drawLoseOverlay();
 }
 
 // --- FLAPPY ---
@@ -503,8 +517,8 @@ function loopFlappy(){
   flappyPipes.forEach(p=>p.x-=3);
   flappyPipes=flappyPipes.filter(p=>p.x>-60);
   // collision
-  for(let p of flappyPipes){ if(220>p.x && 220<p.x+p.w){ if(flappyY < p.y || flappyY > p.y+p.gap) { updateScore(flappyScore); flappyY=240; flappyVy=0; flappyPipes=[]; flappyScore=0; } } if(p.x===217) { flappyScore++; updateScore(flappyScore); } }
-  if(flappyY>470||flappyY<0){ flappyY=240; flappyVy=0; flappyPipes=[]; flappyScore=0; updateScore(0); }
+  for(let p of flappyPipes){ if(220>p.x && 220<p.x+p.w){ if(flappyY < p.y || flappyY > p.y+p.gap) { triggerLose(); updateScore(0); flappyY=240; flappyVy=0; flappyPipes=[]; flappyScore=0; } } if(p.x===217) { flappyScore++; updateScore(flappyScore); } }
+  if(flappyY>470||flappyY<0){ triggerLose(); flappyY=240; flappyVy=0; flappyPipes=[]; flappyScore=0; updateScore(0); }
   if(keys[' '] ) { flappyFlap(); keys[' ']=false; }
   drawFlappy();
   gameLoop=requestAnimationFrame(loopFlappy);
@@ -524,6 +538,7 @@ function drawFlappy(){
   ctx.fillStyle='#facc15'; ctx.beginPath(); ctx.arc(240,flappyY,16,0,Math.PI*2); ctx.fill();
   ctx.fillStyle='#000'; ctx.fillRect(248,flappyY-4,6,6);
   ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.beginPath(); ctx.ellipse(240,446,18,6,0,0,Math.PI*2); ctx.fill();
+  drawLoseOverlay();
 }
 
 // --- SNAKE ---
@@ -533,7 +548,7 @@ function loopSnake(){
   snakeTick++; if(snakeTick%8===0){
     const head={x:snake[0].x+snakeDir.x, y:snake[0].y+snakeDir.y};
     if(head.x<0) head.x=39; if(head.x>39) head.x=0; if(head.y<0) head.y=23; if(head.y>23) head.y=0;
-    if(snake.some(s=>s.x===head.x&&s.y===head.y)){ snake=[{x:10,y:10}]; updateScore(0); }
+    if(snake.some(s=>s.x===head.x&&s.y===head.y)){ triggerLose(); snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}]; snakeDir={x:1,y:0}; updateScore(0); }
     snake.unshift(head);
     if(head.x===snakeFood.x && head.y===snakeFood.y){ do{ snakeFood={x:Math.floor(Math.random()*40),y:Math.floor(Math.random()*24)}; } while(snake.some(s=>s.x===snakeFood.x&&s.y===snakeFood.y)); updateScore(score+10); } else snake.pop();
   }
@@ -549,6 +564,7 @@ function drawSnake(){
   const s=20;
   snake.forEach((p,i)=>{ ctx.fillStyle=i===0?'#a3e635':'#65a30d'; ctx.fillRect(p.x*s+1,p.y*s+1,s-2,s-2); });
   ctx.fillStyle='#ef4444'; ctx.fillRect(snakeFood.x*s+4,snakeFood.y*s+4,s-8,s-8);
+  drawLoseOverlay();
 }
 
 // --- BREAKOUT ---
@@ -559,7 +575,7 @@ function loopBreakout(){
   if(breakoutBall.x<8||breakoutBall.x>792) breakoutBall.vx*=-1;
   if(breakoutBall.y<8) breakoutBall.vy*=-1;
   if(breakoutBall.y>460 && breakoutBall.x>breakoutX-50 && breakoutBall.x<breakoutX+50){ breakoutBall.vy=-Math.abs(breakoutBall.vy); breakoutBall.vx+=(breakoutBall.x-breakoutX)*0.05; }
-  if(breakoutBall.y>480){ breakoutBall={x:400,y:300,vx:4,vy:-4}; }
+  if(breakoutBall.y>480){ triggerLose(); breakoutBall={x:400,y:300,vx:4,vy:-4}; updateScore(0); }
   breakoutBricks.forEach(b=>{ if(b.alive && breakoutBall.x>b.x && breakoutBall.x<b.x+76 && breakoutBall.y>b.y && breakoutBall.y<b.y+24){ b.alive=false; breakoutBall.vy*=-1; updateScore(score+10); }});
   if(keys['arrowleft']) breakoutX=Math.max(50,breakoutX-7);
   if(keys['arrowright']) breakoutX=Math.min(750,breakoutX+7);
@@ -571,6 +587,7 @@ function drawBreakout(){
   breakoutBricks.forEach(b=>{ if(b.alive){ ctx.fillStyle='#8b5cf6'; ctx.fillRect(b.x,b.y,76,24); ctx.fillStyle='rgba(255,255,255,0.15)'; ctx.fillRect(b.x,b.y,76,4); }});
   ctx.fillStyle='#fff'; ctx.fillRect(breakoutX-50,460,100,10);
   ctx.beginPath(); ctx.arc(breakoutBall.x,breakoutBall.y,8,0,Math.PI*2); ctx.fillStyle='#22d3ee'; ctx.fill();
+  drawLoseOverlay();
 }
 
 // --- PONG ---
@@ -583,7 +600,10 @@ function loopPong(){
   if(pongBall.x>770 && pongBall.y>pongCpuY-40 && pongBall.y<pongCpuY+40){ pongBall.vx=-5; pongBall.x=770; }
   if(pongBall.x<0){ pongScoreC++; pongBall={x:400,y:240,vx:5,vy:3}; updateScore(pongScoreP); }
   if(pongBall.x>800){ pongScoreP++; pongBall={x:400,y:240,vx:-5,vy:3}; updateScore(pongScoreP); }
-  pongCpuY += (pongBall.y - pongCpuY)*0.07;
+  // zayıf AI: yavaş takip + hata
+  pongCpuY += (pongBall.y - pongCpuY)*0.032;
+  if(Math.random()<0.015) pongCpuY += (Math.random()-0.5)*40;
+  pongCpuY += (Math.random()-0.5)*2;
   if(keys['w']) pongPlayerY-=6;
   if(keys['s']) pongPlayerY+=6;
   pongPlayerY=Math.max(40,Math.min(440,pongPlayerY));
@@ -596,6 +616,7 @@ function drawPong(){
   ctx.fillStyle='#fff'; ctx.fillRect(14,pongPlayerY-40,8,80); ctx.fillRect(778,pongCpuY-40,8,80);
   ctx.beginPath(); ctx.arc(pongBall.x,pongBall.y,9,0,Math.PI*2); ctx.fillStyle='#a78bfa'; ctx.fill();
   ctx.fillStyle='#fff'; ctx.font='20px Space Grotesk'; ctx.fillText(pongScoreP,360,40); ctx.fillText(pongScoreC,430,40);
+  drawLoseOverlay();
 }
 
 // --- INVADERS ---
@@ -609,6 +630,7 @@ function loopInvaders(){
   if(Math.random()<0.02) invaders.filter(i=>i.alive).forEach(i=>{ if(Math.random()<0.02) invaderBullets.push({x:i.x,y:i.y,py:false}); });
   invaders.forEach(i=>{ if(i.alive) i.x+=invaderDir*1.2; });
   if(invaders.some(i=>i.alive && (i.x>740||i.x<20))) { invaderDir*=-1; invaders.forEach(i=>i.y+=18); }
+  if(invaders.some(i=>i.alive && i.y>410)){ triggerLose(); invaders=[]; for(let y=0;y<4;y++) for(let x=0;x<8;x++) invaders.push({x:100+x*70,y:60+y*40,alive:true}); updateScore(0); }
   invaderBullets.forEach(b=> b.y+= b.py?-7:3);
   invaderBullets=invaderBullets.filter(b=>b.y>0&&b.y<480);
   // collisions
@@ -622,6 +644,7 @@ function drawInvaders(){
   invaders.forEach(i=>{ if(i.alive){ ctx.fillStyle='#f43f5e'; ctx.fillRect(i.x-14,i.y-10,28,18); ctx.fillStyle='#fff'; ctx.fillRect(i.x-8,i.y-4,4,4); ctx.fillRect(i.x+4,i.y-4,4,4); }});
   invaderBullets.forEach(b=>{ ctx.fillStyle=b.py?'#22d3ee':'#f87171'; ctx.fillRect(b.x-2,b.y-6,4,10); });
   ctx.fillStyle='#22c55e'; ctx.fillRect(playerX-18,450,36,12); ctx.fillRect(playerX-6,440,12,10);
+  drawLoseOverlay();
 }
 
 // --- ASTEROIDS DODGE ---
@@ -634,7 +657,7 @@ function loopAsteroids(){
   if(Math.random()<0.08) asteroids.push({x:Math.random()*760+20,y:-20,s:12+Math.random()*18,v:3+Math.random()*4});
   asteroids.forEach(a=>a.y+=a.v);
   asteroids=asteroids.filter(a=>a.y<500);
-  for(let a of asteroids){ if(Math.abs(a.x-asteroidPlayerX)<20+a.s/2 && Math.abs(a.y-420)<18){ asteroids=[]; updateScore(0); break; } }
+  for(let a of asteroids){ if(Math.abs(a.x-asteroidPlayerX)<20+a.s/2 && Math.abs(a.y-420)<18){ triggerLose(); asteroids=[]; updateScore(0); break; } }
   if(asteroidTick%6===0) updateScore(score+1);
   drawAsteroids();
   gameLoop=requestAnimationFrame(loopAsteroids);
@@ -643,6 +666,7 @@ function drawAsteroids(){
   ctx.fillStyle='#04070f'; ctx.fillRect(0,0,800,480);
   asteroids.forEach(a=>{ ctx.fillStyle='#64748b'; ctx.beginPath(); ctx.arc(a.x,a.y,a.s,0,Math.PI*2); ctx.fill(); });
   ctx.fillStyle='#38bdf8'; ctx.fillRect(asteroidPlayerX-16,420,32,14); ctx.fillStyle='#e0f2fe'; ctx.fillRect(asteroidPlayerX-4,410,8,10);
+  drawLoseOverlay();
 }
 
 // --- RUNNER ---
@@ -654,7 +678,7 @@ function loopRunner(){
   runnerVy+=0.8; runnerY+=runnerVy; if(runnerY>380){ runnerY=380; runnerVy=0; runnerGrounded=true; }
   if(Math.random()<0.04) runnerObs.push({x:800,w:22+Math.random()*22,h:30+Math.random()*30});
   runnerObs.forEach(o=>o.x-=6); runnerObs=runnerObs.filter(o=>o.x>-30);
-  for(let o of runnerObs){ if(120>o.x && 120<o.x+o.w && runnerY+20>400-o.h){ runnerObs=[]; updateScore(0); runnerY=380; } }
+  for(let o of runnerObs){ if(120>o.x && 120<o.x+o.w && runnerY+20>400-o.h){ triggerLose(); runnerObs=[]; updateScore(0); runnerY=380; } }
   if(runnerTick%6===0) updateScore(score+1);
   drawRunner();
   gameLoop=requestAnimationFrame(loopRunner);
@@ -664,6 +688,7 @@ function drawRunner(){
   ctx.fillStyle='#27272a'; ctx.fillRect(0,400,800,80);
   runnerObs.forEach(o=>{ ctx.fillStyle='#ef4444'; ctx.fillRect(o.x,400-o.h,o.w,o.h); });
   ctx.fillStyle='#22c55e'; ctx.fillRect(100,runnerY,28,20); ctx.fillStyle='#000'; ctx.fillRect(114,runnerY+4,6,6);
+  drawLoseOverlay();
 }
 
 // --- 2048 ---
@@ -690,6 +715,7 @@ function draw2048(){
     ctx.fillRect(px,py,cs,cs);
     if(v){ ctx.fillStyle=v>4?'#fff':'#776e65'; ctx.font='bold 22px Inter'; ctx.textAlign='center'; ctx.fillText(v,px+cs/2,py+cs/2+7); ctx.textAlign='left'; }
   }));
+  drawLoseOverlay();
 }
 
 // --- MEMORY ---
@@ -724,6 +750,7 @@ function drawMemory(){
     if(c.open||c.matched){ ctx.fillStyle=c.matched?'#fff':'#111'; ctx.font='28px monospace'; ctx.textAlign='center'; ctx.fillText(c.v,x+cs/2,y+cs/2+9); ctx.textAlign='left'; }
     else { ctx.fillStyle='#27272a'; ctx.font='18px monospace'; ctx.textAlign='center'; ctx.fillText('?',x+cs/2,y+cs/2+6); ctx.textAlign='left'; }
   });
+  drawLoseOverlay();
 }
 
 function initGame(name){
