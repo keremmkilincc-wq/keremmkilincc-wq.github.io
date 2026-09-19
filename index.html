@@ -3,249 +3,294 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kerem KILINÇ — Dijital Tasarımcı & Oyun Konsept Sanatçısı</title>
+<title>Kerem KILINÇ — Oyun Geliştirici & Dijital Tasarımcı</title>
+<meta name="description" content="Kerem KILINÇ - Oyun konseptleri, harita/karakter tasarımları ve dijital üretimler. GitHub: keremmkilincc-wq">
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <script>
-tailwind.config = {
-  theme: {
-    extend: {
-      fontFamily: { grotesk: ['Space Grotesk','sans-serif'], inter: ['Inter','sans-serif'], mono: ['JetBrains Mono','monospace'] }
-    }
-  }
-}
+tailwind.config={theme:{extend:{fontFamily:{grotesk:['Space Grotesk','sans-serif'],inter:['Inter','sans-serif'],mono:['JetBrains Mono','monospace']},animation:{'pulse-slow':'pulse 3s infinite'}}}}
 </script>
 <style>
-body{background:#0A0A0B}
-.glow:hover{box-shadow:0 0 30px rgba(139,92,246,0.25); border-color:rgba(139,92,246,0.5)}
-.glass{background:rgba(30,30,32,0.6); backdrop-filter:blur(12px)}
+:root{color-scheme:dark}
+body{background:#070709}
+.bg-grid{background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0); background-size:32px 32px}
+.aurora{position:absolute; inset:-20%; background: radial-gradient(600px circle at var(--x,50%) var(--y,30%), rgba(139,92,246,0.15), transparent 40%), radial-gradient(800px circle at 80% 20%, rgba(6,182,212,0.12), transparent 40%), radial-gradient(700px circle at 20% 80%, rgba(244,63,94,0.08), transparent 40%); pointer-events:none; filter:blur(1px)}
+.glass{backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px)}
+.card{transition: all .35s cubic-bezier(.2,.8,.2,1)}
+.card:hover{transform: translateY(-6px); border-color: rgba(139,92,246,0.4); box-shadow: 0 20px 40px -20px rgba(139,92,246,0.3), 0 0 0 1px rgba(139,92,246,0.2) inset}
+.shimmer{background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 37%, rgba(255,255,255,0.04) 63%); background-size:400% 100%; animation: shimmer 1.4s ease infinite}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
 </style>
 </head>
-<body class="font-inter text-zinc-300 antialiased selection:bg-violet-500/30">
+<body class="font-inter text-zinc-300 antialiased selection:bg-violet-500/30 overflow-x-hidden">
+<!-- progress -->
+<div id="progress" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-violet-600 to-cyan-400 w-0 z-[60] transition-[width] duration-150"></div>
+
 <!-- NAV -->
-<nav class="sticky top-0 z-50 border-b border-zinc-800 bg-[#0A0A0B]/80 backdrop-blur">
-  <div class="max-w-[1280px] mx-auto px-6 h-[64px] flex items-center justify-between">
-    <div class="font-grotesk font-bold text-white text-lg tracking-tight">KEREM KILINÇ<span class="text-violet-500">.</span></div>
-    <div class="hidden md:flex gap-8 text-sm text-zinc-400">
-      <a href="#projeler" class="hover:text-white transition">Projeler</a>
-      <a href="#surec" class="hover:text-white transition">Süreç</a>
-      <a href="#iletisim" class="hover:text-white transition">İletişim</a>
+<nav class="sticky top-0 z-50 border-b border-white/[0.06] bg-[#070709]/70 glass">
+  <div class="max-w-[1280px] mx-auto px-6 h-[68px] flex items-center justify-between">
+    <div class="flex items-center gap-8">
+      <div class="font-grotesk font-bold tracking-tight text-white text-[18px]">KEREM KILINÇ<span class="text-violet-500">.</span><span class="hidden sm:inline font-medium text-zinc-500 text-[11px] tracking-[0.2em] ml-3 align-middle">PORTFOLIO 2026</span></div>
+      <div class="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1">
+        <a href="#projeler" class="px-4 py-1.5 rounded-full bg-white text-black text-sm font-medium">Projeler</a>
+        <a href="#github" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white">GitHub</a>
+        <a href="#surec" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white">Süreç</a>
+        <a href="#iletisim" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white">İletişim</a>
+      </div>
     </div>
-    <div class="flex items-center gap-3">
-      <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hidden sm:inline-flex items-center gap-2 text-sm border border-zinc-800 px-4 py-2 rounded-full hover:border-zinc-600 hover:text-white transition">
-        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-        keremmkilincc-wq
-      </a>
-      <a href="#iletisim" class="bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium px-5 py-2.5 rounded-full transition">İletişime Geç</a>
+    <div class="flex items-center gap-2">
+      <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 5 repo • canlı</div>
+      <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-white text-black font-medium px-5 py-2.5 rounded-full hover:bg-zinc-100 transition text-sm">GitHub <span class="opacity-60">↗</span></a>
+      <a href="#iletisim" class="inline-flex bg-violet-600 hover:bg-violet-500 text-white px-5 py-2.5 rounded-full text-sm font-medium transition">İletişim</a>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="max-w-[1280px] mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-20 grid md:grid-cols-12 gap-8 items-center">
-  <div class="md:col-span-7">
-    <div class="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-violet-400 border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-full mb-6">● MÜSAİT — Yeni projeler için</div>
-    <h1 class="font-grotesk text-[36px] md:text-[56px] leading-[0.95] font-bold text-white tracking-tight">
-      Dijital Fikirleri<br>
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Oynanabilir Dünyalara</span><br>
-      Dönüştürüyorum.
-    </h1>
-    <p class="mt-6 text-[17px] leading-relaxed text-zinc-400 max-w-[560px]">
-      Ben <span class="text-white font-medium">Kerem KILINÇ</span> — Oyun konseptleri, harita ve karakter tasarımları üzerine çalışan dijital üreticiyim. Kod karmaşıklığı değil, <span class="text-zinc-200">görsel konsept ve bitmiş ürün</span> odaklı çalışıyorum.
-    </p>
-    <div class="mt-8 flex flex-wrap gap-3">
-      <a href="#projeler" class="bg-white text-black font-medium px-6 py-3 rounded-full hover:bg-zinc-200 transition">Projeleri Gör →</a>
-      <a href="https://github.com/keremmkilincc-wq" target="_blank" class="border border-zinc-700 text-white px-6 py-3 rounded-full hover:border-zinc-500 transition">GitHub Profilim</a>
+<section class="relative overflow-hidden border-b border-white/[0.06]">
+  <div class="aurora" id="aurora"></div>
+  <div class="bg-grid absolute inset-0 opacity-[0.4]"></div>
+  <div class="relative max-w-[1280px] mx-auto px-6 pt-12 md:pt-20 pb-10 grid lg:grid-cols-12 gap-8 items-center">
+    <div class="lg:col-span-7">
+      <div class="inline-flex items-center gap-2 bg-white/[0.06] border border-white/[0.08] rounded-full px-1 pr-3 py-1">
+        <span class="bg-gradient-to-r from-violet-600 to-cyan-500 text-white text-[11px] font-bold tracking-widest px-3 py-1 rounded-full">YENİ</span>
+        <span class="text-sm text-zinc-300">TRUST NO ONE — oyunum yayında, hemen oyna →</span>
+      </div>
+      <h1 class="font-grotesk font-bold tracking-[-0.04em] text-white text-[42px] md:text-[64px] leading-[0.9] mt-6">
+        Oyun dünyaları<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400">tasarlıyorum.</span>
+      </h1>
+      <p class="text-[17px] leading-relaxed text-zinc-400 mt-6 max-w-[620px]">
+        Ben <span class="text-white font-semibold">Kerem KILINÇ</span> — harita & karakter tasarımları, oyun konseptleri ve dijital üretimler. Kod kalabalığı değil, <span class="text-zinc-200">görsel ve oynanabilir sonuç</span> odaklıyım. Tüm projelerim GitHub'da canlı.
+      </p>
+      <div class="flex flex-wrap gap-3 mt-8">
+        <a href="#github" class="bg-white text-black px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200 transition inline-flex items-center gap-2">GitHub Projelerimi Gör <span>↓</span></a>
+        <button onclick="document.getElementById('phone').innerText='+90 501 332 63 66'" class="border border-white/10 bg-white/[0.06] backdrop-blur px-7 py-3.5 rounded-full font-medium hover:bg-white/[0.1] transition">+90 501 •••• •• ••</button>
+      </div>
+      <!-- stats -->
+      <div class="grid grid-cols-3 gap-3 mt-8 max-w-[520px]">
+        <div class="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-4">
+          <div class="text-2xl font-grotesk font-bold text-white" id="stat-repos">5</div><div class="text-xs tracking-widest font-mono text-zinc-500">PUBLIC REPO</div>
+        </div>
+        <div class="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-4">
+          <div class="text-2xl font-grotesk font-bold text-white" id="stat-stars">1</div><div class="text-xs tracking-widest font-mono text-zinc-500">TOTAL STARS</div>
+        </div>
+        <div class="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-4">
+          <div class="text-2xl font-grotesk font-bold text-white">TR</div><div class="text-xs tracking-widest font-mono text-zinc-500">KEREMMKILINCC-WQ</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 mt-4 text-sm text-zinc-500">
+        <img src="https://github.com/keremmkilincc-wq.png" class="w-7 h-7 rounded-full border border-white/10" alt="Kerem">
+        <span>github.com/<b class="text-zinc-300">keremmkilincc-wq</b></span><span class="w-1 h-1 bg-zinc-600 rounded-full"></span><span id="phone" class="text-zinc-400">Tel gizli — tıkla göster</span>
+      </div>
     </div>
-    <div class="mt-8 flex items-center gap-6 text-sm text-zinc-500 border-t border-zinc-800 pt-6">
-      <span class="flex items-center gap-2"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span> Discord: keremmkilincc-wq</span>
-      <span class="hidden sm:inline">•</span>
-      <span>GitHub: keremmkilincc-wq</span>
-    </div>
-  </div>
-  <div class="md:col-span-5">
-    <div class="relative rounded-[24px] overflow-hidden border border-zinc-800 bg-[#1E1E20] aspect-[4/4.2] glow transition">
-      <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-80" alt="Konsept görsel">
-      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
-      <div class="absolute bottom-0 p-6 w-full">
-        <div class="glass rounded-2xl p-4 border border-white/10">
-          <div class="text-xs font-mono text-zinc-400 tracking-widest">ÖNE ÇIKAN KONSEPT</div>
-          <div class="font-grotesk font-semibold text-white mt-1">ECHOES: Kayıp Sektör — Level Design</div>
-          <div class="text-xs text-zinc-400 mt-1">Blender • Unreal Engine • 16:9 Showcase</div>
+    <!-- bento -->
+    <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+      <div class="col-span-2 rounded-[24px] overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-[1px]">
+        <div class="rounded-[23px] bg-[#0F0F11] p-5 h-full relative overflow-hidden">
+          <div class="absolute -right-10 -top-10 w-48 h-48 bg-violet-600/20 blur-[40px] rounded-full"></div>
+          <div class="text-xs font-mono tracking-[0.2em] text-violet-400">ÖNE ÇIKAN — TRUST NO ONE</div>
+          <div class="font-grotesk text-xl font-bold text-white mt-2 leading-tight">Gizli servis, tek oyuncu.<br>Kime güveneceksin?</div>
+          <p class="text-sm text-zinc-400 mt-2">Python tabanlı, yayında. Hemen oyna.</p>
+          <a href="https://github.com/keremmkilincc-wq/TRUST-NO-ONE" target="_blank" class="mt-4 inline-flex bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-full text-sm font-medium">Oyunu İncele →</a>
+          <div class="mt-4 flex gap-2">
+            <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">Python</span>
+            <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">Game</span>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-4">
+        <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/20 grid place-items-center text-cyan-300">◈</div>
+        <div class="font-grotesk font-semibold text-white mt-3 text-sm">Harita Tasarımı</div>
+        <div class="text-xs text-zinc-500 mt-1">Level & environment</div>
+      </div>
+      <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-4">
+        <div class="w-10 h-10 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/20 grid place-items-center text-fuchsia-300">⬡</div>
+        <div class="font-grotesk font-semibold text-white mt-3 text-sm">Karakter</div>
+        <div class="text-xs text-zinc-500 mt-1">2D / konsept</div>
+      </div>
+      <div class="col-span-2 rounded-[20px] border border-white/10 bg-gradient-to-r from-violet-600 to-cyan-500 p-[1px]">
+        <div class="rounded-[19px] bg-black px-4 py-3 flex items-center justify-between">
+          <span class="text-sm font-medium text-white">Tüm projeler GitHub'da canlı →</span>
+          <span class="text-violet-300">↗</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SHOWCASE -->
-<section id="projeler" class="max-w-[1280px] mx-auto px-6 py-12">
-  <div class="flex items-end justify-between mb-8">
+<!-- GITHUB DYNAMIC -->
+<section id="github" class="max-w-[1280px] mx-auto px-6 py-12">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
     <div>
-      <h2 class="font-grotesk text-3xl font-bold text-white">Proje Vitrini</h2>
-      <p class="text-zinc-500 mt-2 text-sm">Görsel odaklı — her kart konsept, araç ve canlı bağlantı içerir.</p>
+      <h2 class="font-grotesk text-[30px] font-bold tracking-tight text-white">GitHub Projelerim — Canlı</h2>
+      <p class="text-zinc-500 text-sm mt-1">API'den anlık çekiliyor • <span class="text-zinc-300">keremmkilincc-wq</span> • sıralama: son güncellenen</p>
     </div>
-    <a href="https://github.com/keremmkilincc-wq?tab=repositories" target="_blank" class="hidden md:inline text-sm text-zinc-400 hover:text-white">Tüm Repolar →</a>
+    <div class="flex items-center gap-2">
+      <input id="search" placeholder="Projelerde ara..." class="bg-white/[0.04] border border-white/10 rounded-full px-4 py-2.5 text-sm w-[220px] placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 text-white">
+      <a href="https://github.com/keremmkilincc-wq?tab=repositories" target="_blank" class="hidden sm:inline-flex border border-white/10 bg-white/[0.04] px-5 py-2.5 rounded-full text-sm hover:bg-white/[0.08]">Tümünü Gör →</a>
+    </div>
   </div>
-  <div class="grid md:grid-cols-3 gap-6">
-    <!-- Kart 1 -->
-    <div class="group rounded-2xl overflow-hidden border border-zinc-800 bg-[#121214] glow transition">
-      <div class="aspect-[16/9] overflow-hidden bg-zinc-900">
-        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Harita">
-      </div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-mono tracking-widest px-2 py-1 rounded bg-violet-500/15 text-violet-300 border border-violet-500/20">HARİTA TASARIMI</span>
-          <span class="text-xs text-zinc-500">2026</span>
-        </div>
-        <h3 class="font-grotesk font-semibold text-white mt-3">ECHOES: Kayıp Sektör</h3>
-        <p class="text-sm text-zinc-400 mt-2 leading-relaxed">Terk edilmiş uzay istasyonunda geçen atmosferik FPS harita konsepti. Greybox'tan ışıklandırmaya tam süreç.</p>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full">Level Design</span>
-          <span class="text-xs bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full">Blender</span>
-          <span class="text-xs bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full">Unreal</span>
-        </div>
-        <div class="flex gap-2 mt-5">
-          <a href="#" class="flex-1 text-center bg-white text-black text-sm font-medium py-2.5 rounded-full hover:bg-zinc-200">İncele</a>
-          <a href="https://github.com/keremmkilincc-wq" target="_blank" class="flex-1 text-center border border-zinc-700 text-sm py-2.5 rounded-full hover:border-zinc-500 hover:text-white">GitHub</a>
-        </div>
-      </div>
+
+  <!-- skeletons -->
+  <div id="skeletons" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5"><div class="h-5 w-32 shimmer rounded"></div><div class="h-3 w-full shimmer rounded mt-4"></div><div class="h-3 w-2/3 shimmer rounded mt-2"></div></div>
+    <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5"><div class="h-5 w-32 shimmer rounded"></div><div class="h-3 w-full shimmer rounded mt-4"></div><div class="h-3 w-2/3 shimmer rounded mt-2"></div></div>
+    <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5"><div class="h-5 w-32 shimmer rounded"></div><div class="h-3 w-full shimmer rounded mt-4"></div><div class="h-3 w-2/3 shimmer rounded mt-2"></div></div>
+  </div>
+
+  <div id="github-projects" class="hidden grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  <div id="github-error" class="hidden rounded-2xl border border-red-500/20 bg-red-500/10 p-6 text-sm text-red-300"></div>
+</section>
+
+<!-- CURATED SHOWCASE -->
+<section id="projeler" class="max-w-[1280px] mx-auto px-6 pb-12">
+  <div class="rounded-[24px] border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-6 md:p-8">
+    <div class="flex items-center justify-between">
+      <h3 class="font-grotesk text-xl font-bold text-white">Tasarım Vitrini — Kürasyon</h3>
+      <span class="text-xs font-mono tracking-widest text-zinc-500">GÖRSEL ODAKLI</span>
     </div>
-    <!-- Kart 2 -->
-    <div class="group rounded-2xl overflow-hidden border border-zinc-800 bg-[#121214] glow transition">
-      <div class="aspect-[16/9] overflow-hidden bg-zinc-900">
-        <img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Karakter">
+    <div class="grid md:grid-cols-3 gap-5 mt-6">
+      <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""></div>
+        <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-cyan-300">OYUN • PYTHON</div><div class="font-grotesk font-semibold text-white mt-1">TRUST NO ONE</div><p class="text-sm text-zinc-400 mt-1">Yayında. Gizlilik ve karar mekanikleri.</p></div>
       </div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-mono tracking-widest px-2 py-1 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/20">KARAKTER TASARIMI</span>
-          <span class="text-xs text-zinc-500">2026</span>
-        </div>
-        <h3 class="font-grotesk font-semibold text-white mt-3">Neon Ronin Serisi</h3>
-        <p class="text-sm text-zinc-400 mt-2 leading-relaxed">Siberpunk temalı ronin karakteri, zırh ve silah konsept illüstrasyonları.</p>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full">2D Tasarım</span>
-          <span class="text-xs bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full">Photoshop</span>
-          <span class="text-xs bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full">Illustration</span>
-        </div>
-        <div class="flex gap-2 mt-5">
-          <a href="#" class="flex-1 text-center bg-white text-black text-sm font-medium py-2.5 rounded-full hover:bg-zinc-200">İncele</a>
-          <a href="https://github.com/keremmkilincc-wq" target="_blank" class="flex-1 text-center border border-zinc-700 text-sm py-2.5 rounded-full hover:border-zinc-500 hover:text-white">GitHub</a>
-        </div>
+      <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""></div>
+        <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-violet-300">HARİTA</div><div class="font-grotesk font-semibold text-white mt-1">ECHOES: Kayıp Sektör</div><p class="text-sm text-zinc-400 mt-1">Atmosferik FPS harita konsepti.</p></div>
       </div>
-    </div>
-    <!-- Kart 3 -->
-    <div class="group rounded-2xl overflow-hidden border border-zinc-800 bg-[#121214] glow transition">
-      <div class="aspect-[16/9] overflow-hidden bg-zinc-900">
-        <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Ada">
-      </div>
-      <div class="p-5">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-mono tracking-widest px-2 py-1 rounded bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/20">OYUN KONSEPTİ</span>
-          <span class="text-xs text-zinc-500">2026</span>
-        </div>
-        <h3 class="font-grotesk font-semibold text-white mt-3">Low-Poly Keşif Adası</h3>
-        <p class="text-sm text-zinc-400 mt-2 leading-relaxed">Mobil için optimize, keşif odaklı stylized ada haritası. Grafik & optimizasyon odaklı.</p>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full">Harita</span>
-          <span class="text-xs bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full">Grafik</span>
-          <span class="text-xs bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-full">Unity</span>
-        </div>
-        <div class="flex gap-2 mt-5">
-          <a href="#" class="flex-1 text-center bg-white text-black text-sm font-medium py-2.5 rounded-full hover:bg-zinc-200">İncele</a>
-          <a href="https://github.com/keremmkilincc-wq" target="_blank" class="flex-1 text-center border border-zinc-700 text-sm py-2.5 rounded-full hover:border-zinc-500 hover:text-white">GitHub</a>
-        </div>
+      <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""></div>
+        <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-fuchsia-300">KARAKTER</div><div class="font-grotesk font-semibold text-white mt-1">Neon Ronin</div><p class="text-sm text-zinc-400 mt-1">Siberpunk zırh & silah konsepti.</p></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- SUREC -->
-<section id="surec" class="max-w-[1280px] mx-auto px-6 py-12">
-  <h2 class="font-grotesk text-3xl font-bold text-white">Geliştirim & Tasarım Süreci</h2>
-  <p class="text-zinc-500 mt-2 text-sm mb-8">Şeffaf çalışma günlüğü — WIP'ler, konsept aşamaları ve görsel gelişim.</p>
-  <div class="relative border-l border-zinc-800 ml-3 pl-8 space-y-6">
-    <div class="relative">
-      <span class="absolute -left-[37px] top-2 w-3 h-3 bg-violet-500 rounded-full ring-4 ring-violet-500/20"></span>
-      <div class="rounded-2xl border border-zinc-800 bg-[#121214] p-5">
-        <div class="text-xs font-mono text-violet-400">HAFTA 12 • MAYIS 2026 — GÜNCEL</div>
-        <div class="font-grotesk font-semibold text-white mt-1">Neon Ronin — Kaplama & Işık</div>
-        <p class="text-sm text-zinc-400 mt-1">Zırh detayları ve neon ışıklandırması tamamlandı. Önce/sonra karşılaştırması eklendi.</p>
+<section id="surec" class="max-w-[1280px] mx-auto px-6 pb-12">
+  <div class="grid lg:grid-cols-12 gap-6">
+    <div class="lg:col-span-5">
+      <h2 class="font-grotesk text-2xl font-bold text-white">Çalışma Günlüğü</h2>
+      <p class="text-sm text-zinc-500 mt-2">Şeffaf süreç — WIP'ler ve sürümler GitHub commit'lerinden beslenecek.</p>
+      <div class="mt-6 rounded-2xl border border-white/10 bg-[#0F0F11] p-5 flex items-center gap-4">
+        <img src="https://github.com/keremmkilincc-wq.png" class="w-10 h-10 rounded-full">
+        <div><div class="font-medium text-white text-sm">Kerem KILINÇ</div><div class="text-xs text-zinc-500">Son commit: <span id="last-update">yükleniyor...</span></div></div>
+        <a href="https://github.com/keremmkilincc-wq" target="_blank" class="ml-auto text-xs border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/5">Profili Aç</a>
       </div>
     </div>
-    <div class="relative">
-      <span class="absolute -left-[37px] top-2 w-3 h-3 bg-zinc-600 rounded-full"></span>
-      <div class="rounded-2xl border border-zinc-800 bg-[#121214] p-5">
-        <div class="text-xs font-mono text-zinc-500">HAFTA 11 • NİSAN 2026</div>
-        <div class="font-grotesk font-semibold text-white mt-1">ECHOES — Greybox Testi</div>
-        <p class="text-sm text-zinc-400 mt-1">İlk oynanabilir prototip test edildi, koridor genişlikleri ve siper noktaları revize edildi.</p>
-      </div>
-    </div>
-    <div class="relative">
-      <span class="absolute -left-[37px] top-2 w-3 h-3 bg-zinc-600 rounded-full"></span>
-      <div class="rounded-2xl border border-zinc-800 bg-[#121214] p-5">
-        <div class="text-xs font-mono text-zinc-500">HAFTA 10 • NİSAN 2026</div>
-        <div class="font-grotesk font-semibold text-white mt-1">Ada Haritası — Optimizasyon</div>
-        <p class="text-sm text-zinc-400 mt-1">Low-poly modelde draw call %32 düşürüldü, mobil test başarılı.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- YETENEKLER -->
-<section class="max-w-[1280px] mx-auto px-6 py-8">
-  <div class="rounded-2xl border border-zinc-800 bg-[#121214] px-6 py-5 flex flex-wrap gap-3 items-center justify-between">
-    <div class="text-sm font-mono text-zinc-500 tracking-widest">ARAÇLAR</div>
-    <div class="flex flex-wrap gap-2">
-      <span class="px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-sm">Figma</span>
-      <span class="px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-sm">Photoshop</span>
-      <span class="px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-sm">Illustrator</span>
-      <span class="px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-sm">Blender</span>
-      <span class="px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-sm">Unreal Engine</span>
-      <span class="px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-sm">Unity</span>
+    <div class="lg:col-span-7 relative border-l border-white/10 ml-3 pl-8 space-y-4">
+      <div class="absolute -left-[5px] top-2 w-[9px] h-[9px] bg-violet-500 rounded-full ring-4 ring-violet-500/20"></div>
+      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><div class="text-xs font-mono text-violet-400">19 EYLÜL 2026 • YAYINDA</div><div class="font-grotesk font-semibold text-white">Portfolio v2 — Aşırı modern arayüz + canlı GitHub</div><p class="text-sm text-zinc-400 mt-1">Dinamik proje çekme, aurora background, bento grid.</p></div>
+      <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5"><div class="text-xs font-mono text-zinc-500">8 EYLÜL 2026</div><div class="font-medium text-white">TRUST NO ONE yayında</div><p class="text-sm text-zinc-500 mt-1">Python tabanlı oyun GitHub'da.</p></div>
+      <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5"><div class="text-xs font-mono text-zinc-500">5 EYLÜL 2026</div><div class="font-medium text-white">SONISIK & indirgitsin güncellemeleri</div><p class="text-sm text-zinc-500 mt-1">JavaScript projeleri güncellendi.</p></div>
     </div>
   </div>
 </section>
 
 <!-- ILETISIM -->
-<section id="iletisim" class="max-w-[1280px] mx-auto px-6 py-12">
-  <div class="grid md:grid-cols-12 gap-6">
+<section id="iletisim" class="max-w-[1280px] mx-auto px-6 pb-12">
+  <div class="rounded-[24px] border border-white/10 bg-[#0F0F11] p-6 md:p-8 grid md:grid-cols-12 gap-8">
     <div class="md:col-span-5">
-      <h2 class="font-grotesk text-3xl font-bold text-white leading-tight">Bir Fikrin mi Var?<br>Birlikte Tasarlayalım.</h2>
-      <p class="text-zinc-400 mt-4 text-sm leading-relaxed">Oyun konsepti, harita veya karakter iş birliği için ulaş. Genelde 24 saat içinde dönüş yaparım.</p>
-      <div class="mt-6 rounded-2xl border border-zinc-800 bg-[#121214] p-5 space-y-3">
-        <div class="text-sm"><span class="text-zinc-500">İsim:</span> <span class="text-white font-medium">Kerem KILINÇ</span></div>
-        <div class="text-sm"><span class="text-zinc-500">GitHub:</span> <a href="https://github.com/keremmkilincc-wq" target="_blank" class="text-violet-400 hover:text-violet-300">github.com/keremmkilincc-wq</a></div>
-        <div class="text-sm flex items-center gap-2"><span class="text-zinc-500">Tel:</span> <span id="phone-hidden" class="text-white">•••• ••• •• ••</span> <button onclick="document.getElementById('phone-hidden').innerText='+90 501 332 63 66'; this.remove()" class="text-xs bg-zinc-800 border border-zinc-700 px-3 py-1 rounded-full hover:bg-zinc-700">Numarayı Göster</button></div>
-        <div class="text-xs text-zinc-500 pt-2 border-t border-zinc-800">Spam koruması için numara gizli — tıklayınca görünür.</div>
+      <h2 class="font-grotesk text-3xl font-bold text-white leading-none">Bir fikrin mi var?<br><span class="text-zinc-500">Yaz, konuşalım.</span></h2>
+      <div class="mt-6 space-y-3 text-sm">
+        <div class="flex items-center justify-between rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3"><span class="text-zinc-500">GitHub</span><a href="https://github.com/keremmkilincc-wq" class="text-white hover:text-violet-300">keremmkilincc-wq ↗</a></div>
+        <div class="flex items-center justify-between rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3"><span class="text-zinc-500">Tel</span><span id="phone2" class="text-white">•••• ••• •• •• <button onclick="document.getElementById('phone').innerText='+90 501 332 63 66';document.getElementById('phone2').innerHTML='+90 501 332 63 66'" class="ml-2 text-xs bg-violet-600 px-3 py-1 rounded-full">Göster</button></span></div>
+        <div class="flex items-center justify-between rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3"><span class="text-zinc-500">Discord</span><span class="text-white">keremmkilincc-wq</span></div>
       </div>
     </div>
-    <div class="md:col-span-7">
-      <form onsubmit="event.preventDefault(); alert('Mesajın alındı Kerem! Form backend bağlanınca e-postana düşecek.');" class="rounded-2xl border border-zinc-800 bg-[#121214] p-6 space-y-4">
-        <div class="grid sm:grid-cols-2 gap-4">
-          <input placeholder="Ad Soyad" required class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
-          <input placeholder="E-posta" type="email" required class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
-        </div>
-        <input placeholder="Konu (örn: Harita Tasarımı)" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
-        <textarea rows="5" placeholder="Mesajınız..." required class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></textarea>
-        <button type="submit" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-medium py-3 rounded-xl transition">Gönder →</button>
-        <div class="text-xs text-zinc-500 text-center">Form şu an demo — Netlify / Formspree ile 1 dakikada bağlanır.</div>
-      </form>
-    </div>
+    <form onsubmit="event.preventDefault(); alert('Mesaj alındı Kerem! Formspree bağlayınca mailine düşecek.');" class="md:col-span-7 grid gap-3">
+      <div class="grid sm:grid-cols-2 gap-3">
+        <input required placeholder="Ad Soyad" class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+        <input required type="email" placeholder="E-posta" class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+      </div>
+      <input placeholder="Konu" class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+      <textarea rows="4" required placeholder="Mesajın..." class="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></textarea>
+      <button class="bg-gradient-to-r from-violet-600 to-cyan-500 hover:opacity-90 text-white font-semibold py-3.5 rounded-xl transition">Gönder — 24 saatte dönüş →</button>
+    </form>
   </div>
 </section>
 
-<footer class="border-t border-zinc-800 mt-8">
+<footer class="border-t border-white/5">
   <div class="max-w-[1280px] mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-zinc-500">
-    <div>© 2026 Kerem KILINÇ. Tüm hakları saklıdır.</div>
-    <div class="flex gap-4">
-      <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hover:text-white">GitHub</a>
-      <span>•</span>
-      <span>Discord: keremmkilincc-wq</span>
-      <span>•</span>
-      <a href="tel:+905013326366" class="hover:text-white">+90 501 332 63 66</a>
-    </div>
+    <div>© 2026 Kerem KILINÇ • <span class="text-zinc-300">keremmkilincc-wq.github.io</span></div>
+    <div class="flex gap-4"><a href="https://github.com/keremmkilincc-wq" class="hover:text-white">GitHub</a><span>•</span><a href="tel:+905013326366" class="hover:text-white">+90 501 332 63 66</a></div>
   </div>
 </footer>
+
+<script>
+const USER="keremmkilincc-wq";
+const langColor={JavaScript:"#f1e05a",Python:"#3572A5",HTML:"#e34c26",CSS:"#563d7c",TypeScript:"#2b7489"};
+const langGradient={JavaScript:"from-yellow-400 to-amber-500",Python:"from-blue-500 to-cyan-400",HTML:"from-orange-500 to-red-500",JavaScript:"from-yellow-400 to-amber-500"};
+
+function formatDate(d){return new Date(d).toLocaleDateString('tr-TR',{day:'2-digit',month:'short',year:'numeric'})}
+
+async function loadRepos(){
+  const grid=document.getElementById('github-projects');
+  const skel=document.getElementById('skeletons');
+  const err=document.getElementById('github-error');
+  try{
+    const res=await fetch(`https://api.github.com/users/${USER}/repos?per_page=100&sort=updated`);
+    if(!res.ok) throw new Error(`GitHub API ${res.status}`);
+    let repos=await res.json();
+    repos=repos.filter(r=>!r.fork).sort((a,b)=> new Date(b.updated_at)-new Date(a.updated_at));
+    // stats
+    document.getElementById('stat-repos').textContent=repos.length;
+    const stars=repos.reduce((s,r)=>s+r.stargazers_count,0);
+    document.getElementById('stat-stars').textContent=stars;
+    document.getElementById('last-update').textContent=formatDate(repos[0]?.updated_at||new Date());
+    skel.classList.add('hidden');
+    grid.classList.remove('hidden');
+    grid.innerHTML="";
+    const filtered=document.getElementById('search').value.toLowerCase();
+    repos.filter(r=> !filtered || r.name.toLowerCase().includes(filtered) || (r.description||"").toLowerCase().includes(filtered)).forEach(repo=>{
+      const lang=repo.language||"Other";
+      const color=langColor[lang]||"#8b5cf6";
+      const isPortfolio=repo.name.includes("github.io");
+      const card=document.createElement('a');
+      card.href=repo.html_url; card.target="_blank";
+      card.className="card group rounded-2xl border border-white/10 bg-[#0F0F11] overflow-hidden flex flex-col";
+      card.innerHTML=`
+        <div class="h-1 w-full" style="background:${color}"></div>
+        <div class="p-5 flex-1 flex flex-col">
+          <div class="flex items-start justify-between gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 grid place-items-center text-sm font-bold text-white">${repo.name[0].toUpperCase()}</div>
+            <span class="text-xs border border-white/10 bg-white/[0.04] px-2.5 py-1 rounded-full flex items-center gap-1">★ ${repo.stargazers_count} <span class="opacity-60">•</span> ${repo.forks_count} fork</span>
+          </div>
+          <div class="font-grotesk font-semibold text-white mt-4 leading-tight group-hover:text-violet-300 transition">${repo.name} ${isPortfolio?'<span class="text-xs font-mono text-zinc-500 ml-1">PORTFOLIO</span>':''}</div>
+          <p class="text-sm text-zinc-400 mt-2 flex-1 leading-relaxed">${repo.description? repo.description.slice(0,120) : '<span class="text-zinc-600 italic">Açıklama yok — README ekle, kart otomatik güzelleşir.</span>'}</p>
+          <div class="flex flex-wrap gap-1.5 mt-4">
+            ${lang? `<span class="text-xs flex items-center gap-1.5 bg-white/[0.04] border border-white/10 px-2.5 py-1 rounded-full"><span class="w-2 h-2 rounded-full" style="background:${color}"></span>${lang}</span>`:''}
+            ${repo.topics?.slice(0,2).map(t=>`<span class="text-xs bg-violet-500/10 border border-violet-500/20 text-violet-300 px-2.5 py-1 rounded-full">#${t}</span>`).join('')||''}
+          </div>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-white/5">
+            <span class="text-xs font-mono text-zinc-500">${formatDate(repo.updated_at)}</span>
+            <span class="text-sm font-medium text-white group-hover:gap-2 flex items-center gap-1">İncele <span class="group-hover:translate-x-1 transition">→</span></span>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+    if(grid.children.length===0) grid.innerHTML='<div class="col-span-3 text-center text-zinc-500 py-10">Arama sonucu yok.</div>';
+  }catch(e){
+    skel.classList.add('hidden');
+    err.classList.remove('hidden');
+    err.textContent="GitHub projeleri yüklenemedi: "+e.message+" — doğrudan https://github.com/keremmkilincc-wq adresinden bakabilirsin.";
+  }
+}
+document.getElementById('search').addEventListener('input', loadRepos);
+loadRepos();
+
+// progress bar + aurora follow
+window.addEventListener('scroll',()=>{
+  const p=document.getElementById('progress');
+  const h=document.documentElement.scrollHeight - window.innerHeight;
+  p.style.width=(window.scrollY/h*100)+"%";
+});
+const aurora=document.getElementById('aurora');
+window.addEventListener('mousemove',e=>{
+  aurora.style.setProperty('--x', e.clientX+'px');
+  aurora.style.setProperty('--y', e.clientY+'px');
+});
+</script>
 </body>
 </html>
