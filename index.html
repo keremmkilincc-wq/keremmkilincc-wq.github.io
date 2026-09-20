@@ -63,13 +63,7 @@ body{background:var(--bg); transition: background 0.4s}
   <div class="max-w-[1280px] mx-auto px-6 h-[68px] flex items-center justify-between">
     <div class="flex items-center gap-8">
       <div class="font-grotesk font-bold tracking-tight text-white text-[18px]">KEREM KILINÇ<span class="text-violet-500">.</span><span class="hidden sm:inline font-medium text-zinc-500 text-[11px] tracking-[0.2em] ml-3 align-middle">PORTFOLIO 2026</span></div>
-      <div class="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1" id="topTabBar">
-        <a href="javascript:void(0)" onclick="switchTab('projeler')" data-top-tab="projeler" class="top-tab px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.projects">Projeler</a>
-        <a href="javascript:void(0)" onclick="switchTab('github')" data-top-tab="github" class="top-tab active px-4 py-1.5 rounded-full bg-white text-black text-sm font-medium">GitHub</a>
-        <a href="javascript:void(0)" onclick="switchTab('arcade')" data-top-tab="arcade" class="top-tab px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.arcade">Arcade</a>
-        <a href="javascript:void(0)" onclick="switchTab('surec')" data-top-tab="surec" class="top-tab px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.process">Süreç</a>
-        <a href="javascript:void(0)" onclick="switchTab('iletisim')" data-top-tab="iletisim" class="top-tab px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.contact2">İletişim</a>
-      </div>
+
     </div>
     <div class="flex items-center gap-2">
       <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
@@ -184,6 +178,18 @@ body{background:var(--bg); transition: background 0.4s}
   </div>
 </section>
 
+<!-- SEKME NAV - ANIMASYONU DÜZGÜN OLAN ÜSTE TAŞINDI -->
+<div class="sticky top-[68px] z-30 border-b border-white/[0.06] bg-[var(--bg)]/80 glass backdrop-blur">
+  <div class="max-w-[1280px] mx-auto px-6">
+    <div class="flex gap-1.5 py-3 overflow-auto scrollbar-none">
+      <button onclick="switchTab('github')" data-tab="github" class="tab-btn active whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white text-black text-sm font-medium">GitHub <span class="opacity-60 text-xs ml-1">Canlı</span></button>
+      <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
+      <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
+      <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
+      <button onclick="switchTab('iletisim')" data-tab="iletisim" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">İletişim</button>
+    </div>
+  </div>
+</div>
 <div id="tab-contents" class="min-h-[520px]">
 <!-- GITHUB DYNAMIC -->
 <section id="github" class="tab-panel active max-w-[1280px] mx-auto px-6 py-8">
