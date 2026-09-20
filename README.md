@@ -69,8 +69,7 @@ Sağ üst `⚙️` → **Dil (20)** ve **Tema (10)** seç. Seçim `localStorage`
 
 - **Kerem KILINÇ** — Oyun Geliştirici & Dijital Tasarımcı
 - GitHub: [@keremmkilincc-wq](https://github.com/keremmkilincc-wq)
-- E-posta: `keremmkilincc@gmail.com` / `keremmkilincc@hotmail.com`
-- Tel: `+90 501 332 63 66` (sitede gizli, tıklayınca görünür)
+- E-posta: `keremmkilincc@gmail.com` / `keremmkilincc@hotmail.com` (form üzerinden ulaşın)
 - Discord: `keremmkilincc-wq`
 
 ## 📄 Lisans
