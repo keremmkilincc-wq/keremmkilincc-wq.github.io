@@ -72,7 +72,7 @@ body{background:var(--bg); transition: background 0.4s}
       <button onclick="switchTab('blog')" data-tab="blog" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Blog <span id="blogCountBadge" class="text-xs ml-1 bg-white/10 px-1.5 py-0.5 rounded-full">0</span></button>
       <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
       <button onclick="switchTab('iletisim')" data-tab="iletisim" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">İletişim</button>
-      <button id="adminTabBtn" onclick="switchTab('admin')" data-tab="admin" class="tab-btn hidden whitespace-nowrap px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-sm text-amber-300 hover:text-amber-200">⚡ Admin</button>
+      <button id="adminTabBtn" onclick="openAdminPanel()" class="hidden whitespace-nowrap px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-sm text-amber-300 hover:text-amber-200">⚡ Admin</button>
     </div>
     <div class="flex items-center gap-2">
       <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
@@ -186,7 +186,7 @@ body{background:var(--bg); transition: background 0.4s}
       <div class="text-sm font-medium text-white" id="userMenuEmail">—</div>
       <div class="text-xs text-zinc-500" id="userMenuRole">Misafir</div>
     </div>
-    <button id="userMenuAdminBtn" onclick="switchTab('admin'); closeUserMenu();" class="hidden w-full text-left px-4 py-2.5 text-sm hover:bg-white/[0.04] text-amber-300">⚡ Yönetici Paneli</button>
+    <button id="userMenuAdminBtn" onclick="openAdminPanel(); closeUserMenu();" class="hidden w-full text-left px-4 py-2.5 text-sm hover:bg-white/[0.04] text-amber-300">⚡ Yönetici Paneli</button>
     <button onclick="switchTab('blog'); closeUserMenu();" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/[0.04] text-white">📝 Blog Yazıları</button>
     <button onclick="logout(); closeUserMenu();" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/[0.04] text-zinc-400">Çıkış Yap</button>
   </div>
@@ -429,7 +429,7 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="flex items-center gap-2">
       <input id="blogSearch" oninput="renderBlogs()" placeholder="Blog ara..." class="bg-white/[0.04] border border-white/10 rounded-full px-4 py-2.5 text-sm w-[200px] placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 text-white">
-      <button onclick="switchTab('admin')" id="blogAdminGo" class="hidden bg-amber-500 text-black px-4 py-2 rounded-full text-sm font-medium">✏️ Yazı Oluştur</button>
+      <button onclick="openAdminPanel()" id="blogAdminGo" class="hidden bg-amber-500 text-black px-4 py-2 rounded-full text-sm font-medium">✏️ Yazı Oluştur</button>
     </div>
   </div>
   <div id="blogGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
@@ -454,17 +454,28 @@ body{background:var(--bg); transition: background 0.4s}
   </div>
 </section>
 
-<!-- ADMIN PANEL — sadece keremmkilincc@gmail.com -->
-<section id="admin" class="tab-panel max-w-[1280px] mx-auto px-6 py-8">
-  <!-- Üstte siteye dönüş -->
-  <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
-    <div class="flex items-center gap-3">
-      <button onclick="switchTab('github')" class="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-zinc-100">← Siteye Dön</button>
-      <div><div class="font-grotesk font-bold text-white leading-none">Yönetici Paneli</div><div class="text-xs text-zinc-500">Hoş geldin, <span id="adminEmailLabel" class="text-amber-300">keremmkilincc@gmail.com</span> — müq müq müq 👑</div></div>
+<!-- ADMIN PANEL — TAMAMEN AYRI ARAYÜZ (normal arayüz değil) — sadece keremmkilincc@gmail.com -->
+<div id="adminOverlay" class="fixed inset-0 z-[90] hidden bg-[#050507] overflow-auto">
+  <!-- Admin Topbar — farklı tasarım -->
+  <div class="sticky top-0 z-10 border-b border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-[#0F0F11] to-violet-600/10 backdrop-blur-xl">
+    <div class="max-w-[1280px] mx-auto px-6 h-[64px] flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 grid place-items-center text-white font-bold">⚡</div>
+        <div><div class="font-grotesk font-bold text-white leading-none tracking-tight">ADMIN PANEL</div><div class="text-xs text-amber-300/80 font-mono">keremmkilincc@gmail.com • müq müq müq 👑</div></div>
+        <span class="hidden sm:inline-flex text-xs font-mono tracking-widest text-emerald-300 border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 rounded-full ml-2">● CANLI</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="adminEmailLabel" class="hidden sm:inline text-xs text-zinc-400 font-mono">keremmkilincc@gmail.com</span>
+        <button onclick="closeAdminPanel()" class="inline-flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-zinc-100">← Siteye Dön</button>
+      </div>
     </div>
+  </div>
+  <div class="max-w-[1280px] mx-auto px-6 py-8">
+  <!-- İç üst bar -->
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+    <div><div class="font-grotesk font-bold text-white text-lg leading-none">Yönetici Paneli</div><div class="text-xs text-zinc-500 mt-1">Blog, medya ve ayarlar — tamamen ayrı arayüz</div></div>
     <div class="flex items-center gap-2">
-      <span class="text-xs font-mono tracking-widest text-emerald-300 border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 rounded-full">● ADMIN</span>
-      <button onclick="exportBlogs()" class="text-xs border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/5">Dışa Aktar</button>
+      <button onclick="exportBlogs()" class="text-xs border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/5 text-zinc-300">Dışa Aktar</button>
       <button onclick="clearAllBlogs()" class="text-xs border border-red-500/20 bg-red-500/10 text-red-300 px-3 py-1.5 rounded-full">Tümünü Sil</button>
     </div>
   </div>
@@ -565,7 +576,8 @@ body{background:var(--bg); transition: background 0.4s}
       <div class="rounded-xl bg-gradient-to-r from-violet-600/10 to-cyan-500/10 border border-violet-500/20 p-4 text-sm text-zinc-300">İpucu: Bloglar <code class="text-violet-300">localStorage: kerem_blogs</code> içinde saklanır. GitHub Pages statik olduğu için kalıcı backend yok — dışa aktar ile JSON al, yedekle.</div>
     </div>
   </div>
-</section>
+  </div>
+</div>
 
 <!-- OYUN MODAL -->
 <div id="gameModal" class="fixed inset-0 z-[70] hidden">
@@ -1513,15 +1525,18 @@ function updateAuthUI(){
     if(adminLabel) adminLabel.textContent=authEmail;
     document.getElementById('userMenuEmail').textContent=authEmail;
     document.getElementById('userMenuRole').textContent= isAdmin() ? 'Yönetici — müq' : 'Misafir';
-    // guard: if guest tries to stay on admin, kick
-    if(!isAdmin() && document.getElementById('admin')?.classList.contains('active')){
-      switchTab('blog');
+    // guard: ayrı arayüz olduğu için overlay'i kapat
+    if(!isAdmin()){
+      const overlay=document.getElementById('adminOverlay');
+      if(overlay && !overlay.classList.contains('hidden')){ overlay.classList.add('hidden'); document.body.style.overflow=''; }
     }
   } else {
     if(loginBtn) loginBtn.classList.remove('hidden');
     if(userBtn) userBtn.classList.add('hidden');
     if(adminTab) adminTab.classList.add('hidden');
     if(blogAdminGo) blogAdminGo.classList.add('hidden');
+    const overlay=document.getElementById('adminOverlay');
+    if(overlay) overlay.classList.add('hidden');
   }
 }
 function openLogin(){ document.getElementById('loginModal').classList.remove('hidden'); document.getElementById('loginStepEmail').classList.remove('hidden'); document.getElementById('loginStepCode').classList.add('hidden'); document.getElementById('loginEmail').focus(); }
@@ -1592,7 +1607,7 @@ function verifyAdminCode(){
   msg.className='text-xs text-center rounded-xl px-3 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-300';
   msg.classList.remove('hidden');
   updateAuthUI(); syncSettingsAccount();
-  setTimeout(()=>{ closeLogin(); switchTab('admin'); renderBlogs(); }, 600);
+  setTimeout(()=>{ closeLogin(); openAdminPanel(); }, 600);
 }
 function resendCode(){
   const email=localStorage.getItem('pending_admin_email')||ADMIN_EMAIL;
@@ -1614,7 +1629,7 @@ function backToEmail(){ document.getElementById('loginStepCode').classList.add('
 function doLoginGuest(){ const email='misafir'+Math.floor(Math.random()*9000)+'@example.com'; document.getElementById('loginEmail').value=email; doLogin(); }
 function handleUserBtn(){ const m=document.getElementById('userMenu'); m.classList.toggle('hidden'); }
 function closeUserMenu(){ document.getElementById('userMenu').classList.add('hidden'); }
-function logout(){ authEmail=''; authRole=''; localStorage.removeItem('auth_email'); localStorage.removeItem('auth_role'); localStorage.removeItem('pending_admin_code'); localStorage.removeItem('pending_admin_time'); localStorage.removeItem('pending_admin_email'); updateAuthUI(); syncSettingsAccount(); switchTab('github'); closeUserMenu(); }
+function logout(){ authEmail=''; authRole=''; localStorage.removeItem('auth_email'); localStorage.removeItem('auth_role'); localStorage.removeItem('pending_admin_code'); localStorage.removeItem('pending_admin_time'); localStorage.removeItem('pending_admin_email'); closeAdminPanel(); updateAuthUI(); syncSettingsAccount(); switchTab('github'); closeUserMenu(); }
 function logoutAll(){
   if(!confirm('Tüm oturum sıfırlansın mı? Mail, nickname ve admin kodu silinecek.')) return;
   ['auth_email','auth_role','arcadeUser','pending_admin_code','pending_admin_time','pending_admin_email'].forEach(k=>localStorage.removeItem(k));
@@ -1644,13 +1659,27 @@ function syncSettingsAccount(){
   if(sn) sn.textContent=userName||'Misafir';
 }
 document.addEventListener('click',e=>{ const menu=document.getElementById('userMenu'); const btn=document.getElementById('userBtn'); if(menu && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.add('hidden'); });
-// override switchTab to guard admin
-const _origSwitchTab = switchTab;
-switchTab = function(id){
-  if(id==='admin' && !isAdmin()){
+// ===== ADMIN OVERLAY — tamamen ayrı arayüz =====
+function openAdminPanel(){
+  if(!isAdmin()){
     openLogin();
     const msg=document.getElementById('loginMsg');
-    if(msg){ msg.textContent='⚠️ Yönetici paneli sadece keremmkilincc@gmail.com için.'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); }
+    if(msg){ msg.textContent='⚠️ Yönetici paneli sadece keremmkilincc@gmail.com için — kod ile giriş yap.'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); }
+    return;
+  }
+  document.getElementById('adminOverlay').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  renderBlogs();
+}
+function closeAdminPanel(){
+  document.getElementById('adminOverlay').classList.add('hidden');
+  document.body.style.overflow='';
+}
+// override switchTab to guard eski admin çağrıları
+const _origSwitchTab = switchTab;
+switchTab = function(id){
+  if(id==='admin'){
+    openAdminPanel();
     return;
   }
   _origSwitchTab(id);
