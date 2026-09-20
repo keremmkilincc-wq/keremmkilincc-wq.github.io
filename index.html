@@ -112,6 +112,25 @@ body{background:var(--bg); transition: background 0.4s}
   </div>
 </div>
 
+<!-- USERNAME MODAL - GİRİŞTE -->
+<div id="usernameModal" class="fixed inset-0 z-[90] flex items-center justify-center p-4 hidden">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+  <div class="relative bg-[#0F0F11] border border-white/10 rounded-[24px] p-8 max-w-[420px] w-full text-center">
+    <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-violet-600 to-cyan-500 grid place-items-center text-2xl">👋</div>
+    <h2 class="font-grotesk font-bold text-white text-xl mt-4">Hoş geldin!</h2>
+    <p class="text-sm text-zinc-400 mt-2">Liderlik tablosunda görünmek için bir kullanıcı adı gir. Bu ad skorlarınla birlikte saklanacak.</p>
+    <input id="usernameInput" placeholder="Kullanıcı adın (örn: Kerem)" class="mt-6 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 text-center">
+    <button onclick="saveUsername()" class="mt-4 w-full bg-white text-black font-semibold py-3 rounded-xl hover:bg-zinc-100 transition">Devam Et →</button>
+    <p class="text-xs text-zinc-500 mt-3">Boş bırakırsan <b class="text-zinc-300">Misafir</b> olarak devam edersin. Sonra ayarlardan değiştirebilirsin.</p>
+  </div>
+</div>
+
+<!-- EASTER EGG GİZLİ KÖŞE -->
+<div id="easterEgg" class="fixed bottom-0 right-0 w-8 h-8 z-20 cursor-pointer" title="?" onclick="triggerEasterEgg()"></div>
+<div id="easterPopup" class="fixed bottom-4 right-4 bg-gradient-to-br from-violet-600 to-cyan-500 text-white px-4 py-3 rounded-2xl shadow-2xl hidden z-50">
+  <div class="font-bold text-sm">🥚 Paskalya Yumurtası!</div><div class="text-xs opacity-90">Gizli karakter bulundu: Neon Ronin selam veriyor!</div>
+</div>
+
 <!-- HERO -->
 <section class="relative overflow-hidden border-b border-white/[0.06]">
   <div class="aurora" id="aurora"></div>
@@ -238,6 +257,14 @@ body{background:var(--bg); transition: background 0.4s}
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-fuchsia-300">KARAKTER</div><div class="font-grotesk font-semibold text-white mt-1">Neon Ronin</div><p class="text-sm text-zinc-400 mt-1">Siberpunk zırh & silah konsepti.</p></div>
       </div>
     </div>
+  </div>
+  <div class="mt-8 rounded-[24px] border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-grotesk font-bold text-white flex items-center gap-2">Leaderboard <span class="text-xs font-mono text-zinc-500" id="leaderboardUser"></span></h3>
+      <button onclick="clearLeaderboard()" class="text-xs border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/5">Temizle</button>
+    </div>
+    <div id="leaderboard" class="grid md:grid-cols-2 gap-3 text-sm"></div>
+    <p class="text-xs text-zinc-500 mt-3">Skorlar tarayicinda saklanir. Seviye her 50 puanda artar.</p>
   </div>
 </section>
 
@@ -630,7 +657,7 @@ function loopFlappy(){
   if(flappyFrame%86===0){ const h=70+Math.random()*170; flappyPipes.push({x:800,y:h,w:62,gap:148}); }
   flappyPipes.forEach(p=>p.x-=3.2);
   flappyPipes=flappyPipes.filter(p=>p.x>-70);
-  for(let p of flappyPipes){ if(225>p.x && 225<p.x+p.w){ if(flappyY-14 < p.y || flappyY+14 > p.y+p.gap) { triggerLose(); } } if(p.x===218) { flappyScore++; updateScore(flappyScore); } }
+  for(let p of flappyPipes){ if(225>p.x && 225<p.x+p.w){ if(flappyY-14 < p.y || flappyY+14 > p.y+p.gap) { triggerLose(); } } if(!p.scored && p.x < 210){ p.scored=true; flappyScore++; updateScore(flappyScore); checkLevel('flappy3d', flappyScore); } }
   if(flappyY>468||flappyY<0){ triggerLose(); }
   if(keys[' '] ) { flappyFlap(); keys[' ']=false; }
   drawFlappy();
@@ -1137,6 +1164,104 @@ function closeSettings(){ document.getElementById('settingsModal').classList.add
 document.addEventListener('DOMContentLoaded',()=>{
   applyTheme(curTheme);
   applyLang(curLang);
+  checkUsername();
+  renderLeaderboard();
+});
+let userName = localStorage.getItem('arcadeUser') || '';
+function checkUsername(){
+  if(!userName){
+    document.getElementById('usernameModal').classList.remove('hidden');
+  } else {
+    const el=document.getElementById('leaderboardUser');
+    if(el) el.textContent='— ' + userName;
+  }
+}
+function saveUsername(){
+  const v=document.getElementById('usernameInput').value.trim();
+  userName = v || 'Misafir';
+  localStorage.setItem('arcadeUser', userName);
+  document.getElementById('usernameModal').classList.add('hidden');
+  const el=document.getElementById('leaderboardUser');
+  if(el) el.textContent='— ' + userName;
+}
+let gameLevels={};
+function checkLevel(game, score){
+  const lvl = Math.floor(score/50)+1;
+  if(lvl != (gameLevels[game]||1)){
+    gameLevels[game]=lvl;
+    // level up effect could be speed increase handled in each game loop via lvl variable
+  }
+  return lvl;
+}
+function saveToLeaderboard(game, score){
+  if(!score) return;
+  const name = userName || 'Misafir';
+  const key='lb_'+game;
+  let arr=[]; try{ arr=JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){}
+  arr.push({name, score, date: new Date().toLocaleDateString('tr-TR')});
+  arr.sort((a,b)=>b.score-a.score);
+  arr=arr.slice(0,5);
+  localStorage.setItem(key, JSON.stringify(arr));
+  // also save best via updateScore already does, but also ensure leaderboard best
+  renderLeaderboard();
+}
+function renderLeaderboard(){
+  const board=document.getElementById('leaderboard');
+  if(!board) return;
+  const games=['tetris3d','flappy3d','snake','breakout','pong','invaders','asteroids','runner','2048','memory'];
+  const names={tetris3d:'3D Tetris',flappy3d:'Flappy 3D',snake:'Snake',breakout:'Breakout',pong:'Pong',invaders:'Invaders',asteroids:'Asteroids',runner:'Runner','2048':'2048',memory:'Memory'};
+  board.innerHTML='';
+  games.forEach(g=>{
+    const key='lb_'+g;
+    let arr=[]; try{ arr=JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){}
+    if(arr.length===0) arr=[{name:'—',score:0,date:''}];
+    const top=arr[0];
+    const div=document.createElement('div');
+    div.className='flex items-center justify-between bg-white/[0.03] border border-white/10 rounded-xl px-3 py-2';
+    div.innerHTML=`<div><div class="font-medium text-white text-sm">${names[g]}</div><div class="text-xs text-zinc-500">${top.name} • ${top.date}</div></div><div class="text-right"><div class="font-bold text-white">${top.score}</div><div class="text-xs text-zinc-500">Lvl ${Math.floor(top.score/50)+1}</div></div>`;
+    board.appendChild(div);
+  });
+  const el=document.getElementById('leaderboardUser');
+  if(el) el.textContent=userName ? '— ' + userName : '';
+}
+function clearLeaderboard(){
+  if(confirm('Liderlik tablosu silinsin mi?')){
+    ['tetris3d','flappy3d','snake','breakout','pong','invaders','asteroids','runner','2048','memory'].forEach(g=> localStorage.removeItem('lb_'+g));
+    renderLeaderboard();
+  }
+}
+// hook save on game over - wrap triggerLose to also save
+const origTriggerLose = triggerLose;
+triggerLose = function(){
+  origTriggerLose();
+  if(currentGame) saveToLeaderboard(currentGame, score);
+};
+function triggerEasterEgg(){
+  const popup=document.getElementById('easterPopup');
+  popup.classList.remove('hidden');
+  // confetti effect
+  for(let i=0;i<30;i++){
+    const d=document.createElement('div');
+    d.style.position='fixed'; d.style.left=Math.random()*100+'%'; d.style.top='-10px';
+    d.style.width='8px'; d.style.height='8px'; d.style.background=['#8b5cf6','#06b6d4','#f43f5e','#eab308'][Math.floor(Math.random()*4)];
+    d.style.borderRadius='50%'; d.style.zIndex='9999'; d.style.pointerEvents='none';
+    document.body.appendChild(d);
+    d.animate([{transform:'translateY(0) rotate(0deg)'},{transform:`translateY(${window.innerHeight+100}px) rotate(720deg)`}],{duration: 1200+Math.random()*800, easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>d.remove();
+  }
+  // hidden character
+  const c=document.createElement('div');
+  c.textContent='🤖'; c.style.position='fixed'; c.style.bottom='20px'; c.style.right='80px'; c.style.fontSize='32px'; c.style.zIndex='9999'; c.style.animation='bounce 0.6s';
+  document.body.appendChild(c);
+  setTimeout(()=>{ popup.classList.add('hidden'); c.remove(); }, 2500);
+}
+// also allow clicking logo 5 times for easter egg
+let logoClicks=0;
+document.addEventListener('DOMContentLoaded',()=>{
+  const logo=document.querySelector('.font-grotesk.font-bold');
+  if(logo) logo.addEventListener('click',()=>{
+    logoClicks++; if(logoClicks>=5){ triggerEasterEgg(); logoClicks=0; }
+    setTimeout(()=> logoClicks=0, 2000);
+  });
 });
 </script>
 </body>
