@@ -112,6 +112,23 @@ body{background:var(--bg); transition: background 0.4s}
         </div>
       </div>
       <div class="rounded-xl bg-white/[0.04] border border-white/10 p-4 text-xs text-zinc-400 leading-relaxed" data-i18n="settings.note">Not: Seçimlerin tarayıcında saklanır. Tüm başlık, açıklama, buton ve arcade metinleri anında çevrilir.</div>
+      <!-- HESAP — Çıkış Yap + Nickname değiştir -->
+      <div class="rounded-xl border border-white/10 bg-white/[0.02] p-4 space-y-3">
+        <h3 class="font-grotesk font-semibold text-white text-sm flex items-center gap-2">👤 Hesap</h3>
+        <div class="flex items-center justify-between text-xs bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2.5">
+          <span class="text-zinc-500">E-posta</span><span id="settingsEmail" class="text-white font-mono">—</span>
+        </div>
+        <div class="flex items-center justify-between text-xs bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2.5">
+          <span class="text-zinc-500">Nickname</span><span id="settingsNick" class="text-white">—</span>
+        </div>
+        <div class="flex gap-2">
+          <input id="nickInput" placeholder="Yeni nickname" class="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+          <button onclick="changeNick()" class="bg-white text-black px-4 py-2 rounded-xl text-sm font-medium hover:bg-zinc-100">Değiştir</button>
+        </div>
+        <p id="nickMsg" class="hidden text-xs text-center rounded-xl px-3 py-2"></p>
+        <button onclick="logoutAll()" class="w-full bg-red-500/10 border border-red-500/20 text-red-300 py-2.5 rounded-xl text-sm font-medium hover:bg-red-500/20">Çıkış Yap — her şeyi sıfırla (mail, nickname, oturum)</button>
+        <p class="text-xs text-zinc-500">Çıkış tüm localStorage'ı temizler: mail, rol, nickname, tema/dil hariç.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -139,14 +156,25 @@ body{background:var(--bg); transition: background 0.4s}
         <button onclick="closeLogin()" class="w-9 h-9 rounded-full bg-white text-black grid place-items-center font-bold">×</button>
       </div>
     </div>
-    <div class="p-6 space-y-4">
+    <div class="p-6 space-y-4" id="loginStepEmail">
       <input id="loginEmail" type="email" placeholder="e-posta (örn: keremmkilincc@gmail.com)" class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
       <div class="flex gap-2">
-        <button onclick="doLogin()" class="flex-1 bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-semibold py-3 rounded-xl hover:opacity-90 transition">Giriş Yap →</button>
+        <button onclick="doLogin()" id="loginEmailBtn" class="flex-1 bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-semibold py-3 rounded-xl hover:opacity-90 transition">Giriş Yap →</button>
         <button onclick="doLoginGuest()" class="px-5 bg-white/[0.06] border border-white/10 text-white rounded-xl hover:bg-white/10 text-sm">Misafir</button>
       </div>
       <p id="loginMsg" class="hidden text-xs text-center rounded-xl px-3 py-2"></p>
       <p class="text-xs text-zinc-500 text-center">Diğer tüm mailler <b class="text-zinc-300">Misafir</b> olarak giriş yapar, sadece admin paneli göremez. Blogu herkes okur.</p>
+    </div>
+    <div class="p-6 space-y-4 hidden" id="loginStepCode">
+      <div class="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 text-xs text-amber-200">📧 Kod <b id="codeSentTo">keremmkilincc@gmail.com</b> adresine gönderildi. Gelen kutunu (ve Spam) kontrol et — 6 haneli kodu gir.</div>
+      <input id="loginCode" maxlength="6" inputmode="numeric" placeholder="6 haneli kod (örn: 482917)" class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-amber-500 text-center tracking-[0.3em] font-mono">
+      <div class="flex gap-2">
+        <button onclick="verifyAdminCode()" class="flex-1 bg-amber-500 text-black font-semibold py-3 rounded-xl hover:bg-amber-400 transition">Kodu Doğrula →</button>
+        <button onclick="resendCode()" id="resendBtn" class="px-5 bg-white/[0.06] border border-white/10 text-white rounded-xl hover:bg-white/10 text-sm">Tekrar Gönder</button>
+      </div>
+      <button onclick="backToEmail()" class="w-full text-xs text-zinc-500 hover:text-white">← E-posta değiştir</button>
+      <p id="loginCodeMsg" class="hidden text-xs text-center rounded-xl px-3 py-2"></p>
+      <p class="text-xs text-zinc-500 text-center">Kod 10 dk geçerli. İlk kurulumda formSubmit Confirm mailini onayla.</p>
     </div>
   </div>
 </div>
@@ -1351,6 +1379,7 @@ function openSettings(){
     });
   }
   document.getElementById('currentLangLabel').textContent=curLang.toUpperCase();
+  syncSettingsAccount();
 }
 function closeSettings(){ document.getElementById('settingsModal').classList.add('hidden'); }
 let userName = localStorage.getItem('arcadeUser') || '';
@@ -1495,26 +1524,125 @@ function updateAuthUI(){
     if(blogAdminGo) blogAdminGo.classList.add('hidden');
   }
 }
-function openLogin(){ document.getElementById('loginModal').classList.remove('hidden'); document.getElementById('loginEmail').focus(); }
+function openLogin(){ document.getElementById('loginModal').classList.remove('hidden'); document.getElementById('loginStepEmail').classList.remove('hidden'); document.getElementById('loginStepCode').classList.add('hidden'); document.getElementById('loginEmail').focus(); }
 function closeLogin(){ document.getElementById('loginModal').classList.add('hidden'); }
 function doLogin(){
   const email=document.getElementById('loginEmail').value.trim().toLowerCase();
   const msg=document.getElementById('loginMsg');
   if(!email || !email.includes('@')){ msg.textContent='Geçerli bir e-posta gir.'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); return; }
-  authEmail=email;
-  authRole = (email===ADMIN_EMAIL) ? 'admin' : 'guest';
+  // admin ise kod gönder, misafir ise direkt giriş
+  if(email===ADMIN_EMAIL){
+    const code=Math.floor(100000+Math.random()*900000).toString();
+    localStorage.setItem('pending_admin_code', code);
+    localStorage.setItem('pending_admin_email', email);
+    localStorage.setItem('pending_admin_time', Date.now().toString());
+    document.getElementById('codeSentTo').textContent=email;
+    document.getElementById('loginStepEmail').classList.add('hidden');
+    document.getElementById('loginStepCode').classList.remove('hidden');
+    document.getElementById('loginCode').value='';
+    document.getElementById('loginCode').focus();
+    msg.classList.add('hidden');
+    // kodu mail ile gönder (FormSubmit) — aynı zamanda console'da da göster (test için)
+    console.log('ADMIN CODE:', code);
+    // FormSubmit ile mail gönder
+    fetch('https://formsubmit.co/ajax/'+ADMIN_EMAIL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify({name:'Portfolio Admin', email: email, subject:'Giriş Kodun: '+code, message:'Yönetici giriş kodun: '+code+'\n10 dakika geçerli.\nBu kodu kimseyle paylaşma.', _captcha:'false'})
+    }).then(r=>r.json()).then(j=>{
+      const m=document.getElementById('loginCodeMsg');
+      m.textContent='✅ Kod gönderildi! Mail gelmediyse Spam klasörüne bak. (İlk seferde Confirm gerekir)';
+      m.className='text-xs text-center rounded-xl px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300';
+      m.classList.remove('hidden');
+    }).catch(err=>{
+      const m=document.getElementById('loginCodeMsg');
+      m.textContent='⚠️ Mail gönderilemedi, kod konsolda: '+code+' (F12 → Console)';
+      m.className='text-xs text-center rounded-xl px-3 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-300';
+      m.classList.remove('hidden');
+    });
+    // demo: eğer mail gönderilemezse kullanıcı kodu console'dan alabilir
+  } else {
+    authEmail=email;
+    authRole='guest';
+    localStorage.setItem('auth_email', authEmail);
+    localStorage.setItem('auth_role', authRole);
+    msg.textContent='Misafir olarak giriş yapıldı — blogları okuyabilirsin.';
+    msg.className='text-xs text-center rounded-xl px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300';
+    msg.classList.remove('hidden');
+    updateAuthUI(); syncSettingsAccount();
+    setTimeout(()=>{ closeLogin(); switchTab('blog'); renderBlogs(); }, 600);
+  }
+}
+function verifyAdminCode(){
+  const input=document.getElementById('loginCode').value.trim();
+  const pending=localStorage.getItem('pending_admin_code')||'';
+  const pendingTime=parseInt(localStorage.getItem('pending_admin_time')||'0');
+  const msg=document.getElementById('loginCodeMsg');
+  if(!pending){ msg.textContent='Kod bulunamadı, tekrar gönder.'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); return; }
+  if(Date.now()-pendingTime > 10*60*1000){ msg.textContent='Kod süresi doldu (10 dk), tekrar gönder.'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); return; }
+  if(input!==pending){ msg.textContent='❌ Kod hatalı — tekrar dene.'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); return; }
+  // doğru
+  authEmail=localStorage.getItem('pending_admin_email')||ADMIN_EMAIL;
+  authRole='admin';
   localStorage.setItem('auth_email', authEmail);
   localStorage.setItem('auth_role', authRole);
-  msg.textContent = isAdmin() ? '👑 Yönetici girişi başarılı — panel açıldı!' : 'Misafir olarak giriş yapıldı — blogları okuyabilirsin.';
-  msg.className='text-xs text-center rounded-xl px-3 py-2 ' + (isAdmin() ? 'bg-amber-500/10 border border-amber-500/20 text-amber-300' : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-300');
+  localStorage.removeItem('pending_admin_code');
+  localStorage.removeItem('pending_admin_time');
+  msg.textContent='👑 Doğrulandı — yönetici paneli açılıyor!';
+  msg.className='text-xs text-center rounded-xl px-3 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-300';
   msg.classList.remove('hidden');
-  updateAuthUI();
-  setTimeout(()=>{ closeLogin(); if(isAdmin()) switchTab('admin'); else switchTab('blog'); renderBlogs(); }, 800);
+  updateAuthUI(); syncSettingsAccount();
+  setTimeout(()=>{ closeLogin(); switchTab('admin'); renderBlogs(); }, 600);
 }
-function doLoginGuest(){ document.getElementById('loginEmail').value='misafir@example.com'; doLogin(); }
+function resendCode(){
+  const email=localStorage.getItem('pending_admin_email')||ADMIN_EMAIL;
+  const code=Math.floor(100000+Math.random()*900000).toString();
+  localStorage.setItem('pending_admin_code', code);
+  localStorage.setItem('pending_admin_time', Date.now().toString());
+  console.log('RESEND CODE:', code);
+  fetch('https://formsubmit.co/ajax/'+ADMIN_EMAIL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify({name:'Portfolio Admin', email: email, subject:'Yeni Giriş Kodun: '+code, message:'Yeni kodun: '+code, _captcha:'false'})
+  }).catch(()=>{});
+  const m=document.getElementById('loginCodeMsg');
+  m.textContent='🔄 Yeni kod gönderildi: '+code+' (test için ekranda)';
+  m.className='text-xs text-center rounded-xl px-3 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-300';
+  m.classList.remove('hidden');
+}
+function backToEmail(){ document.getElementById('loginStepCode').classList.add('hidden'); document.getElementById('loginStepEmail').classList.remove('hidden'); }
+function doLoginGuest(){ const email='misafir'+Math.floor(Math.random()*9000)+'@example.com'; document.getElementById('loginEmail').value=email; doLogin(); }
 function handleUserBtn(){ const m=document.getElementById('userMenu'); m.classList.toggle('hidden'); }
 function closeUserMenu(){ document.getElementById('userMenu').classList.add('hidden'); }
-function logout(){ authEmail=''; authRole=''; localStorage.removeItem('auth_email'); localStorage.removeItem('auth_role'); updateAuthUI(); switchTab('github'); closeUserMenu(); }
+function logout(){ authEmail=''; authRole=''; localStorage.removeItem('auth_email'); localStorage.removeItem('auth_role'); localStorage.removeItem('pending_admin_code'); localStorage.removeItem('pending_admin_time'); localStorage.removeItem('pending_admin_email'); updateAuthUI(); syncSettingsAccount(); switchTab('github'); closeUserMenu(); }
+function logoutAll(){
+  if(!confirm('Tüm oturum sıfırlansın mı? Mail, nickname ve admin kodu silinecek.')) return;
+  ['auth_email','auth_role','arcadeUser','pending_admin_code','pending_admin_time','pending_admin_email'].forEach(k=>localStorage.removeItem(k));
+  authEmail=''; authRole=''; userName='';
+  document.getElementById('usernameInput').value='';
+  updateAuthUI(); syncSettingsAccount(); renderLeaderboard();
+  document.getElementById('nickMsg').textContent='✅ Her şey sıfırlandı.';
+  document.getElementById('nickMsg').className='text-xs text-center rounded-xl px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300';
+  document.getElementById('nickMsg').classList.remove('hidden');
+  setTimeout(()=>closeSettings(), 800);
+}
+function changeNick(){
+  const v=document.getElementById('nickInput').value.trim();
+  const msg=document.getElementById('nickMsg');
+  if(!v || v.length<2){ msg.textContent='En az 2 karakter gir.'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); return; }
+  userName=v;
+  localStorage.setItem('arcadeUser', userName);
+  msg.textContent='✅ Nickname güncellendi: '+v;
+  msg.className='text-xs text-center rounded-xl px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300';
+  msg.classList.remove('hidden');
+  syncSettingsAccount(); renderLeaderboard(); updateAuthUI();
+}
+function syncSettingsAccount(){
+  const se=document.getElementById('settingsEmail');
+  const sn=document.getElementById('settingsNick');
+  if(se) se.textContent=authEmail||'— (giriş yapılmadı)';
+  if(sn) sn.textContent=userName||'Misafir';
+}
 document.addEventListener('click',e=>{ const menu=document.getElementById('userMenu'); const btn=document.getElementById('userBtn'); if(menu && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.add('hidden'); });
 // override switchTab to guard admin
 const _origSwitchTab = switchTab;
@@ -1697,6 +1825,7 @@ function clearAllBlogs(){
 // init auth + blogs on load
 document.addEventListener('DOMContentLoaded',()=>{
   updateAuthUI();
+  syncSettingsAccount();
   renderBlogs();
   // slug oto
   const t=document.getElementById('bTitle');
@@ -1712,6 +1841,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   const c=document.getElementById('bContent');
   if(c) c.addEventListener('input',()=> document.getElementById('bRead').value=readingTime(c.value));
   document.getElementById('loginEmail')?.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+  document.getElementById('loginCode')?.addEventListener('keydown',e=>{ if(e.key==='Enter') verifyAdminCode(); });
+  document.getElementById('nickInput')?.addEventListener('keydown',e=>{ if(e.key==='Enter') changeNick(); });
 });
 </script>
 </body>
