@@ -69,14 +69,18 @@ body{background:var(--bg); transition: background 0.4s}
       <button onclick="switchTab('github')" data-tab="github" class="tab-btn active whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white text-black text-sm font-medium">GitHub <span class="opacity-60 text-xs ml-1">Canlı</span></button>
       <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
       <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
+      <button onclick="switchTab('blog')" data-tab="blog" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Blog <span id="blogCountBadge" class="text-xs ml-1 bg-white/10 px-1.5 py-0.5 rounded-full">0</span></button>
       <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
       <button onclick="switchTab('iletisim')" data-tab="iletisim" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">İletişim</button>
+      <button id="adminTabBtn" onclick="switchTab('admin')" data-tab="admin" class="tab-btn hidden whitespace-nowrap px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-sm text-amber-300 hover:text-amber-200">⚡ Admin</button>
     </div>
     <div class="flex items-center gap-2">
       <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
       <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-white text-black font-medium px-5 py-2.5 rounded-full hover:bg-zinc-100 transition text-sm">GitHub <span class="opacity-60">↗</span></a>
       <button onclick="openSettings()" class="w-10 h-10 rounded-full border border-white/10 bg-white/[0.04] grid place-items-center hover:bg-white/10 text-sm" aria-label="Ayarlar">⚙️</button>
-      <a href="#iletisim" class="inline-flex bg-violet-600 hover:bg-violet-500 text-white px-5 py-2.5 rounded-full text-sm font-medium transition" data-i18n="nav.contact">İletişim</a>
+      <button id="loginBtn" onclick="openLogin()" class="inline-flex items-center gap-1.5 bg-white text-black font-medium px-4 py-2.5 rounded-full hover:bg-zinc-100 transition text-sm">Giriş Yap</button>
+      <button id="userBtn" onclick="handleUserBtn()" class="hidden inline-flex items-center gap-1.5 bg-white/[0.06] border border-white/10 text-white font-medium px-4 py-2.5 rounded-full hover:bg-white/10 transition text-sm"><span id="userBtnLabel">Misafir</span> <span class="text-xs opacity-60">▼</span></button>
+      <a href="#iletisim" class="hidden sm:inline-flex bg-violet-600 hover:bg-violet-500 text-white px-5 py-2.5 rounded-full text-sm font-medium transition" data-i18n="nav.contact">İletişim</a>
     </div>
   </div>
 </nav>
@@ -122,6 +126,41 @@ body{background:var(--bg); transition: background 0.4s}
     <input id="usernameInput" placeholder="Kullanıcı adın (örn: Kerem)" class="mt-6 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 text-center">
     <button onclick="saveUsername()" class="mt-4 w-full bg-white text-black font-semibold py-3 rounded-xl hover:bg-zinc-100 transition">Devam Et →</button>
     <p class="text-xs text-zinc-500 mt-3">Boş bırakırsan <b class="text-zinc-300">Misafir</b> olarak devam edersin. Sonra ayarlardan değiştirebilirsin.</p>
+  </div>
+</div>
+
+<!-- LOGIN MODAL — Giriş Yap (6 5 1 4) -->
+<div id="loginModal" class="fixed inset-0 z-[85] hidden">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeLogin()"></div>
+  <div class="relative max-w-[440px] mx-auto mt-[10vh] bg-[#0F0F11] border border-white/10 rounded-[24px] overflow-hidden shadow-2xl">
+    <div class="px-6 py-5 border-b border-white/10 bg-gradient-to-r from-violet-600/10 to-cyan-500/10">
+      <div class="flex items-center justify-between">
+        <div><div class="font-grotesk font-bold text-white text-lg">Giriş Yap</div><div class="text-xs text-zinc-400">E-postanı gir — yönetici sadece <b class="text-amber-300">keremmkilincc@gmail.com</b></div></div>
+        <button onclick="closeLogin()" class="w-9 h-9 rounded-full bg-white text-black grid place-items-center font-bold">×</button>
+      </div>
+    </div>
+    <div class="p-6 space-y-4">
+      <input id="loginEmail" type="email" placeholder="e-posta (örn: keremmkilincc@gmail.com)" class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+      <div class="flex gap-2">
+        <button onclick="doLogin()" class="flex-1 bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-semibold py-3 rounded-xl hover:opacity-90 transition">Giriş Yap →</button>
+        <button onclick="doLoginGuest()" class="px-5 bg-white/[0.06] border border-white/10 text-white rounded-xl hover:bg-white/10 text-sm">Misafir</button>
+      </div>
+      <p id="loginMsg" class="hidden text-xs text-center rounded-xl px-3 py-2"></p>
+      <p class="text-xs text-zinc-500 text-center">Diğer tüm mailler <b class="text-zinc-300">Misafir</b> olarak giriş yapar, sadece admin paneli göremez. Blogu herkes okur.</p>
+    </div>
+  </div>
+</div>
+
+<!-- USER MENU -->
+<div id="userMenu" class="fixed top-[68px] right-6 z-[70] hidden">
+  <div class="bg-[#0F0F11] border border-white/10 rounded-2xl shadow-2xl overflow-hidden min-w-[220px]">
+    <div class="px-4 py-3 border-b border-white/10">
+      <div class="text-sm font-medium text-white" id="userMenuEmail">—</div>
+      <div class="text-xs text-zinc-500" id="userMenuRole">Misafir</div>
+    </div>
+    <button id="userMenuAdminBtn" onclick="switchTab('admin'); closeUserMenu();" class="hidden w-full text-left px-4 py-2.5 text-sm hover:bg-white/[0.04] text-amber-300">⚡ Yönetici Paneli</button>
+    <button onclick="switchTab('blog'); closeUserMenu();" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/[0.04] text-white">📝 Blog Yazıları</button>
+    <button onclick="logout(); closeUserMenu();" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/[0.04] text-zinc-400">Çıkış Yap</button>
   </div>
 </div>
 
@@ -216,6 +255,7 @@ body{background:var(--bg); transition: background 0.4s}
       <button onclick="switchTab('github')" data-tab="github" class="tab-btn active whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white text-black text-sm font-medium">GitHub <span class="opacity-60 text-xs ml-1">Canlı</span></button>
       <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
       <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
+      <button onclick="switchTab('blog')" data-tab="blog" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Blog</button>
       <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
       <button onclick="switchTab('iletisim')" data-tab="iletisim" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">İletişim</button>
     </div>
@@ -349,6 +389,153 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div id="leaderboard" class="grid md:grid-cols-2 gap-3 text-sm"></div>
     <p class="text-xs text-zinc-500 mt-3">Skorlar tarayıcında saklanır. Seviye her <b class="text-zinc-300">50 puan</b>da artar. İsim giriş ekranındaki adınla kaydedilir.</p>
+  </div>
+</section>
+
+<!-- BLOG - MISAFIRLER ICIN OKUMA -->
+<section id="blog" class="tab-panel max-w-[1280px] mx-auto px-6 py-8">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+    <div>
+      <h2 class="font-grotesk text-[30px] font-bold tracking-tight text-white">Blog Yazıları</h2>
+      <p class="text-zinc-500 text-sm mt-1">Oyun tasarım notları, dev günlükleri — herkes okur, sadece <b class="text-amber-300">Kerem</b> yazar.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <input id="blogSearch" oninput="renderBlogs()" placeholder="Blog ara..." class="bg-white/[0.04] border border-white/10 rounded-full px-4 py-2.5 text-sm w-[200px] placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 text-white">
+      <button onclick="switchTab('admin')" id="blogAdminGo" class="hidden bg-amber-500 text-black px-4 py-2 rounded-full text-sm font-medium">✏️ Yazı Oluştur</button>
+    </div>
+  </div>
+  <div id="blogGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  <div id="blogEmpty" class="hidden text-center py-16 border border-dashed border-white/10 rounded-2xl bg-white/[0.02]">
+    <div class="text-4xl mb-3">📝</div><div class="font-grotesk font-bold text-white">Henüz yazı yok</div><div class="text-sm text-zinc-500 mt-1">Yönetici panelinden ilk yazını oluştur — müq olacak!</div>
+  </div>
+  <!-- Tekil okuma modal -->
+  <div id="blogReadModal" class="fixed inset-0 z-[75] hidden">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeBlogRead()"></div>
+    <div class="relative max-w-[760px] mx-auto mt-[4vh] bg-[#0F0F11] border border-white/10 rounded-[24px] overflow-hidden shadow-2xl max-h-[88vh] flex flex-col">
+      <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
+        <div class="text-xs font-mono text-violet-400" id="blogReadMeta">—</div>
+        <button onclick="closeBlogRead()" class="w-9 h-9 rounded-full bg-white text-black grid place-items-center font-bold">×</button>
+      </div>
+      <div class="overflow-auto p-6 md:p-8">
+        <h2 id="blogReadTitle" class="font-grotesk text-2xl font-bold text-white leading-tight"></h2>
+        <img id="blogReadCover" class="hidden mt-4 w-full h-[280px] object-cover rounded-xl border border-white/10">
+        <div id="blogReadContent" class="prose prose-invert prose-sm max-w-none mt-6 text-zinc-300 leading-relaxed whitespace-pre-wrap"></div>
+        <div id="blogReadTags" class="flex flex-wrap gap-1.5 mt-6"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN PANEL — sadece keremmkilincc@gmail.com -->
+<section id="admin" class="tab-panel max-w-[1280px] mx-auto px-6 py-8">
+  <!-- Üstte siteye dönüş -->
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <button onclick="switchTab('github')" class="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-zinc-100">← Siteye Dön</button>
+      <div><div class="font-grotesk font-bold text-white leading-none">Yönetici Paneli</div><div class="text-xs text-zinc-500">Hoş geldin, <span id="adminEmailLabel" class="text-amber-300">keremmkilincc@gmail.com</span> — müq müq müq 👑</div></div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-xs font-mono tracking-widest text-emerald-300 border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 rounded-full">● ADMIN</span>
+      <button onclick="exportBlogs()" class="text-xs border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/5">Dışa Aktar</button>
+      <button onclick="clearAllBlogs()" class="text-xs border border-red-500/20 bg-red-500/10 text-red-300 px-3 py-1.5 rounded-full">Tümünü Sil</button>
+    </div>
+  </div>
+  <!-- İstatistikler — müq -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="rounded-2xl border border-white/10 bg-[#0F0F11] p-4"><div class="text-xs font-mono text-zinc-500">TOPLAM YAZI</div><div class="text-2xl font-grotesk font-bold text-white mt-1" id="statBlogCount">0</div><div class="text-xs text-zinc-500">localStorage</div></div>
+    <div class="rounded-2xl border border-white/10 bg-[#0F0F11] p-4"><div class="text-xs font-mono text-zinc-500">YAYINDA</div><div class="text-2xl font-grotesk font-bold text-emerald-400 mt-1" id="statPublished">0</div></div>
+    <div class="rounded-2xl border border-white/10 bg-[#0F0F11] p-4"><div class="text-xs font-mono text-zinc-500">TASLAK</div><div class="text-2xl font-grotesk font-bold text-amber-400 mt-1" id="statDraft">0</div></div>
+    <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-violet-600/20 to-cyan-500/20 p-4 border-violet-500/20"><div class="text-xs font-mono text-violet-300">GÖRÜNTÜLENME (demo)</div><div class="text-2xl font-grotesk font-bold text-white mt-1">♾️</div><div class="text-xs text-zinc-500">müq müq</div></div>
+  </div>
+  <!-- Sekmeler admin içi -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    <button onclick="setAdminTab('posts')" id="admTab-posts" class="adm-tab active px-4 py-2 rounded-full bg-white text-black text-sm font-medium">Yazılar</button>
+    <button onclick="setAdminTab('create')" id="admTab-create" class="adm-tab px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-sm text-zinc-400">✏️ Blog Oluştur</button>
+    <button onclick="setAdminTab('media')" id="admTab-media" class="adm-tab px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-sm text-zinc-400">🖼️ Medya</button>
+    <button onclick="setAdminTab('settings')" id="admTab-settings" class="adm-tab px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-sm text-zinc-400">⚙️ Ayarlar</button>
+  </div>
+  <!-- Yazılar listesi -->
+  <div id="adm-posts" class="adm-panel">
+    <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] overflow-hidden">
+      <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+        <div class="font-grotesk font-semibold text-white">Yazı Yönetimi</div>
+        <button onclick="setAdminTab('create')" class="bg-gradient-to-r from-violet-600 to-cyan-500 text-white px-4 py-1.5 rounded-full text-sm font-medium">+ Yeni Yazı</button>
+      </div>
+      <div id="adminPostList" class="divide-y divide-white/5"></div>
+      <div id="adminPostEmpty" class="hidden p-8 text-center text-sm text-zinc-500">Henüz yazı yok — Blog Oluştur ile başla!</div>
+    </div>
+  </div>
+  <!-- Blog Oluştur — detaylı editör -->
+  <div id="adm-create" class="adm-panel hidden">
+    <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-6 md:p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-grotesk text-xl font-bold text-white">Yazı Editörü — Detaylı</h3>
+        <span class="text-xs font-mono text-zinc-500">Müq editör ✨</span>
+      </div>
+      <form id="blogForm" onsubmit="saveBlog(event)" class="grid gap-5">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div><label class="text-xs font-mono tracking-widest text-zinc-400">BAŞLIK *</label><input id="bTitle" required placeholder="Örn: Neon Ronin — Karakter Tasarım Sürecim" class="mt-1 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></div>
+          <div><label class="text-xs font-mono tracking-widest text-zinc-400">SLUG</label><input id="bSlug" placeholder="neon-ronin-surecim (oto)" class="mt-1 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></div>
+        </div>
+        <div><label class="text-xs font-mono tracking-widest text-zinc-400">ÖZET (excerpt)</label><input id="bExcerpt" placeholder="Kartta görünecek kısa özet — 140 karakter" maxlength="160" class="mt-1 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div><label class="text-xs font-mono tracking-widest text-zinc-400">KAPAK GÖRSELİ (URL)</label><input id="bCover" placeholder="https://images.unsplash.com/..." class="mt-1 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500" oninput="document.getElementById('bCoverPreview').src=this.value; document.getElementById('bCoverPreview').classList.toggle('hidden', !this.value)"><img id="bCoverPreview" class="hidden mt-2 w-full h-40 object-cover rounded-xl border border-white/10"></div>
+          <div class="grid gap-3">
+            <div><label class="text-xs font-mono tracking-widest text-zinc-400">KATEGORİ</label><select id="bCat" class="mt-1 w-full bg-[#0F0F11] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none"><option>Oyun Tasarım</option><option>Harita & Level</option><option>Karakter</option><option>Günlük</option><option>Teknik</option></select></div>
+            <label class="flex items-center gap-2 bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-sm cursor-pointer"><input id="bFeatured" type="checkbox" class="accent-violet-600"> <span class="text-white">Öne çıkar ⭐</span><span class="text-xs text-zinc-500 ml-auto">Blogda ilk sırada</span></label>
+          </div>
+        </div>
+        <div><label class="text-xs font-mono tracking-widest text-zinc-400">ETİKETLER (virgülle ayır)</label><input id="bTags" placeholder="siberpunk, karakter, konsept" class="mt-1 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></div>
+        <div>
+          <label class="text-xs font-mono tracking-widest text-zinc-400">İÇERİK * — Markdown destekler</label>
+          <div class="mt-1 flex flex-wrap gap-1.5 p-2 bg-white/[0.04] border border-white/10 rounded-xl">
+            <button type="button" onclick="insertAt('bContent','**kalın**')" class="w-7 h-7 grid place-items-center bg-white/5 border border-white/10 rounded-lg text-xs font-bold hover:bg-white/10">B</button>
+            <button type="button" onclick="insertAt('bContent','*italik*')" class="w-7 h-7 grid place-items-center bg-white/5 border border-white/10 rounded-lg text-xs italic hover:bg-white/10">I</button>
+            <button type="button" onclick="insertAt('bContent','`kod`')" class="w-7 h-7 grid place-items-center bg-white/5 border border-white/10 rounded-lg text-xs font-mono hover:bg-white/10">&lt;&gt;</button>
+            <button type="button" onclick="insertAt('bContent','\n## Başlık\n')" class="px-2 h-7 grid place-items-center bg-white/5 border border-white/10 rounded-lg text-xs hover:bg-white/10">H2</button>
+            <button type="button" onclick="insertAt('bContent','\n- madde\n')" class="px-2 h-7 grid place-items-center bg-white/5 border border-white/10 rounded-lg text-xs hover:bg-white/10">• Liste</button>
+            <button type="button" onclick="insertAt('bContent','\n> alıntı\n')" class="px-2 h-7 grid place-items-center bg-white/5 border border-white/10 rounded-lg text-xs hover:bg-white/10">❝</button>
+            <span class="ml-auto text-xs text-zinc-500 self-center">Satır: <span id="bLineCount">0</span></span>
+          </div>
+          <textarea id="bContent" required rows="10" placeholder="Hikayeni yaz... (ör: Bugün Neon Ronin için zırh konsepti bitirdim...)" class="mt-2 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 font-mono leading-relaxed" oninput="document.getElementById('bLineCount').textContent=this.value.split('\n').length; document.getElementById('bPreview').textContent=this.value.slice(0,1200)"></textarea>
+          <div class="mt-2 rounded-xl bg-white/[0.02] border border-white/5 p-3">
+            <div class="text-xs font-mono text-zinc-500">CANLI ÖNİZLEME (ilk 1200 char)</div>
+            <div id="bPreview" class="text-sm text-zinc-300 mt-2 whitespace-pre-wrap leading-relaxed max-h-[140px] overflow-auto"></div>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3">
+          <div><label class="text-xs font-mono tracking-widest text-zinc-400">DURUM</label><select id="bStatus" class="mt-1 w-full bg-[#0F0F11] border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><option value="published">Yayında</option><option value="draft">Taslak</option></select></div>
+          <div><label class="text-xs font-mono tracking-widest text-zinc-400">OKUMA SÜRESİ (oto)</label><input id="bRead" readonly placeholder="3 dk" class="mt-1 w-full bg-white/[0.02] border border-white/5 rounded-xl px-4 py-3 text-sm text-zinc-500"></div>
+          <div class="flex items-end"><button type="submit" class="w-full bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-semibold py-3 rounded-xl hover:opacity-90 transition">Kaydet & Yayınla →</button></div>
+        </div>
+        <input type="hidden" id="bEditId">
+        <div id="bFormMsg" class="hidden text-sm text-center rounded-xl px-4 py-3"></div>
+      </form>
+    </div>
+  </div>
+  <!-- Medya -->
+  <div id="adm-media" class="adm-panel hidden">
+    <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-6">
+      <h3 class="font-grotesk font-semibold text-white">Medya — Kapak URL kütüphanesi</h3>
+      <p class="text-sm text-zinc-500 mt-1">Unsplash'ten kopyala-yapıştır — müq görseller:</p>
+      <div class="grid grid-cols-3 gap-3 mt-4">
+        <button onclick="pickCover('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800')" class="aspect-[16/9] rounded-xl overflow-hidden border border-white/10 hover:border-violet-500/40"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=400" class="w-full h-full object-cover"></button>
+        <button onclick="pickCover('https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800')" class="aspect-[16/9] rounded-xl overflow-hidden border border-white/10 hover:border-violet-500/40"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=400" class="w-full h-full object-cover"></button>
+        <button onclick="pickCover('https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=800')" class="aspect-[16/9] rounded-xl overflow-hidden border border-white/10 hover:border-violet-500/40"><img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=400" class="w-full h-full object-cover"></button>
+      </div>
+      <p class="text-xs text-zinc-500 mt-4">Tıklayınca editördeki Kapak URL'ine otomatik dolar.</p>
+    </div>
+  </div>
+  <!-- Ayarlar -->
+  <div id="adm-settings" class="adm-panel hidden">
+    <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-6 space-y-4">
+      <h3 class="font-grotesk font-semibold text-white">Panel Ayarları — müq müq müq</h3>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="rounded-xl bg-white/[0.04] border border-white/10 p-4"><div class="text-sm font-medium text-white">Blog Başlığı</div><div class="text-xs text-zinc-500">Tasarım Günlüğü — Kerem KILINÇ</div></div>
+        <div class="rounded-xl bg-white/[0.04] border border-white/10 p-4"><div class="text-sm font-medium text-white">Müq Modu</div><div class="text-xs text-zinc-500">Açık ✨ (aurora yoğun)</div></div>
+      </div>
+      <div class="rounded-xl bg-gradient-to-r from-violet-600/10 to-cyan-500/10 border border-violet-500/20 p-4 text-sm text-zinc-300">İpucu: Bloglar <code class="text-violet-300">localStorage: kerem_blogs</code> içinde saklanır. GitHub Pages statik olduğu için kalıcı backend yok — dışa aktar ile JSON al, yedekle.</div>
+    </div>
   </div>
 </section>
 
@@ -1272,6 +1459,259 @@ document.addEventListener('DOMContentLoaded',()=>{
     logoClicks++; if(logoClicks>=5){ triggerEasterEgg(); logoClicks=0; }
     setTimeout(()=> logoClicks=0, 2000);
   });
+});
+
+// ===== AUTH — Giriş Yap (6 5 1 4) — admin sadece keremmkilincc@gmail.com =====
+const ADMIN_EMAIL='keremmkilincc@gmail.com';
+let authEmail=localStorage.getItem('auth_email')||'';
+let authRole=localStorage.getItem('auth_role')||''; // 'admin' | 'guest' | ''
+function isAdmin(){ return authEmail.toLowerCase()===ADMIN_EMAIL.toLowerCase() && authRole==='admin'; }
+function updateAuthUI(){
+  const loginBtn=document.getElementById('loginBtn');
+  const userBtn=document.getElementById('userBtn');
+  const userLabel=document.getElementById('userBtnLabel');
+  const adminTab=document.getElementById('adminTabBtn');
+  const blogAdminGo=document.getElementById('blogAdminGo');
+  const userMenuAdmin=document.getElementById('userMenuAdminBtn');
+  const adminLabel=document.getElementById('adminEmailLabel');
+  if(authEmail){
+    if(loginBtn) loginBtn.classList.add('hidden');
+    if(userBtn) userBtn.classList.remove('hidden');
+    if(userLabel) userLabel.textContent = isAdmin() ? 'Kerem 👑' : authEmail.split('@')[0];
+    if(adminTab) adminTab.classList.toggle('hidden', !isAdmin());
+    if(blogAdminGo) blogAdminGo.classList.toggle('hidden', !isAdmin());
+    if(userMenuAdmin) userMenuAdmin.classList.toggle('hidden', !isAdmin());
+    if(adminLabel) adminLabel.textContent=authEmail;
+    document.getElementById('userMenuEmail').textContent=authEmail;
+    document.getElementById('userMenuRole').textContent= isAdmin() ? 'Yönetici — müq' : 'Misafir';
+    // guard: if guest tries to stay on admin, kick
+    if(!isAdmin() && document.getElementById('admin')?.classList.contains('active')){
+      switchTab('blog');
+    }
+  } else {
+    if(loginBtn) loginBtn.classList.remove('hidden');
+    if(userBtn) userBtn.classList.add('hidden');
+    if(adminTab) adminTab.classList.add('hidden');
+    if(blogAdminGo) blogAdminGo.classList.add('hidden');
+  }
+}
+function openLogin(){ document.getElementById('loginModal').classList.remove('hidden'); document.getElementById('loginEmail').focus(); }
+function closeLogin(){ document.getElementById('loginModal').classList.add('hidden'); }
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const msg=document.getElementById('loginMsg');
+  if(!email || !email.includes('@')){ msg.textContent='Geçerli bir e-posta gir.'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); return; }
+  authEmail=email;
+  authRole = (email===ADMIN_EMAIL) ? 'admin' : 'guest';
+  localStorage.setItem('auth_email', authEmail);
+  localStorage.setItem('auth_role', authRole);
+  msg.textContent = isAdmin() ? '👑 Yönetici girişi başarılı — panel açıldı!' : 'Misafir olarak giriş yapıldı — blogları okuyabilirsin.';
+  msg.className='text-xs text-center rounded-xl px-3 py-2 ' + (isAdmin() ? 'bg-amber-500/10 border border-amber-500/20 text-amber-300' : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-300');
+  msg.classList.remove('hidden');
+  updateAuthUI();
+  setTimeout(()=>{ closeLogin(); if(isAdmin()) switchTab('admin'); else switchTab('blog'); renderBlogs(); }, 800);
+}
+function doLoginGuest(){ document.getElementById('loginEmail').value='misafir@example.com'; doLogin(); }
+function handleUserBtn(){ const m=document.getElementById('userMenu'); m.classList.toggle('hidden'); }
+function closeUserMenu(){ document.getElementById('userMenu').classList.add('hidden'); }
+function logout(){ authEmail=''; authRole=''; localStorage.removeItem('auth_email'); localStorage.removeItem('auth_role'); updateAuthUI(); switchTab('github'); closeUserMenu(); }
+document.addEventListener('click',e=>{ const menu=document.getElementById('userMenu'); const btn=document.getElementById('userBtn'); if(menu && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.add('hidden'); });
+// override switchTab to guard admin
+const _origSwitchTab = switchTab;
+switchTab = function(id){
+  if(id==='admin' && !isAdmin()){
+    openLogin();
+    const msg=document.getElementById('loginMsg');
+    if(msg){ msg.textContent='⚠️ Yönetici paneli sadece keremmkilincc@gmail.com için.'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); }
+    return;
+  }
+  _origSwitchTab(id);
+};
+
+// ===== BLOG SİSTEMİ — localStorage kerem_blogs =====
+function getBlogs(){ try{ return JSON.parse(localStorage.getItem('kerem_blogs')||'[]'); }catch(e){return []} }
+function saveBlogs(arr){ localStorage.setItem('kerem_blogs', JSON.stringify(arr)); }
+function slugify(s){ return s.toLowerCase().trim().replace(/[^a-z0-9ğüşöçı\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,60) || 'yazi-'+Date.now(); }
+function readingTime(txt){ const w=txt.split(/\s+/).filter(Boolean).length; return Math.max(1, Math.ceil(w/180))+' dk'; }
+function renderBlogs(){
+  const blogs=getBlogs();
+  const grid=document.getElementById('blogGrid');
+  const empty=document.getElementById('blogEmpty');
+  const badge=document.getElementById('blogCountBadge');
+  const q=(document.getElementById('blogSearch')?.value||'').toLowerCase();
+  if(badge) badge.textContent=blogs.filter(b=>b.status==='published').length;
+  // published for guests, all for admin (but blog tab shows published only)
+  let list=blogs.filter(b=> b.status==='published' || isAdmin());
+  if(q) list=list.filter(b=> (b.title+b.excerpt+b.tags.join(' ')).toLowerCase().includes(q));
+  // featured first
+  list.sort((a,b)=> (b.featured?1:0)-(a.featured?1:0) || new Date(b.date)-new Date(a.date));
+  if(!grid) return;
+  grid.innerHTML='';
+  if(list.length===0){ grid.classList.add('hidden'); if(empty) empty.classList.remove('hidden'); }
+  else { grid.classList.remove('hidden'); if(empty) empty.classList.add('hidden');
+    list.forEach(b=>{
+      const card=document.createElement('div');
+      card.className='group card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11] hover:border-violet-500/30 cursor-pointer flex flex-col';
+      card.onclick=()=>openBlogRead(b.id);
+      card.innerHTML=`${b.cover? `<div class="aspect-[16/9] overflow-hidden"><img src="${b.cover}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700"></div>` : `<div class="aspect-[16/9] bg-gradient-to-br from-violet-600/20 to-cyan-500/20 grid place-items-center text-3xl">📝</div>`}
+        <div class="p-5 flex-1 flex flex-col">
+          <div class="flex items-center gap-2 text-[11px] font-mono tracking-widest ${b.status==='draft' ? 'text-amber-300' : 'text-violet-400'}">${b.cat.toUpperCase()} • ${b.readTime} ${b.featured ? '• ⭐ ÖNE ÇIKAN' : ''} ${b.status==='draft' ? '• TASLAK' : ''}</div>
+          <div class="font-grotesk font-bold text-white mt-2 leading-tight group-hover:text-violet-300 transition line-clamp-2">${b.title}</div>
+          <p class="text-sm text-zinc-400 mt-2 flex-1 line-clamp-2">${b.excerpt || b.content.slice(0,110)+'...'}</p>
+          <div class="flex flex-wrap gap-1.5 mt-3">${b.tags.slice(0,3).map(t=>`<span class="text-xs bg-white/[0.04] border border-white/10 px-2 py-1 rounded-full">#${t}</span>`).join('')}</div>
+          <div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
+            <span class="text-xs font-mono text-zinc-500">${new Date(b.date).toLocaleDateString('tr-TR')}</span>
+            <span class="text-sm font-medium text-white group-hover:gap-2 flex items-center gap-1">Oku <span class="group-hover:translate-x-1 transition">→</span></span>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+  // admin stats & list
+  renderAdmin();
+}
+function openBlogRead(id){
+  const b=getBlogs().find(x=>x.id===id);
+  if(!b) return;
+  document.getElementById('blogReadTitle').textContent=b.title;
+  document.getElementById('blogReadMeta').textContent=`${b.cat} • ${new Date(b.date).toLocaleDateString('tr-TR')} • ${b.readTime} • ${b.tags.join(', ')}`;
+  document.getElementById('blogReadContent').textContent=b.content;
+  const img=document.getElementById('blogReadCover');
+  if(b.cover){ img.src=b.cover; img.classList.remove('hidden'); } else img.classList.add('hidden');
+  const tags=document.getElementById('blogReadTags');
+  tags.innerHTML=b.tags.map(t=>`<span class="text-xs bg-violet-500/10 border border-violet-500/20 text-violet-300 px-2.5 py-1 rounded-full">#${t}</span>`).join('');
+  document.getElementById('blogReadModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+}
+function closeBlogRead(){ document.getElementById('blogReadModal').classList.add('hidden'); document.body.style.overflow=''; }
+function renderAdmin(){
+  const blogs=getBlogs();
+  document.getElementById('statBlogCount').textContent=blogs.length;
+  document.getElementById('statPublished').textContent=blogs.filter(b=>b.status==='published').length;
+  document.getElementById('statDraft').textContent=blogs.filter(b=>b.status==='draft').length;
+  const list=document.getElementById('adminPostList');
+  const empty=document.getElementById('adminPostEmpty');
+  if(!list) return;
+  list.innerHTML='';
+  if(blogs.length===0){ empty.classList.remove('hidden'); return; } else empty.classList.add('hidden');
+  blogs.slice().sort((a,b)=> new Date(b.date)-new Date(a.date)).forEach(b=>{
+    const row=document.createElement('div');
+    row.className='flex items-center gap-3 px-5 py-4 hover:bg-white/[0.02]';
+    row.innerHTML=`<div class="w-12 h-12 rounded-xl overflow-hidden border border-white/10 shrink-0 bg-white/[0.04] grid place-items-center text-sm">${b.cover? `<img src="${b.cover}" class="w-full h-full object-cover">` : '📝'}</div>
+      <div class="flex-1 min-w-0"><div class="font-medium text-white text-sm truncate">${b.title} ${b.featured? '⭐':''}</div><div class="text-xs text-zinc-500 truncate">${b.cat} • ${b.status} • ${new Date(b.date).toLocaleDateString('tr-TR')} • ${b.readTime}</div></div>
+      <div class="flex items-center gap-1.5">
+        <button onclick="editBlog('${b.id}')" class="w-8 h-8 rounded-full bg-white/[0.04] border border-white/10 grid place-items-center hover:bg-white/10 text-xs" title="Düzenle">✏️</button>
+        <button onclick="deleteBlog('${b.id}')" class="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 grid place-items-center hover:bg-red-500/20 text-xs" title="Sil">🗑️</button>
+        <button onclick="openBlogRead('${b.id}')" class="hidden sm:inline-flex text-xs border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/5">Gör</button>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+function setAdminTab(id){
+  document.querySelectorAll('.adm-tab').forEach(b=>{ b.classList.remove('active','bg-white','text-black'); b.classList.add('bg-white/[0.04]','text-zinc-400','border','border-white/10'); });
+  const active=document.getElementById('admTab-'+id); if(active){ active.classList.add('active','bg-white','text-black'); active.classList.remove('bg-white/[0.04]','text-zinc-400','border','border-white/10'); }
+  document.querySelectorAll('.adm-panel').forEach(p=>p.classList.add('hidden'));
+  document.getElementById('adm-'+id).classList.remove('hidden');
+}
+function pickCover(url){ document.getElementById('bCover').value=url; const img=document.getElementById('bCoverPreview'); img.src=url; img.classList.remove('hidden'); setAdminTab('create'); }
+function insertAt(id, txt){
+  const el=document.getElementById(id);
+  const s=el.selectionStart, e=el.selectionEnd;
+  el.value=el.value.substring(0,s)+txt+el.value.substring(e);
+  el.focus(); el.selectionStart=el.selectionEnd=s+txt.length;
+  el.dispatchEvent(new Event('input'));
+}
+function saveBlog(e){
+  e.preventDefault();
+  const editId=document.getElementById('bEditId').value;
+  const title=document.getElementById('bTitle').value.trim();
+  if(!title) return;
+  let slug=document.getElementById('bSlug').value.trim() || slugify(title);
+  const data={
+    id: editId || 'b_'+Date.now(),
+    title,
+    slug,
+    excerpt: document.getElementById('bExcerpt').value.trim(),
+    cover: document.getElementById('bCover').value.trim(),
+    cat: document.getElementById('bCat').value,
+    tags: document.getElementById('bTags').value.split(',').map(s=>s.trim()).filter(Boolean),
+    content: document.getElementById('bContent').value.trim(),
+    status: document.getElementById('bStatus').value,
+    featured: document.getElementById('bFeatured').checked,
+    readTime: readingTime(document.getElementById('bContent').value),
+    date: editId ? (getBlogs().find(b=>b.id===editId)?.date || new Date().toISOString()) : new Date().toISOString()
+  };
+  data.readTime=readingTime(data.content);
+  let blogs=getBlogs();
+  if(editId){ blogs=blogs.map(b=> b.id===editId ? data : b); } else blogs.unshift(data);
+  saveBlogs(blogs);
+  const msg=document.getElementById('bFormMsg');
+  msg.textContent='✅ Kaydedildi — müq! Blog sekmesinde görünüyor.';
+  msg.className='text-sm text-center rounded-xl px-4 py-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300';
+  msg.classList.remove('hidden');
+  e.target.reset();
+  document.getElementById('bEditId').value='';
+  document.getElementById('bCoverPreview').classList.add('hidden');
+  document.getElementById('bPreview').textContent='';
+  document.getElementById('bLineCount').textContent='0';
+  renderBlogs();
+  setTimeout(()=>{ msg.classList.add('hidden'); setAdminTab('posts'); }, 900);
+}
+function editBlog(id){
+  const b=getBlogs().find(x=>x.id===id);
+  if(!b) return;
+  setAdminTab('create');
+  document.getElementById('bEditId').value=b.id;
+  document.getElementById('bTitle').value=b.title;
+  document.getElementById('bSlug').value=b.slug;
+  document.getElementById('bExcerpt').value=b.excerpt;
+  document.getElementById('bCover').value=b.cover;
+  document.getElementById('bCat').value=b.cat;
+  document.getElementById('bTags').value=b.tags.join(', ');
+  document.getElementById('bContent').value=b.content;
+  document.getElementById('bStatus').value=b.status;
+  document.getElementById('bFeatured').checked=b.featured;
+  const img=document.getElementById('bCoverPreview');
+  if(b.cover){ img.src=b.cover; img.classList.remove('hidden'); }
+  document.getElementById('bPreview').textContent=b.content.slice(0,1200);
+  document.getElementById('bLineCount').textContent=b.content.split('\n').length;
+  window.scrollTo({top: document.getElementById('admin').offsetTop - 70, behavior:'smooth'});
+}
+function deleteBlog(id){
+  if(!confirm('Bu yazı silinsin mi?')) return;
+  let blogs=getBlogs().filter(b=>b.id!==id);
+  saveBlogs(blogs);
+  renderBlogs();
+}
+function exportBlogs(){
+  const data=JSON.stringify(getBlogs(), null, 2);
+  const blob=new Blob([data], {type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='kerem-blogs.json'; a.click(); URL.revokeObjectURL(url);
+}
+function clearAllBlogs(){
+  if(!confirm('Tüm blog yazıları silinsin mi? Bu işlem geri alınamaz.')) return;
+  localStorage.removeItem('kerem_blogs');
+  renderBlogs();
+}
+// init auth + blogs on load
+document.addEventListener('DOMContentLoaded',()=>{
+  updateAuthUI();
+  renderBlogs();
+  // slug oto
+  const t=document.getElementById('bTitle');
+  if(t) t.addEventListener('input',()=>{
+    const slugEl=document.getElementById('bSlug');
+    if(!slugEl.value || slugEl.dataset.auto!=='0'){
+      slugEl.value=slugify(t.value);
+    }
+  });
+  const slugEl=document.getElementById('bSlug');
+  if(slugEl) slugEl.addEventListener('input',()=> slugEl.dataset.auto='0');
+  // reading time live
+  const c=document.getElementById('bContent');
+  if(c) c.addEventListener('input',()=> document.getElementById('bRead').value=readingTime(c.value));
+  document.getElementById('loginEmail')?.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
 });
 </script>
 </body>
