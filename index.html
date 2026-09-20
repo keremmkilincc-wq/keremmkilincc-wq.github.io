@@ -76,14 +76,18 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="flex items-center gap-2">
       <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
-      <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-white text-black font-medium px-5 py-2.5 rounded-full hover:bg-zinc-100 transition text-sm">GitHub <span class="opacity-60">↗</span></a>
-      <button onclick="openSettings()" class="w-10 h-10 rounded-full border border-white/10 bg-white/[0.04] grid place-items-center hover:bg-white/10 text-sm" aria-label="Ayarlar">⚙️</button>
-      <button id="loginBtn" onclick="openLogin()" class="inline-flex items-center gap-1.5 bg-white text-black font-medium px-4 py-2.5 rounded-full hover:bg-zinc-100 transition text-sm">Giriş Yap</button>
-      <button id="userBtn" onclick="handleUserBtn()" class="hidden inline-flex items-center gap-1.5 bg-white/[0.06] border border-white/10 text-white font-medium px-4 py-2.5 rounded-full hover:bg-white/10 transition text-sm"><span id="userBtnLabel">Misafir</span> <span class="text-xs opacity-60">▼</span></button>
-      <a href="#iletisim" class="hidden sm:inline-flex bg-violet-600 hover:bg-violet-500 text-white px-5 py-2.5 rounded-full text-sm font-medium transition" data-i18n="nav.contact">İletişim</a>
     </div>
   </div>
 </nav>
+
+<!-- SAĞ DİKEY DOCK — herkes için, üstten alta: GitHub / Ayarlar / Giriş-Kerem / İletişim -->
+<div id="rightDock" class="fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 bg-[#0F0F11]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl">
+  <a href="https://github.com/keremmkilincc-wq" target="_blank" class="w-11 h-11 rounded-xl bg-white text-black grid place-items-center hover:bg-zinc-100 transition text-sm font-bold" title="GitHub">↗</a>
+  <button onclick="openSettings()" class="w-11 h-11 rounded-xl border border-white/10 bg-white/[0.04] grid place-items-center hover:bg-white/10 text-sm" title="Ayarlar">⚙️</button>
+  <button id="dockLoginBtn" onclick="openLogin()" class="w-11 h-11 rounded-xl bg-white text-black grid place-items-center hover:bg-zinc-100 transition text-xs font-semibold" title="Giriş Yap">Giriş</button>
+  <button id="dockUserBtn" onclick="handleUserBtn()" class="hidden w-11 h-11 rounded-xl border border-white/10 bg-white/[0.06] grid place-items-center hover:bg-white/10 text-xs font-medium text-white" title="Hesap"><span id="dockUserLabel">K</span></button>
+  <button onclick="switchTab('iletisim')" class="w-11 h-11 rounded-xl bg-violet-600 hover:bg-violet-500 text-white grid place-items-center transition text-xs font-bold" title="İletişim">✉️</button>
+</div>
 
 <!-- SETTINGS MODAL - MÜKEMMEL -->
 <div id="settingsModal" class="fixed inset-0 z-[80] hidden">
@@ -152,12 +156,12 @@ body{background:var(--bg); transition: background 0.4s}
   <div class="relative max-w-[440px] mx-auto mt-[10vh] bg-[#0F0F11] border border-white/10 rounded-[24px] overflow-hidden shadow-2xl">
     <div class="px-6 py-5 border-b border-white/10 bg-gradient-to-r from-violet-600/10 to-cyan-500/10">
       <div class="flex items-center justify-between">
-        <div><div class="font-grotesk font-bold text-white text-lg">Giriş Yap</div><div class="text-xs text-zinc-400">E-postanı gir — yönetici sadece <b class="text-amber-300">keremmkilincc@gmail.com</b></div></div>
+        <div><div class="font-grotesk font-bold text-white text-lg">Giriş Yap</div><div class="text-xs text-zinc-400">E-postanı gir</div></div>
         <button onclick="closeLogin()" class="w-9 h-9 rounded-full bg-white text-black grid place-items-center font-bold">×</button>
       </div>
     </div>
     <div class="p-6 space-y-4" id="loginStepEmail">
-      <input id="loginEmail" type="email" placeholder="e-posta (örn: keremmkilincc@gmail.com)" class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+      <input id="loginEmail" type="email" placeholder="e-posta" class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
       <div class="flex gap-2">
         <button onclick="doLogin()" id="loginEmailBtn" class="flex-1 bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-semibold py-3 rounded-xl hover:opacity-90 transition">Giriş Yap →</button>
         <button onclick="doLoginGuest()" class="px-5 bg-white/[0.06] border border-white/10 text-white rounded-xl hover:bg-white/10 text-sm">Misafir</button>
@@ -167,7 +171,7 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="p-6 space-y-4 hidden" id="loginStepCode">
       <div class="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 text-xs text-amber-200">📧 Kod <b id="codeSentTo">keremmkilincc@gmail.com</b> adresine gönderildi. Gelen kutunu (ve Spam) kontrol et — 6 haneli kodu gir.</div>
-      <input id="loginCode" maxlength="6" inputmode="numeric" placeholder="6 haneli kod (örn: 482917)" class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-amber-500 text-center tracking-[0.3em] font-mono">
+      <input id="loginCode" maxlength="6" inputmode="numeric" placeholder="6 haneli kod" class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-amber-500 text-center tracking-[0.3em] font-mono">
       <div class="flex gap-2">
         <button onclick="verifyAdminCode()" class="flex-1 bg-amber-500 text-black font-semibold py-3 rounded-xl hover:bg-amber-400 transition">Kodu Doğrula →</button>
         <button onclick="resendCode()" id="resendBtn" class="px-5 bg-white/[0.06] border border-white/10 text-white rounded-xl hover:bg-white/10 text-sm">Tekrar Gönder</button>
@@ -179,8 +183,8 @@ body{background:var(--bg); transition: background 0.4s}
   </div>
 </div>
 
-<!-- USER MENU -->
-<div id="userMenu" class="fixed top-[68px] right-6 z-[70] hidden">
+<!-- USER MENU — sağ dock yanında -->
+<div id="userMenu" class="fixed right-[70px] top-1/2 -translate-y-1/2 z-[70] hidden">
   <div class="bg-[#0F0F11] border border-white/10 rounded-2xl shadow-2xl overflow-hidden min-w-[220px]">
     <div class="px-4 py-3 border-b border-white/10">
       <div class="text-sm font-medium text-white" id="userMenuEmail">—</div>
@@ -1509,22 +1513,29 @@ let authRole=localStorage.getItem('auth_role')||''; // 'admin' | 'guest' | ''
 function isAdmin(){ return authEmail.toLowerCase()===ADMIN_EMAIL.toLowerCase() && authRole==='admin'; }
 function updateAuthUI(){
   const loginBtn=document.getElementById('loginBtn');
+  const dockLoginBtn=document.getElementById('dockLoginBtn');
   const userBtn=document.getElementById('userBtn');
+  const dockUserBtn=document.getElementById('dockUserBtn');
   const userLabel=document.getElementById('userBtnLabel');
+  const dockUserLabel=document.getElementById('dockUserLabel');
   const adminTab=document.getElementById('adminTabBtn');
   const blogAdminGo=document.getElementById('blogAdminGo');
   const userMenuAdmin=document.getElementById('userMenuAdminBtn');
   const adminLabel=document.getElementById('adminEmailLabel');
   if(authEmail){
     if(loginBtn) loginBtn.classList.add('hidden');
+    if(dockLoginBtn) dockLoginBtn.classList.add('hidden');
     if(userBtn) userBtn.classList.remove('hidden');
-    if(userLabel) userLabel.textContent = isAdmin() ? 'Kerem 👑' : authEmail.split('@')[0];
+    if(dockUserBtn) dockUserBtn.classList.remove('hidden');
+    const labelText = isAdmin() ? 'Kerem 👑' : authEmail.split('@')[0];
+    if(userLabel) userLabel.textContent = labelText;
+    if(dockUserLabel) dockUserLabel.textContent = labelText.charAt(0).toUpperCase();
     if(adminTab) adminTab.classList.toggle('hidden', !isAdmin());
     if(blogAdminGo) blogAdminGo.classList.toggle('hidden', !isAdmin());
     if(userMenuAdmin) userMenuAdmin.classList.toggle('hidden', !isAdmin());
     if(adminLabel) adminLabel.textContent=authEmail;
-    document.getElementById('userMenuEmail').textContent=authEmail;
-    document.getElementById('userMenuRole').textContent= isAdmin() ? 'Yönetici — müq' : 'Misafir';
+    const umEmail=document.getElementById('userMenuEmail'); if(umEmail) umEmail.textContent=authEmail;
+    const umRole=document.getElementById('userMenuRole'); if(umRole) umRole.textContent= isAdmin() ? 'Yönetici — müq' : 'Misafir';
     // guard: ayrı arayüz olduğu için overlay'i kapat
     if(!isAdmin()){
       const overlay=document.getElementById('adminOverlay');
@@ -1532,7 +1543,9 @@ function updateAuthUI(){
     }
   } else {
     if(loginBtn) loginBtn.classList.remove('hidden');
+    if(dockLoginBtn) dockLoginBtn.classList.remove('hidden');
     if(userBtn) userBtn.classList.add('hidden');
+    if(dockUserBtn) dockUserBtn.classList.add('hidden');
     if(adminTab) adminTab.classList.add('hidden');
     if(blogAdminGo) blogAdminGo.classList.add('hidden');
     const overlay=document.getElementById('adminOverlay');
@@ -1571,7 +1584,7 @@ function doLogin(){
       m.classList.remove('hidden');
     }).catch(err=>{
       const m=document.getElementById('loginCodeMsg');
-      m.textContent='⚠️ Mail gönderilemedi, kod konsolda: '+code+' (F12 → Console)';
+      m.textContent='⚠️ Mail gönderilemedi — lütfen tekrar dene veya Spam klasörünü kontrol et.';
       m.className='text-xs text-center rounded-xl px-3 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-300';
       m.classList.remove('hidden');
     });
@@ -1621,7 +1634,7 @@ function resendCode(){
     body: JSON.stringify({name:'Portfolio Admin', email: email, subject:'Yeni Giriş Kodun: '+code, message:'Yeni kodun: '+code, _captcha:'false'})
   }).catch(()=>{});
   const m=document.getElementById('loginCodeMsg');
-  m.textContent='🔄 Yeni kod gönderildi: '+code+' (test için ekranda)';
+  m.textContent='🔄 Yeni kod gönderildi! Gelen kutunu kontrol et.';
   m.className='text-xs text-center rounded-xl px-3 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-300';
   m.classList.remove('hidden');
 }
@@ -1658,7 +1671,7 @@ function syncSettingsAccount(){
   if(se) se.textContent=authEmail||'— (giriş yapılmadı)';
   if(sn) sn.textContent=userName||'Misafir';
 }
-document.addEventListener('click',e=>{ const menu=document.getElementById('userMenu'); const btn=document.getElementById('userBtn'); if(menu && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.add('hidden'); });
+document.addEventListener('click',e=>{ const menu=document.getElementById('userMenu'); const btn=document.getElementById('userBtn'); const dockBtn=document.getElementById('dockUserBtn'); if(menu && !menu.contains(e.target) && !(btn && btn.contains(e.target)) && !(dockBtn && dockBtn.contains(e.target))) menu.classList.add('hidden'); });
 // ===== ADMIN OVERLAY — tamamen ayrı arayüz =====
 function openAdminPanel(){
   if(!isAdmin()){
