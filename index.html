@@ -65,6 +65,13 @@ body{background:var(--bg); transition: background 0.4s}
       <div class="font-grotesk font-bold tracking-tight text-white text-[18px]">KEREM KILINÇ<span class="text-violet-500">.</span><span class="hidden sm:inline font-medium text-zinc-500 text-[11px] tracking-[0.2em] ml-3 align-middle">PORTFOLIO 2026</span></div>
 
     </div>
+    <div class="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1">
+      <button onclick="switchTab('github')" data-tab="github" class="tab-btn active whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white text-black text-sm font-medium">GitHub <span class="opacity-60 text-xs ml-1">Canlı</span></button>
+      <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
+      <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
+      <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
+      <button onclick="switchTab('iletisim')" data-tab="iletisim" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">İletişim</button>
+    </div>
     <div class="flex items-center gap-2">
       <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
       <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-white text-black font-medium px-5 py-2.5 rounded-full hover:bg-zinc-100 transition text-sm">GitHub <span class="opacity-60">↗</span></a>
@@ -178,18 +185,6 @@ body{background:var(--bg); transition: background 0.4s}
   </div>
 </section>
 
-<!-- SEKME NAV - ANIMASYONU DÜZGÜN OLAN ÜSTE TAŞINDI -->
-<div class="sticky top-[68px] z-30 border-b border-white/[0.06] bg-[var(--bg)]/80 glass backdrop-blur">
-  <div class="max-w-[1280px] mx-auto px-6">
-    <div class="flex gap-1.5 py-3 overflow-auto scrollbar-none">
-      <button onclick="switchTab('github')" data-tab="github" class="tab-btn active whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white text-black text-sm font-medium">GitHub <span class="opacity-60 text-xs ml-1">Canlı</span></button>
-      <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
-      <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
-      <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
-      <button onclick="switchTab('iletisim')" data-tab="iletisim" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">İletişim</button>
-    </div>
-  </div>
-</div>
 <div id="tab-contents" class="min-h-[520px]">
 <!-- GITHUB DYNAMIC -->
 <section id="github" class="tab-panel active max-w-[1280px] mx-auto px-6 py-8">
@@ -197,6 +192,13 @@ body{background:var(--bg); transition: background 0.4s}
     <div>
       <h2 class="font-grotesk text-[30px] font-bold tracking-tight text-white" data-i18n="github.title">GitHub Projelerim — Canlı</h2>
       <p class="text-zinc-500 text-sm mt-1">APIden anlık çekiliyor • <span class="text-zinc-300">keremmkilincc-wq</span> • sıralama: son güncellenen</p>
+    </div>
+    <div class="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1">
+      <button onclick="switchTab('github')" data-tab="github" class="tab-btn active whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white text-black text-sm font-medium">GitHub <span class="opacity-60 text-xs ml-1">Canlı</span></button>
+      <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
+      <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
+      <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
+      <button onclick="switchTab('iletisim')" data-tab="iletisim" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">İletişim</button>
     </div>
     <div class="flex items-center gap-2">
       <input id="search" placeholder="Projelerde ara..." class="bg-white/[0.04] border border-white/10 rounded-full px-4 py-2.5 text-sm w-[220px] placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 text-white">
@@ -997,38 +999,27 @@ function drawMemory(){
   drawLoseOverlay();
 }
 function switchTab(id){
-  // panel animasyonlu geçiş
-  const prev=document.querySelector('.tab-panel.active');
+  document.querySelectorAll('.tab-panel').forEach(p=> p.classList.remove('active'));
   const target=document.getElementById(id);
-  if(prev && prev!==target){
-    prev.style.opacity='0';
-    prev.style.transform='translateY(-8px)';
-    setTimeout(()=>{
-      document.querySelectorAll('.tab-panel').forEach(p=> p.classList.remove('active'));
-      if(target){
-        target.classList.add('active');
-        // re-trigger animasyon
-        target.style.animation='none'; target.offsetHeight; target.style.animation='';
-      }
-    },180);
-  } else {
-    document.querySelectorAll('.tab-panel').forEach(p=> p.classList.remove('active'));
-    if(target){ target.classList.add('active'); target.style.animation='none'; target.offsetHeight; target.style.animation=''; }
+  if(target){
+    target.classList.add('active');
+    // re-trigger animasyon
+    target.style.animation='none'; void target.offsetHeight; target.style.animation='';
   }
-  // üst nav animasyonu
-  document.querySelectorAll('.top-tab').forEach(b=>{
-    const isActive=b.dataset.topTab===id;
-    b.classList.toggle('active', isActive);
-  });
+  // üst merkez sekmeler (tab-btn) aktif
   document.querySelectorAll('.tab-btn').forEach(b=>{
     const isActive=b.dataset.tab===id;
     b.classList.toggle('active', isActive);
     if(isActive){ b.classList.add('bg-white','text-black'); b.classList.remove('bg-white/[0.04]','text-zinc-400'); }
     else { b.classList.remove('bg-white','text-black'); b.classList.add('bg-white/[0.04]','text-zinc-400'); }
   });
+  document.querySelectorAll('.top-tab').forEach(b=>{
+    const isActive=b.dataset.topTab===id;
+    b.classList.toggle('active', isActive);
+  });
   localStorage.setItem('activeTab', id);
   const cont=document.getElementById('tab-contents');
-  if(cont) setTimeout(()=> window.scrollTo({top: cont.offsetTop - 78, behavior:'smooth'}), 200);
+  if(cont) window.scrollTo({top: cont.offsetTop - 78, behavior:'smooth'});
 }
 document.addEventListener('DOMContentLoaded',()=>{
   const saved=localStorage.getItem('activeTab');
