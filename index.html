@@ -49,6 +49,9 @@ body{background:var(--bg); transition: background 0.4s}
 .tab-btn{transition: all 0.25s ease}
 .tab-btn.active{background:var(--accent) !important; color:#fff !important; border-color:transparent !important; box-shadow:0 8px 20px -10px var(--accent)}
 .tab-btn:hover{transform:translateY(-1px)}
+.top-tab{transition: all 0.32s cubic-bezier(.2,.8,.2,1); position:relative}
+.top-tab.active{background:#fff !important; color:#000 !important; transform:scale(1.02); box-shadow:0 4px 14px rgba(0,0,0,0.2)}
+.top-tab:not(.active):hover{background:rgba(255,255,255,0.06) !important; color:#fff !important}
 </style>
 </head>
 <body class="font-inter text-zinc-300 antialiased selection:bg-violet-500/30 overflow-x-hidden">
@@ -60,12 +63,12 @@ body{background:var(--bg); transition: background 0.4s}
   <div class="max-w-[1280px] mx-auto px-6 h-[68px] flex items-center justify-between">
     <div class="flex items-center gap-8">
       <div class="font-grotesk font-bold tracking-tight text-white text-[18px]">KEREM KILINÇ<span class="text-violet-500">.</span><span class="hidden sm:inline font-medium text-zinc-500 text-[11px] tracking-[0.2em] ml-3 align-middle">PORTFOLIO 2026</span></div>
-      <div class="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1">
-        <a href="javascript:void(0)" onclick="switchTab('projeler')" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.projects">Projeler</a>
-        <a href="javascript:void(0)" onclick="switchTab('github')" class="px-4 py-1.5 rounded-full bg-white text-black text-sm font-medium">GitHub</a>
-        <a href="javascript:void(0)" onclick="switchTab('arcade')" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.arcade">Arcade</a>
-        <a href="javascript:void(0)" onclick="switchTab('surec')" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.process">Süreç</a>
-        <a href="javascript:void(0)" onclick="switchTab('iletisim')" class="px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.contact2">İletişim</a>
+      <div class="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1" id="topTabBar">
+        <a href="javascript:void(0)" onclick="switchTab('projeler')" data-top-tab="projeler" class="top-tab px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.projects">Projeler</a>
+        <a href="javascript:void(0)" onclick="switchTab('github')" data-top-tab="github" class="top-tab active px-4 py-1.5 rounded-full bg-white text-black text-sm font-medium">GitHub</a>
+        <a href="javascript:void(0)" onclick="switchTab('arcade')" data-top-tab="arcade" class="top-tab px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.arcade">Arcade</a>
+        <a href="javascript:void(0)" onclick="switchTab('surec')" data-top-tab="surec" class="top-tab px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.process">Süreç</a>
+        <a href="javascript:void(0)" onclick="switchTab('iletisim')" data-top-tab="iletisim" class="top-tab px-4 py-1.5 rounded-full text-sm text-zinc-400 hover:text-white" data-i18n="nav.contact2">İletişim</a>
       </div>
     </div>
     <div class="flex items-center gap-2">
@@ -181,18 +184,6 @@ body{background:var(--bg); transition: background 0.4s}
   </div>
 </section>
 
-<!-- SEKME NAV - MÜK ANİMASYONLU -->
-<div class="sticky top-[68px] z-30 border-b border-white/[0.06] bg-[var(--bg)]/80 glass backdrop-blur">
-  <div class="max-w-[1280px] mx-auto px-6">
-    <div class="flex gap-1.5 py-3 overflow-auto scrollbar-none">
-      <button onclick="switchTab('github')" data-tab="github" class="tab-btn active whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white text-black text-sm font-medium">GitHub <span class="opacity-60 text-xs ml-1">Canlı</span></button>
-      <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
-      <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
-      <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
-      <button onclick="switchTab('iletisim')" data-tab="iletisim" class="tab-btn whitespace-nowrap px-5 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">İletişim</button>
-    </div>
-  </div>
-</div>
 <div id="tab-contents" class="min-h-[520px]">
 <!-- GITHUB DYNAMIC -->
 <section id="github" class="tab-panel active max-w-[1280px] mx-auto px-6 py-8">
@@ -1000,9 +991,29 @@ function drawMemory(){
   drawLoseOverlay();
 }
 function switchTab(id){
-  document.querySelectorAll('.tab-panel').forEach(p=> p.classList.remove('active'));
+  // panel animasyonlu geçiş
+  const prev=document.querySelector('.tab-panel.active');
   const target=document.getElementById(id);
-  if(target){ target.classList.add('active'); target.style.animation='none'; target.offsetHeight; target.style.animation=''; }
+  if(prev && prev!==target){
+    prev.style.opacity='0';
+    prev.style.transform='translateY(-8px)';
+    setTimeout(()=>{
+      document.querySelectorAll('.tab-panel').forEach(p=> p.classList.remove('active'));
+      if(target){
+        target.classList.add('active');
+        // re-trigger animasyon
+        target.style.animation='none'; target.offsetHeight; target.style.animation='';
+      }
+    },180);
+  } else {
+    document.querySelectorAll('.tab-panel').forEach(p=> p.classList.remove('active'));
+    if(target){ target.classList.add('active'); target.style.animation='none'; target.offsetHeight; target.style.animation=''; }
+  }
+  // üst nav animasyonu
+  document.querySelectorAll('.top-tab').forEach(b=>{
+    const isActive=b.dataset.topTab===id;
+    b.classList.toggle('active', isActive);
+  });
   document.querySelectorAll('.tab-btn').forEach(b=>{
     const isActive=b.dataset.tab===id;
     b.classList.toggle('active', isActive);
@@ -1011,7 +1022,7 @@ function switchTab(id){
   });
   localStorage.setItem('activeTab', id);
   const cont=document.getElementById('tab-contents');
-  if(cont) window.scrollTo({top: cont.offsetTop - 78, behavior:'smooth'});
+  if(cont) setTimeout(()=> window.scrollTo({top: cont.offsetTop - 78, behavior:'smooth'}), 200);
 }
 document.addEventListener('DOMContentLoaded',()=>{
   const saved=localStorage.getItem('activeTab');
