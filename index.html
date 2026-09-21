@@ -176,6 +176,16 @@ body{background:var(--bg); transition: background 0.4s}
     <button id="hamburgerAdminBtn" onclick="openAdminPanel(); toggleHamburger();" class="hidden text-left px-4 py-3 flex items-center gap-3 hover:bg-amber-500/10 rounded-xl text-sm text-amber-300 transition"><i class="fa-solid fa-bolt w-5 text-center"></i> Admin Paneli</button>
   </div>
 </div>
+<script>
+// hamburger acil fallback — ana scriptten bagimsiz
+function toggleHamburger(){
+  var m=document.getElementById('hamburgerMenu');
+  var b=document.getElementById('hamburgerBtn');
+  if(!m) return;
+  m.classList.toggle('hidden');
+  if(b) b.setAttribute('aria-expanded', m.classList.contains('hidden')?'false':'true');
+}
+</script>
 
 <!-- SAĞ DİKEY DOCK — herkes için, üstten alta: GitHub / Ayarlar / Giriş-Kerem / İletişim -->
 <div id="rightDock" class="fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 bg-[#0F0F11]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl">
