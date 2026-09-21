@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kerem KILINÇ — Oyun Geliştirici & Dijital Tasarımcı</title>
 <meta name="description" content="Kerem KILINÇ - Oyun konseptleri, harita/karakter tasarımları ve dijital üretimler. GitHub: keremmkilincc-wq">
+<link rel="icon" href="https://github.com/keremmkilincc-wq.png" type="image/png">
+<link rel="shortcut icon" href="favicon.ico">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#8b5cf6">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -635,7 +637,7 @@ body{background:var(--bg); transition: background 0.4s}
         <span class="text-xs font-mono tracking-widest text-zinc-500">ÖNİZLEME — iframe</span>
         <span class="text-xs text-zinc-400">anında</span>
       </div>
-      <iframe id="pgPreview" class="flex-1 w-full min-h-[340px] bg-white" sandbox="allow-scripts allow-same-origin"></iframe>
+      <iframe id="pgPreview" class="flex-1 w-full min-h-[340px] bg-white" sandbox="allow-scripts"></iframe>
     </div>
   </div>
 </section>
@@ -2083,12 +2085,17 @@ async function sharedSet(key, val){
 async function syncFromShared(){
   try{
     const [b,c,w,s] = await Promise.all([sharedGet('blogs'), sharedGet('chat'), sharedGet('wall'), sharedGet('supporters')]);
-    if(b && Array.isArray(b)){ localStorage.setItem('kerem_blogs', JSON.stringify(b)); }
-    if(c && Array.isArray(c)){ localStorage.setItem('kerem_chat', JSON.stringify(c)); }
-    if(w && Array.isArray(w)){ localStorage.setItem('kerem_wall', JSON.stringify(w)); }
-    if(s && Array.isArray(s)){ localStorage.setItem('kerem_supporters', JSON.stringify(s)); }
-    renderBlogs(); renderChat(); renderWall(); renderSupportWall();
-  }catch(e){ console.warn('sync fail', e); }
+    let needRender=false;
+    if(b && Array.isArray(b)){ localStorage.setItem('kerem_blogs', JSON.stringify(b)); needRender=true; }
+    else if(b===null){ await sharedSet('blogs', getBlogs()); }
+    if(c && Array.isArray(c)){ localStorage.setItem('kerem_chat', JSON.stringify(c)); needRender=true; }
+    else if(c===null){ await sharedSet('chat', getChat()); }
+    if(w && Array.isArray(w)){ localStorage.setItem('kerem_wall', JSON.stringify(w)); needRender=true; }
+    else if(w===null){ await sharedSet('wall', getWall()); }
+    if(s && Array.isArray(s)){ localStorage.setItem('kerem_supporters', JSON.stringify(s)); needRender=true; }
+    else if(s===null){ await sharedSet('supporters', getSupporters()); }
+    if(needRender){ renderBlogs(); renderChat(); renderWall(); renderSupportWall(); }
+  }catch(e){}
 }
 setTimeout(syncFromShared, 800);
 setInterval(syncFromShared, 15000);
