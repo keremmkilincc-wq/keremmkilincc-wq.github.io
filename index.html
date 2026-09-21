@@ -7,6 +7,9 @@
 <meta name="description" content="Kerem KILINÇ - Oyun konseptleri, harita/karakter tasarımları ve dijital üretimler. GitHub: keremmkilincc-wq">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#8b5cf6">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link rel="canonical" href="https://keremmkilincc-wq.github.io/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -683,6 +686,7 @@ body{background:var(--bg); transition: background 0.4s}
     <div>
       <h2 class="font-grotesk text-[30px] font-bold tracking-tight text-white">Blog Yazıları</h2>
       <p class="text-zinc-500 text-sm mt-1">Oyun tasarım notları, dev günlükleri — herkes okur, sadece <b class="text-amber-300">Kerem</b> yazar.</p>
+      <div class="text-xs font-mono text-emerald-300 mt-1">● Ortak • herkes için • 15sn senkronize <span id="blogSyncStatus" class="text-zinc-500"></span></div>
     </div>
     <div class="flex items-center gap-2">
       <input id="blogSearch" oninput="renderBlogs()" placeholder="Blog ara..." class="bg-white/[0.04] border border-white/10 rounded-full px-4 py-2.5 text-sm w-[200px] placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 text-white">
@@ -2038,9 +2042,40 @@ switchTab = function(id){
   _origSwitchTab(id);
 };
 
-// ===== BLOG SİSTEMİ — localStorage kerem_blogs =====
+// ===== PAYLAŞIMLI DEPOLAMA — kvdb.io (herkes için ortak, Ctrl+F5 gerekmez) =====
+const SHARED_BUCKET='KeremPortfolio2026_9Z8X';
+async function sharedGet(key){
+  try{
+    const r=await fetch(`https://kvdb.io/${SHARED_BUCKET}/${key}`, {cache:'no-store'});
+    if(!r.ok) return null;
+    const txt=await r.text();
+    return txt ? JSON.parse(txt) : null;
+  }catch(e){ return null; }
+}
+async function sharedSet(key, val){
+  try{
+    await fetch(`https://kvdb.io/${SHARED_BUCKET}/${key}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(val)});
+  }catch(e){ console.warn('sharedSet fail', e); }
+}
+async function syncFromShared(){
+  try{
+    const [b,c,w,s] = await Promise.all([sharedGet('blogs'), sharedGet('chat'), sharedGet('wall'), sharedGet('supporters')]);
+    if(b && Array.isArray(b)){ localStorage.setItem('kerem_blogs', JSON.stringify(b)); }
+    if(c && Array.isArray(c)){ localStorage.setItem('kerem_chat', JSON.stringify(c)); }
+    if(w && Array.isArray(w)){ localStorage.setItem('kerem_wall', JSON.stringify(w)); }
+    if(s && Array.isArray(s)){ localStorage.setItem('kerem_supporters', JSON.stringify(s)); }
+    renderBlogs(); renderChat(); renderWall(); renderSupportWall();
+  }catch(e){ console.warn('sync fail', e); }
+}
+setTimeout(syncFromShared, 800);
+setInterval(syncFromShared, 15000);
+
+// ===== BLOG SİSTEMİ — localStorage kerem_blogs (+ shared) =====
 function getBlogs(){ try{ return JSON.parse(localStorage.getItem('kerem_blogs')||'[]'); }catch(e){return []} }
-function saveBlogs(arr){ localStorage.setItem('kerem_blogs', JSON.stringify(arr)); }
+function saveBlogs(arr){
+  localStorage.setItem('kerem_blogs', JSON.stringify(arr));
+  sharedSet('blogs', arr);
+}
 function slugify(s){ return s.toLowerCase().trim().replace(/[^a-z0-9ğüşöçı\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,60) || 'yazi-'+Date.now(); }
 function readingTime(txt){ const w=txt.split(/\s+/).filter(Boolean).length; return Math.max(1, Math.ceil(w/180))+' dk'; }
 function renderBlogs(){
@@ -2406,7 +2441,7 @@ function sendChat(){
   const text=input.value.trim(); if(!text) return;
   const name=userName || authEmail?.split('@')[0] || 'Misafir';
   const arr=getChat(); arr.push({name, text, time: new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})});
-  localStorage.setItem('kerem_chat', JSON.stringify(arr.slice(-100)));
+  const v=arr.slice(-100); localStorage.setItem('kerem_chat', JSON.stringify(v)); sharedSet('chat', v);
   input.value=''; renderChat();
 }
 function getSupporters(){ try{return JSON.parse(localStorage.getItem('kerem_supporters')||'[]')}catch(e){return []} }
@@ -2426,7 +2461,7 @@ function addSupporter(){
   const name=userName || authEmail?.split('@')[0] || 'Misafir';
   const arr=getSupporters();
   if(!arr.includes(name)) arr.push(name);
-  localStorage.setItem('kerem_supporters', JSON.stringify(arr.slice(-20)));
+  const v=arr.slice(-20); localStorage.setItem('kerem_supporters', JSON.stringify(v)); sharedSet('supporters', v);
   renderSupportWall();
 }
 // Playground — 1-mod (html deki Çalıştır fix)
@@ -2476,7 +2511,7 @@ function renderLore(){
 }
 // Wall — 4
 function getWall(){ try{return JSON.parse(localStorage.getItem('kerem_wall')||'[]')}catch(e){return []} }
-function saveWall(arr){ localStorage.setItem('kerem_wall', JSON.stringify(arr.slice(-2000))); }
+function saveWall(arr){ const v=arr.slice(-2000); localStorage.setItem('kerem_wall', JSON.stringify(v)); sharedSet('wall', v); }
 function renderWall(){
   const c=document.getElementById('wallCanvas'); if(!c) return;
   const ctx=c.getContext('2d');
