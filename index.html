@@ -103,7 +103,7 @@ body{background:var(--bg); transition: background 0.4s}
         <div class="font-grotesk font-bold tracking-tight text-white text-[18px]">KEREM KILINÇ<span class="text-violet-500">.</span><span class="hidden sm:inline font-medium text-zinc-500 text-[11px] tracking-[0.2em] ml-3 align-middle">PORTFOLIO 2026</span><div class="hidden sm:block text-[10px] font-mono text-cyan-400 -mt-1">SOFTWARE DEVELOPER</div></div>
       </div>
     </div>
-    <div class="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1">
+    <div class="hidden items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1">
       <button onclick="switchTab('github')" data-tab="github" class="tab-btn active whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white text-black text-sm font-medium">GitHub <span class="opacity-60 text-xs ml-1">Canlı</span></button>
       <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
       <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
@@ -119,9 +119,27 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="flex items-center gap-2">
       <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
+      <button id="hamburgerBtn" onclick="toggleHamburger()" class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 grid place-items-center hover:bg-white/10 text-white" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
     </div>
   </div>
 </nav>
+<!-- HAMBURGER MENÜ — sağ en üst 3 nokta, tıklayınca sırayla -->
+<div id="hamburgerMenu" class="fixed top-[68px] right-4 z-50 hidden w-[280px] bg-[#0F0F11] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+  <div class="p-2 flex flex-col">
+    <button onclick="switchTab('github'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-user w-5 text-center text-zinc-500"></i> Hakkımda</button>
+    <button onclick="switchTab('yetenekler'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-code w-5 text-center text-zinc-500"></i> Yetenekler</button>
+    <button onclick="switchTab('projeler'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-folder-open w-5 text-center text-zinc-500"></i> Projeler</button>
+    <button onclick="switchTab('arcade'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-gamepad w-5 text-center text-zinc-500"></i> Arcade</button>
+    <button onclick="switchTab('blog'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-book w-5 text-center text-zinc-500"></i> Blog</button>
+    <button onclick="switchTab('playground'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-laptop-code w-5 text-center text-zinc-500"></i> Playground</button>
+    <button onclick="switchTab('terminal'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-terminal w-5 text-center text-zinc-500"></i> Terminal</button>
+    <button onclick="switchTab('evren'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-earth-asia w-5 text-center text-zinc-500"></i> Evren</button>
+    <button onclick="switchTab('wall'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-paint-roller w-5 text-center text-zinc-500"></i> Duvar</button>
+    <button onclick="switchTab('surec'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-clock-rotate-left w-5 text-center text-zinc-500"></i> Süreç</button>
+    <button onclick="switchTab('iletisim'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-envelope w-5 text-center text-zinc-500"></i> İletişim</button>
+    <button id="hamburgerAdminBtn" onclick="openAdminPanel(); toggleHamburger();" class="hidden text-left px-4 py-3 flex items-center gap-3 hover:bg-amber-500/10 rounded-xl text-sm text-amber-300 transition"><i class="fa-solid fa-bolt w-5 text-center"></i> Admin Paneli</button>
+  </div>
+</div>
 
 <!-- SAĞ DİKEY DOCK — herkes için, üstten alta: GitHub / Ayarlar / Giriş-Kerem / İletişim -->
 <div id="rightDock" class="fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 bg-[#0F0F11]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl">
@@ -1567,6 +1585,7 @@ function drawMemory(){
   drawLoseOverlay();
 }
 function switchTab(id){
+  document.getElementById('hamburgerMenu')?.classList.add('hidden');
   document.querySelectorAll('.tab-panel').forEach(p=> p.classList.remove('active'));
   const target=document.getElementById(id);
   if(target){
@@ -1829,6 +1848,7 @@ function updateAuthUI(){
   const adminTab=document.getElementById('adminTabBtn');
   const blogAdminGo=document.getElementById('blogAdminGo');
   const userMenuAdmin=document.getElementById('userMenuAdminBtn');
+  const hamburgerAdminBtn=document.getElementById('hamburgerAdminBtn');
   const adminLabel=document.getElementById('adminEmailLabel');
   if(authEmail){
     if(loginBtn) loginBtn.classList.add('hidden');
@@ -1841,6 +1861,7 @@ function updateAuthUI(){
     if(adminTab) adminTab.classList.toggle('hidden', !isAdmin());
     if(blogAdminGo) blogAdminGo.classList.toggle('hidden', !isAdmin());
     if(userMenuAdmin) userMenuAdmin.classList.toggle('hidden', !isAdmin());
+    if(hamburgerAdminBtn) hamburgerAdminBtn.classList.toggle('hidden', !isAdmin());
     if(adminLabel) adminLabel.textContent=authEmail;
     const umEmail=document.getElementById('userMenuEmail'); if(umEmail) umEmail.textContent=authEmail;
     const umRole=document.getElementById('userMenuRole'); if(umRole) umRole.textContent= isAdmin() ? 'Yönetici — müq' : 'Misafir';
@@ -1856,6 +1877,7 @@ function updateAuthUI(){
     if(dockUserBtn) dockUserBtn.classList.add('hidden');
     if(adminTab) adminTab.classList.add('hidden');
     if(blogAdminGo) blogAdminGo.classList.add('hidden');
+    const hamAdmin=document.getElementById('hamburgerAdminBtn'); if(hamAdmin) hamAdmin.classList.add('hidden');
     const overlay=document.getElementById('adminOverlay');
     if(overlay) overlay.classList.add('hidden');
   }
@@ -1980,6 +2002,12 @@ function syncSettingsAccount(){
   if(sn) sn.textContent=userName||'Misafir';
 }
 document.addEventListener('click',e=>{ const menu=document.getElementById('userMenu'); const btn=document.getElementById('userBtn'); const dockBtn=document.getElementById('dockUserBtn'); if(menu && !menu.contains(e.target) && !(btn && btn.contains(e.target)) && !(dockBtn && dockBtn.contains(e.target))) menu.classList.add('hidden'); });
+function toggleHamburger(){ const m=document.getElementById('hamburgerMenu'); m.classList.toggle('hidden'); }
+document.addEventListener('click',e=>{
+  const menu=document.getElementById('hamburgerMenu');
+  const btn=document.getElementById('hamburgerBtn');
+  if(menu && !menu.contains(e.target) && !btn.contains(e.target) && !e.target.closest('#hamburgerMenu') && !e.target.closest('#hamburgerBtn')) menu.classList.add('hidden');
+});
 // ===== ADMIN OVERLAY — tamamen ayrı arayüz =====
 function openAdminPanel(){
   if(!isAdmin()){
