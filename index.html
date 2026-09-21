@@ -113,11 +113,11 @@ body{background:var(--bg); transition: background 0.4s}
 </div>
 
 <!-- MÜZİK / SFX ÇALAR — 9 -->
-<div id="musicBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 hidden lg:flex items-center gap-3 bg-[#0F0F11]/90 backdrop-blur border border-white/10 rounded-full px-3 py-2 shadow-2xl">
+<div id="musicBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 bg-[#0F0F11]/90 backdrop-blur border border-white/10 rounded-full px-3 py-2 shadow-2xl">
   <button onclick="toggleMusic()" id="musicPlayBtn" class="w-8 h-8 rounded-full bg-white text-black grid place-items-center text-xs">▶️</button>
   <div class="text-xs text-white font-medium">Neon Loop — müq</div>
   <div class="text-xs text-zinc-500">SFX demo</div>
-  <audio id="musicAudio" loop preload="none" src="https://cdn.pixabay.com/audio/2022/03/10/audio_9bd4170e8c.mp3"></audio>
+  <audio id="musicAudio" loop preload="none" crossorigin="anonymous" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
   <button onclick="document.getElementById('musicBar').classList.add('hidden')" class="w-7 h-7 rounded-full bg-white/5 grid place-items-center text-xs">×</button>
 </div>
 <button onclick="document.getElementById('musicBar').classList.remove('hidden')" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 lg:hidden bg-[#0F0F11] border border-white/10 rounded-full px-4 py-2 text-xs text-white">🎵 Müq Müzik</button>
@@ -880,7 +880,9 @@ function drawLoseOverlay(){
   return false;
 }
 window.addEventListener('keydown',e=>{
-  const t=e.target; if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return;
+  const t=e.target; const ae=document.activeElement;
+  if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable || t.closest?.('[contenteditable]'))) return;
+  if(ae && (ae.tagName==='INPUT' || ae.tagName==='TEXTAREA' || ae.isContentEditable)) return;
   if(e.key.toLowerCase()==='r' && currentGame) restartGame();
 });
 const gameMeta={
@@ -918,9 +920,11 @@ function closeGame(){
 }
 function restartGame(){ if(currentGame) openGame(currentGame); }
 window.addEventListener('keydown',e=>{
-  const t=e.target; if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return;
+  const t=e.target; const ae=document.activeElement;
+  if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable || t.closest?.('[contenteditable]'))) return;
+  if(ae && (ae.tagName==='INPUT' || ae.tagName==='TEXTAREA' || ae.isContentEditable)) return;
   keys[e.key.toLowerCase()]=true;
-  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','Space'].includes(e.key) || e.code==='Space') e.preventDefault();
   if(e.key==='Escape') closeGame();
 });
 window.addEventListener('keyup',e=> keys[e.key.toLowerCase()]=false);
@@ -1402,7 +1406,9 @@ function initGame(name){
 }
 // klavye 2048
 window.addEventListener('keydown',e=>{
-  const t=e.target; if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return;
+  const t=e.target; const ae=document.activeElement;
+  if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable || t.closest?.('[contenteditable]'))) return;
+  if(ae && (ae.tagName==='INPUT' || ae.tagName==='TEXTAREA' || ae.isContentEditable)) return;
   if(currentGame==='2048'){
     if(e.key==='ArrowLeft') move2048('left');
     if(e.key==='ArrowRight') move2048('right');
@@ -2058,18 +2064,35 @@ async function initWebLLM(){
   const sendBtn=document.getElementById('aiSendBtn');
   bar.classList.remove('hidden');
   if(sendBtn) sendBtn.disabled=true;
-  addAIMsg('ai','🧠 Model indiriliyor (Qwen2-0.5B) — ilk seferde biraz sürer, sonra cache’ten anında...');
+  addAIMsg('ai','🧠 Model indiriliyor (Qwen2-0.5B) — ilk seferde biraz sürer (~500MB), sonra cache’ten anında...');
+  let CreateMLCEngine=null;
   try{
-    const {CreateMLCEngine}=await import('@mlc-ai/web-llm');
-    mlcEngine=await CreateMLCEngine('Qwen2-0.5B-Instruct-q4f16_1-MLC', {
-      initProgressCallback: (p)=>{
-        const txt=p.text || 'Yükleniyor...';
-        const prog=Math.round((p.progress||0)*100);
-        label.textContent=txt;
-        pct.textContent=prog+'%';
-        fill.style.width=prog+'%';
-      }
-    });
+    try{
+      const mod=await import('@mlc-ai/web-llm');
+      CreateMLCEngine=mod.CreateMLCEngine;
+    }catch(e){
+      console.warn('esm.run import fail, trying jsdelivr', e);
+      const mod2=await import('https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.61/+esm');
+      CreateMLCEngine=mod2.CreateMLCEngine;
+    }
+    const tryModels=['Qwen2-0.5B-Instruct-q4f16_1-MLC','SmolLM2-135M-Instruct-q0f16-MLC','Llama-3.2-1B-Instruct-q4f16_1-MLC'];
+    let lastErr=null;
+    for(const mid of tryModels){
+      try{
+        label.textContent='Deneniyor: '+mid;
+        mlcEngine=await CreateMLCEngine(mid, {
+          initProgressCallback: (p)=>{
+            const txt=p.text || 'Yükleniyor...';
+            const prog=Math.round((p.progress||0)*100);
+            label.textContent=txt;
+            pct.textContent=prog+'%';
+            fill.style.width=prog+'%';
+          }
+        });
+        lastErr=null; break;
+      }catch(err){ lastErr=err; console.warn('model '+mid+' fail', err); }
+    }
+    if(lastErr) throw lastErr;
     mlcReady=true;
     bar.classList.add('hidden');
     if(sendBtn) sendBtn.disabled=false;
@@ -2078,7 +2101,7 @@ async function initWebLLM(){
     console.error(e);
     bar.classList.add('hidden');
     if(sendBtn) sendBtn.disabled=false;
-    addAIMsg('ai','⚠️ WebLLM yüklenemedi ('+e.message+') — rule-based yedek ile devam ediyorum. Sayfayı yenile veya interneti kontrol et.');
+    addAIMsg('ai','⚠️ WebLLM yüklenemedi ('+(e.message||e)+') — rule-based yedek ile devam ediyorum. Sayfayı yenile, interneti kontrol et veya farklı tarayıcı dene (Chrome önerilir).');
   } finally { mlcLoading=false; }
 }
 function addAIMsg(role, text){
@@ -2142,7 +2165,32 @@ function fallbackAI(q){
 function toggleMusic(){
   const a=document.getElementById('musicAudio');
   const btn=document.getElementById('musicPlayBtn');
-  if(a.paused){ a.play().catch(()=>{}); btn.textContent='⏸️'; } else { a.pause(); btn.textContent='▶️'; }
+  if(!a) return;
+  if(a.paused){
+    a.play().then(()=>{ btn.textContent='⏸️'; }).catch(e=>{
+      console.error('music play fail', e);
+      // try fallback beep via WebAudio
+      try{
+        const ctx=new (window.AudioContext||window.webkitAudioContext)();
+        const o=ctx.createOscillator(); o.type='square'; o.frequency.value=440;
+        o.connect(ctx.destination); o.start(); setTimeout(()=>{o.stop(); ctx.close();}, 600);
+        btn.textContent='🔊';
+        addAIMsg && addAIMsg('ai','🔊 Browser müzik engelledi, beep çalındı. Dosya için HTTPS gerekli — SoundHelix deneniyor.');
+      }catch(err){ btn.textContent='❌'; }
+    });
+  } else { a.pause(); btn.textContent='▶️'; }
+}
+if(document.getElementById('musicAudio')){
+  document.getElementById('musicAudio').addEventListener('error', ()=>{
+    console.warn('music load error, trying fallback');
+    const a=document.getElementById('musicAudio');
+    // fallback to pixabay if soundhelix fails
+    if(!a.dataset.fallback){
+      a.dataset.fallback='1';
+      a.src='https://cdn.pixabay.com/audio/2022/03/10/audio_9bd4170e8c.mp3';
+      a.load();
+    }
+  });
 }
 function getChat(){ try{return JSON.parse(localStorage.getItem('kerem_chat')||'[]')}catch(e){return []} }
 function renderChat(){
