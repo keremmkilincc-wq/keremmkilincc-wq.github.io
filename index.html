@@ -501,7 +501,7 @@ body{background:var(--bg); transition: background 0.4s}
         <span class="text-xs font-mono tracking-widest text-zinc-500">ÖNİZLEME — iframe</span>
         <span class="text-xs text-zinc-400">anında</span>
       </div>
-      <iframe id="pgPreview" class="flex-1 w-full min-h-[340px] bg-white" sandbox="allow-scripts"></iframe>
+      <iframe id="pgPreview" class="flex-1 w-full min-h-[340px] bg-white" sandbox="allow-scripts allow-same-origin"></iframe>
     </div>
   </div>
 </section>
@@ -2300,12 +2300,13 @@ function addSupporter(){
   localStorage.setItem('kerem_supporters', JSON.stringify(arr.slice(-20)));
   renderSupportWall();
 }
-// Playground — 1-mod
+// Playground — 1-mod (html deki Çalıştır fix)
 function runPlayground(){
   const code=document.getElementById('pgCode').value;
   const iframe=document.getElementById('pgPreview');
-  const doc=iframe.contentDocument || iframe.contentWindow.document;
-  doc.open(); doc.write(code); doc.close();
+  if(!iframe) return;
+  // srcdoc sandbox ile uyumlu, doc.write yerine
+  iframe.srcdoc = code;
   localStorage.setItem('kerem_playground', code);
 }
 function clearPlayground(){ document.getElementById('pgCode').value=''; runPlayground(); }
@@ -2374,7 +2375,16 @@ function clearWall(){ if(confirm('Duvar temizlensin mi?')){ localStorage.removeI
   c.addEventListener('touchstart',e=>{ drawing=true; add(e.touches[0]); e.preventDefault(); },{passive:false});
   c.addEventListener('touchmove',e=>{ if(drawing) add(e.touches[0]); e.preventDefault(); },{passive:false});
 })();
-document.addEventListener('DOMContentLoaded',()=>{ renderChat(); renderSupportWall(); renderLore(); renderWall(); if(document.getElementById('pgCode')) runPlayground(); });
+document.addEventListener('DOMContentLoaded',()=>{
+  renderChat(); renderSupportWall(); renderLore(); renderWall();
+  const pg=document.getElementById('pgCode');
+  if(pg){
+    const saved=localStorage.getItem('kerem_playground');
+    if(saved) pg.value=saved;
+    // küçük gecikme ile iframe hazır olsun
+    setTimeout(runPlayground, 80);
+  }
+});
 </script>
 </body>
 </html>
