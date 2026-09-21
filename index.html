@@ -88,7 +88,8 @@ body{background:var(--bg); transition: background 0.4s}
 .glass-panel-hover:hover{ border-color: rgba(6,182,212,.4); box-shadow: 0 10px 30px -10px rgba(6,182,212,.3); transform: translateY(-3px); }
 .bg-grid-pattern{ background-size:40px 40px; background-image: linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px); }
 ::-webkit-scrollbar{ width:8px; } ::-webkit-scrollbar-track{ background:var(--bg); } ::-webkit-scrollbar-thumb{ background:#1f2937; border-radius:4px; } ::-webkit-scrollbar-thumb:hover{ background:var(--accent); }
-</style>
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; } .reveal{ opacity:1 !important; transform:none !important; } .float{ animation:none !important; } }
+.card, .reveal, .btn-micro{ will-change: transform, opacity; }
 </head>
 <body class="font-inter text-zinc-300 antialiased selection:bg-violet-500/30 overflow-x-hidden">
 <!-- progress -->
@@ -119,7 +120,7 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="flex items-center gap-2">
       <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
-      <button id="hamburgerBtn" onclick="toggleHamburger()" class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 grid place-items-center hover:bg-white/10 text-white" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+      <button id="hamburgerBtn" onclick="toggleHamburger()" aria-expanded="false" aria-controls="hamburgerMenu" aria-label="Menüyü aç/kapat" class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 grid place-items-center hover:bg-white/10 text-white" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
     </div>
   </div>
 </nav>
@@ -142,8 +143,8 @@ body{background:var(--bg); transition: background 0.4s}
 </div>
 
 <!-- SAĞ DİKEY DOCK — herkes için, üstten alta: GitHub / Ayarlar / Giriş-Kerem / İletişim -->
-<div id="rightDock" class="fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 bg-[#0F0F11]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl">
-  <a href="https://github.com/keremmkilincc-wq" target="_blank" class="w-11 h-11 rounded-xl bg-white text-black grid place-items-center hover:bg-zinc-100 transition text-sm font-bold" title="GitHub">↗</a>
+<div id="rightDock" class="fixed right-3 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-2 bg-[#0F0F11]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl">
+  <a href="https://github.com/keremmkilincc-wq" target="_blank" rel="noopener" class="w-11 h-11 rounded-xl bg-white text-black grid place-items-center hover:bg-zinc-100 transition text-sm font-bold" title="GitHub">↗</a>
   <button onclick="openSettings()" class="w-11 h-11 rounded-xl border border-white/10 bg-white/[0.04] grid place-items-center hover:bg-white/10 text-sm" title="Ayarlar">⚙️</button>
   <button id="dockLoginBtn" onclick="openLogin()" class="w-11 h-11 rounded-xl bg-white text-black grid place-items-center hover:bg-zinc-100 transition text-xs font-semibold" title="Giriş Yap">Giriş</button>
   <button id="dockUserBtn" onclick="handleUserBtn()" class="hidden w-11 h-11 rounded-xl border border-white/10 bg-white/[0.06] grid place-items-center hover:bg-white/10 text-xs font-medium text-white" title="Hesap"><span id="dockUserLabel">K</span></button>
@@ -345,7 +346,7 @@ body{background:var(--bg); transition: background 0.4s}
           <div class="text-xs font-mono tracking-[0.2em] text-violet-400">ÖNE ÇIKAN — TRUST NO ONE</div>
           <div class="font-grotesk text-xl font-bold text-white mt-2 leading-tight">Gizli servis, tek oyuncu.<br>Kime güveneceksin?</div>
           <p class="text-sm text-zinc-400 mt-2">Python tabanlı, yayında. Hemen oyna.</p>
-          <a href="https://github.com/keremmkilincc-wq/TRUST-NO-ONE" target="_blank" class="mt-4 inline-flex bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-full text-sm font-medium btn-micro"><i class="fa-solid fa-gamepad mr-1"></i> Oyunu İncele →</a>
+          <a href="https://github.com/keremmkilincc-wq/TRUST-NO-ONE" target="_blank" rel="noopener" class="mt-4 inline-flex bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-full text-sm font-medium btn-micro"><i class="fa-solid fa-gamepad mr-1"></i> Oyunu İncele →</a>
           <div class="mt-4 flex gap-2">
             <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full"><i class="fa-brands fa-python mr-1"></i>Python</span>
             <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">Game</span>
@@ -390,7 +391,7 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="flex items-center gap-2">
       <input id="search" placeholder="Projelerde ara..." data-i18n="github.search" class="bg-white/[0.04] border border-white/10 rounded-full px-4 py-2.5 text-sm w-[220px] placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 text-white">
-      <a href="https://github.com/keremmkilincc-wq?tab=repositories" target="_blank" class="hidden sm:inline-flex border border-white/10 bg-white/[0.04] px-5 py-2.5 rounded-full text-sm hover:bg-white/[0.08]">Tümünü Gör →</a>
+      <a href="https://github.com/keremmkilincc-wq?tab=repositories" target="_blank" rel="noopener" class="hidden sm:inline-flex border border-white/10 bg-white/[0.04] px-5 py-2.5 rounded-full text-sm hover:bg-white/[0.08]">Tümünü Gör →</a>
     </div>
   </div>
 
@@ -423,15 +424,15 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="grid md:grid-cols-3 gap-5 mt-6">
       <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
-        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt="TRUST NO ONE — oyun görseli"</div>
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-cyan-300">OYUN • PYTHON</div><div class="font-grotesk font-semibold text-white mt-1">TRUST NO ONE</div><p class="text-sm text-zinc-400 mt-1">Yayında. Gizlilik ve karar mekanikleri.</p></div>
       </div>
       <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
-        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt="ECHOES Kayıp Sektör — harita konsepti"</div>
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-violet-300">HARİTA</div><div class="font-grotesk font-semibold text-white mt-1">ECHOES: Kayıp Sektör</div><p class="text-sm text-zinc-400 mt-1">Atmosferik FPS harita konsepti.</p></div>
       </div>
       <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
-        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt="Neon Ronin — karakter konsepti"</div>
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-fuchsia-300">KARAKTER</div><div class="font-grotesk font-semibold text-white mt-1">Neon Ronin</div><p class="text-sm text-zinc-400 mt-1">Siberpunk zırh & silah konsepti.</p></div>
       </div>
     </div>
@@ -520,7 +521,7 @@ body{background:var(--bg); transition: background 0.4s}
       <div class="mt-6 rounded-2xl border border-white/10 bg-[#0F0F11] p-5 flex items-center gap-4">
         <img src="https://github.com/keremmkilincc-wq.png" class="w-10 h-10 rounded-full">
         <div><div class="font-medium text-white text-sm">Kerem KILINÇ</div><div class="text-xs text-zinc-500">Son commit: <span id="last-update">yükleniyor...</span></div></div>
-        <a href="https://github.com/keremmkilincc-wq" target="_blank" class="ml-auto text-xs border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/5">Profili Aç</a>
+        <a href="https://github.com/keremmkilincc-wq" target="_blank" rel="noopener" class="ml-auto text-xs border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/5">Profili Aç</a>
       </div>
     </div>
     <div class="lg:col-span-7 relative border-l border-white/10 ml-3 pl-8 space-y-4">
@@ -888,7 +889,7 @@ body{background:var(--bg); transition: background 0.4s}
       <div id="supportWall" class="flex flex-wrap gap-1.5 mt-3"></div>
     </div>
     <div class="flex flex-col gap-2 shrink-0">
-      <a href="https://www.buymeacoffee.com/" target="_blank" onclick="addSupporter(); return true;" class="bg-amber-500 hover:bg-amber-400 text-black px-6 py-3 rounded-full font-semibold text-sm text-center">☕ Destekle →</a>
+      <a href="https://www.buymeacoffee.com/" target="_blank" rel="noopener" onclick="addSupporter(); return true;" class="bg-amber-500 hover:bg-amber-400 text-black px-6 py-3 rounded-full font-semibold text-sm text-center">☕ Destekle →</a>
       <button onclick="addSupporter()" class="border border-white/10 bg-white/[0.04] text-white px-6 py-2 rounded-full text-xs hover:bg-white/10">Adımı duvara ekle</button>
     </div>
   </div>
@@ -902,7 +903,7 @@ body{background:var(--bg); transition: background 0.4s}
       <span>•</span><span class="text-zinc-300">keremmkilincc-wq.github.io</span>
     </div>
     <div class="flex items-center gap-5 text-zinc-400">
-      <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hover:text-cyan-400 transition"><i class="fa-brands fa-github text-lg"></i></a>
+      <a href="https://github.com/keremmkilincc-wq" target="_blank" rel="noopener" class="hover:text-cyan-400 transition"><i class="fa-brands fa-github text-lg"></i></a>
       <a href="#" class="hover:text-cyan-400 transition"><i class="fa-brands fa-linkedin text-lg"></i></a>
       <a href="#" class="hover:text-cyan-400 transition"><i class="fa-brands fa-twitter text-lg"></i></a>
       <a href="#iletisim" onclick="switchTab('iletisim')" class="hover:text-white text-sm">İletişim</a>
@@ -959,7 +960,7 @@ async function loadRepos(){
       const color=langColor[lang]||"#8b5cf6";
       const isPortfolio=repo.name.includes("github.io");
       const card=document.createElement('a');
-      card.href=repo.html_url; card.target="_blank";
+      card.href=repo.html_url; card.target="_blank" rel="noopener";
       card.className="card group rounded-2xl border border-white/10 bg-[#0F0F11] overflow-hidden flex flex-col";
       card.innerHTML=`
         <div class="h-1 w-full" style="background:${color}"></div>
@@ -2002,7 +2003,13 @@ function syncSettingsAccount(){
   if(sn) sn.textContent=userName||'Misafir';
 }
 document.addEventListener('click',e=>{ const menu=document.getElementById('userMenu'); const btn=document.getElementById('userBtn'); const dockBtn=document.getElementById('dockUserBtn'); if(menu && !menu.contains(e.target) && !(btn && btn.contains(e.target)) && !(dockBtn && dockBtn.contains(e.target))) menu.classList.add('hidden'); });
-function toggleHamburger(){ const m=document.getElementById('hamburgerMenu'); m.classList.toggle('hidden'); }
+function toggleHamburger(){
+  const m=document.getElementById('hamburgerMenu');
+  const btn=document.getElementById('hamburgerBtn');
+  const isHidden=m.classList.contains('hidden');
+  m.classList.toggle('hidden');
+  if(btn) btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+}
 document.addEventListener('click',e=>{
   const menu=document.getElementById('hamburgerMenu');
   const btn=document.getElementById('hamburgerBtn');
