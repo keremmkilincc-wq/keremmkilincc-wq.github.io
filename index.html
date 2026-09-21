@@ -2603,5 +2603,50 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 });
 </script>
+<script>
+// fallback — tuşlar/hamburger/siyah ekran için son çare
+(function(){
+  try{
+    window.keys = window.keys || {};
+    // switchTab fallback
+    if(typeof window.switchTab === 'undefined'){
+      window.switchTab = function(id){
+        document.querySelectorAll('.tab-panel').forEach(p=> p.classList.remove('active'));
+        const t=document.getElementById(id);
+        if(t) t.classList.add('active');
+      };
+    } else {
+      const orig = window.switchTab;
+      window.switchTab = function(id){
+        try{ orig(id); }catch(e){
+          document.querySelectorAll('.tab-panel').forEach(p=> p.classList.remove('active'));
+          const t=document.getElementById(id);
+          if(t) t.classList.add('active');
+        }
+        const hm=document.getElementById('hamburgerMenu');
+        if(hm) hm.classList.add('hidden');
+      };
+    }
+    const hb=document.getElementById('hamburgerBtn');
+    const hm=document.getElementById('hamburgerMenu');
+    if(hb && hm && !hb._fb){
+      hb._fb=true;
+      hb.addEventListener('click', ()=> hm.classList.toggle('hidden'));
+    }
+    window.addEventListener('keydown', e=>{
+      const t=e.target;
+      if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable||t.closest?.('[contenteditable]'))) return;
+      const ae=document.activeElement;
+      if(ae && (ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'||ae.isContentEditable)) return;
+      window.keys[e.key.toLowerCase()] = true;
+    }, true);
+    window.addEventListener('keyup', e=> { window.keys[e.key.toLowerCase()] = false; }, true);
+    setTimeout(()=> document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in')), 800);
+    // siyah ekran acil: body görünür yap
+    document.documentElement.style.visibility='';
+    document.body.style.visibility='';
+  }catch(e){ console.error('fallback fail', e); }
+})();
+</script>
 </body>
 </html>
