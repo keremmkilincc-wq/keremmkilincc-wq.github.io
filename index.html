@@ -97,6 +97,9 @@ body{background:var(--bg); transition: background 0.4s}
       <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
       <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
       <button onclick="switchTab('blog')" data-tab="blog" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Blog <span id="blogCountBadge" class="text-xs ml-1 bg-white/10 px-1.5 py-0.5 rounded-full">0</span></button>
+      <button onclick="switchTab('playground')" data-tab="playground" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Playground <span class="text-xs ml-1">HTML</span></button>
+      <button onclick="switchTab('evren')" data-tab="evren" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Evren</button>
+      <button onclick="switchTab('wall')" data-tab="wall" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Duvar</button>
       <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
       <button onclick="switchTab('iletisim')" data-tab="iletisim" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">İletişim</button>
       <button id="adminTabBtn" onclick="openAdminPanel()" class="hidden whitespace-nowrap px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-sm text-amber-300 hover:text-amber-200">⚡ Admin</button>
@@ -468,6 +471,72 @@ body{background:var(--bg); transition: background 0.4s}
   </div>
 </section>
 
+<!-- PLAYGROUND — 1-mod HTML (kod yaz + çalıştır) -->
+<section id="playground" class="tab-panel max-w-[1280px] mx-auto px-6 py-8">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+    <div>
+      <h2 class="font-grotesk text-[30px] font-bold tracking-tight text-white">Playground — HTML/CSS/JS</h2>
+      <p class="text-zinc-500 text-sm mt-1">Kod yaz → <b class="text-white">Çalıştır</b> → önizleme anında. Herkes deneyebilir, local’de saklanır.</p>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="runPlayground()" class="bg-gradient-to-r from-violet-600 to-cyan-500 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:opacity-90 btn-micro">▶️ Çalıştır</button>
+      <button onclick="clearPlayground()" class="border border-white/10 bg-white/[0.04] px-4 py-2.5 rounded-full text-sm hover:bg-white/10">Temizle</button>
+      <button onclick="sharePlayground()" class="border border-white/10 bg-white/[0.04] px-4 py-2.5 rounded-full text-sm hover:bg-white/10">🔗 Paylaş</button>
+    </div>
+  </div>
+  <div class="grid lg:grid-cols-2 gap-4">
+    <div class="rounded-[16px] border border-white/10 bg-[#0F0F11] overflow-hidden flex flex-col">
+      <div class="px-4 py-2 border-b border-white/10 bg-white/[0.02] flex items-center justify-between">
+        <span class="text-xs font-mono tracking-widest text-zinc-500">EDITOR — HTML + CSS + JS</span>
+        <select id="pgExample" onchange="loadPgExample(this.value)" class="bg-[#0F0F11] border border-white/10 rounded-full px-3 py-1 text-xs text-white"><option value="">Örnek seç...</option><option value="neon">Neon Buton</option><option value="card">Kart</option><option value="game">Mini Oyun</option></select>
+      </div>
+      <textarea id="pgCode" rows="16" class="flex-1 w-full bg-[#050508] p-4 text-sm font-mono text-zinc-200 focus:outline-none resize-none" placeholder="&lt;h1 style='color:#8b5cf6'&gt;Merhaba!&lt;/h1&gt;&#10;&lt;style&gt;h1{animation: float 2s infinite}&lt;/style&gt;&#10;&lt;script&gt;console.log('müq')&lt;/script&gt;">&lt;div style="display:grid;place-items:center;height:100%;background:#070709;color:#fff;font-family:Space Grotesk"&gt;
+  &lt;h1 style="font-size:32px;background:linear-gradient(90deg,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent"&gt;Merhaba Playground!&lt;/h1&gt;
+  &lt;p style="color:#a1a1aa"&gt;HTML yaz, Çalıştır’a bas.&lt;/p&gt;
+  &lt;button onclick="this.textContent='Tıklandı! müq'" style="margin-top:12px;background:#fff;color:#000;border:0;padding:10px 18px;border-radius:999px;font-weight:600;cursor:pointer"&gt;Tıkla&lt;/button&gt;
+&lt;/div&gt;</textarea>
+    </div>
+    <div class="rounded-[16px] border border-white/10 bg-white overflow-hidden flex flex-col">
+      <div class="px-4 py-2 border-b border-black/10 bg-zinc-50 flex items-center justify-between">
+        <span class="text-xs font-mono tracking-widest text-zinc-500">ÖNİZLEME — iframe</span>
+        <span class="text-xs text-zinc-400">anında</span>
+      </div>
+      <iframe id="pgPreview" class="flex-1 w-full min-h-[340px] bg-white" sandbox="allow-scripts"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- EVREN — 5 Lore ansiklopedisi -->
+<section id="evren" class="tab-panel max-w-[1280px] mx-auto px-6 py-8">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+    <div>
+      <h2 class="font-grotesk text-[30px] font-bold tracking-tight text-white">Evren — TRUST NO ONE Wiki</h2>
+      <p class="text-zinc-500 text-sm mt-1">Lore, karakter, şehir, silah — aranabilir ansiklopedi. Admin panelden genişletilir.</p>
+    </div>
+    <input id="loreSearch" oninput="renderLore()" placeholder="Lore ara... (örn: Neon Ronin)" class="bg-white/[0.04] border border-white/10 rounded-full px-4 py-2.5 text-sm w-[220px] placeholder:text-zinc-500 focus:outline-none focus:border-violet-500 text-white">
+  </div>
+  <div id="loreGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+</section>
+
+<!-- DUVAR — 4 Misafir duvarı (piksel tuval) -->
+<section id="wall" class="tab-panel max-w-[1280px] mx-auto px-6 py-8">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+    <div>
+      <h2 class="font-grotesk text-[30px] font-bold tracking-tight text-white">Misafir Duvarı — Ortak Tuval</h2>
+      <p class="text-zinc-500 text-sm mt-1">Herkes 1 piksel bırakır — devasa tuval. Renk seç, tıkla, müq kalır.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <input id="wallColor" type="color" value="#8b5cf6" class="w-9 h-9 rounded-full border border-white/10 p-1 bg-transparent">
+      <button onclick="clearWall()" class="border border-white/10 bg-white/[0.04] px-4 py-2 rounded-full text-xs hover:bg-white/10">Temizle</button>
+      <span class="text-xs font-mono text-zinc-500" id="wallCount">0 piksel</span>
+    </div>
+  </div>
+  <div class="rounded-[16px] border border-white/10 bg-[#0F0F11] p-3 overflow-auto">
+    <canvas id="wallCanvas" width="640" height="360" class="w-full h-auto bg-[#050508] rounded-xl border border-white/5 cursor-crosshair block" style="image-rendering:pixelated"></canvas>
+    <p class="text-xs text-zinc-500 mt-2">Tıkla veya sürükle — localStorage’da saklanır, herkesin tuvali ortak (bu tarayıcıda).</p>
+  </div>
+</section>
+
 <!-- ARCADE - 10 OYUN -->
 <section id="arcade" class="tab-panel max-w-[1280px] mx-auto px-6 py-8">
   <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
@@ -617,7 +686,7 @@ body{background:var(--bg); transition: background 0.4s}
           <div><label class="text-xs font-mono tracking-widest text-zinc-400">BAŞLIK *</label><input id="bTitle" required placeholder="Örn: Neon Ronin — Karakter Tasarım Sürecim" class="mt-1 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></div>
           <div><label class="text-xs font-mono tracking-widest text-zinc-400">SLUG</label><input id="bSlug" placeholder="neon-ronin-surecim (oto)" class="mt-1 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></div>
         </div>
-        <div><label class="text-xs font-mono tracking-widest text-zinc-400">ÖZET (excerpt)</label><input id="bExcerpt" placeholder="Kartta görünecek kısa özet — 140 karakter" maxlength="160" class="mt-1 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"></div>
+        <div><label class="text-xs font-mono tracking-widest text-zinc-400">ÖZET (excerpt)</label><div class="flex gap-2 mt-1"><input id="bExcerpt" placeholder="Kartta görünecek kısa özet — 140 karakter" maxlength="160" class="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500"><button type="button" onclick="aiSummarizeBlog()" class="shrink-0 bg-gradient-to-r from-violet-600 to-cyan-500 text-white px-4 py-2 rounded-xl text-xs font-semibold hover:opacity-90">✨ AI Özetle</button></div><div id="aiSummaryStatus" class="text-xs text-zinc-500 mt-1"></div></div>
         <div class="grid md:grid-cols-2 gap-4">
           <div><label class="text-xs font-mono tracking-widest text-zinc-400">KAPAK GÖRSELİ (URL)</label><input id="bCover" placeholder="https://images.unsplash.com/..." class="mt-1 w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500" oninput="document.getElementById('bCoverPreview').src=this.value; document.getElementById('bCoverPreview').classList.toggle('hidden', !this.value)"><img id="bCoverPreview" class="hidden mt-2 w-full h-40 object-cover rounded-xl border border-white/10"></div>
           <div class="grid gap-3">
@@ -704,6 +773,22 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
   </div>
 </div>
+
+<!-- DESTEK — Buy Me a Coffee (8) -->
+<section class="max-w-[1280px] mx-auto px-6 py-8">
+  <div class="rounded-[24px] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-orange-600/10 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6">
+    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 grid place-items-center text-2xl shrink-0">☕</div>
+    <div class="flex-1">
+      <div class="font-grotesk font-bold text-white text-lg">Destekle — Buy Me a Coffee</div>
+      <p class="text-sm text-zinc-400 mt-1">TRUST NO ONE ve harita/karakter üretimlerimi seviyorsan bir kahve ısmarla — teşekkür duvarına adın eklenir.</p>
+      <div id="supportWall" class="flex flex-wrap gap-1.5 mt-3"></div>
+    </div>
+    <div class="flex flex-col gap-2 shrink-0">
+      <a href="https://www.buymeacoffee.com/" target="_blank" onclick="addSupporter(); return true;" class="bg-amber-500 hover:bg-amber-400 text-black px-6 py-3 rounded-full font-semibold text-sm text-center">☕ Destekle →</a>
+      <button onclick="addSupporter()" class="border border-white/10 bg-white/[0.04] text-white px-6 py-2 rounded-full text-xs hover:bg-white/10">Adımı duvara ekle</button>
+    </div>
+  </div>
+</section>
 
 <footer class="border-t border-white/5">
   <div class="max-w-[1280px] mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-zinc-500">
@@ -2149,6 +2234,30 @@ if(document.getElementById('musicAudio')){
     }
   });
 }
+async function aiSummarizeBlog(){
+  const title=document.getElementById('bTitle').value.trim();
+  const content=document.getElementById('bContent').value.trim();
+  const status=document.getElementById('aiSummaryStatus');
+  if(!title && !content){ status.textContent='Önce başlık ve içerik yaz.'; status.className='text-xs text-red-400 mt-1'; return; }
+  status.textContent='✨ AI özetliyor...'; status.className='text-xs text-amber-300 mt-1';
+  try{
+    const prompt=encodeURIComponent('Blog yazısı için 140 karakterlik özet ve 3 etiket virgülle ayır, format: OZET: ... | ETIKET: a,b,c\nBaşlık: '+title+'\nİçerik: '+content.slice(0,1500));
+    const res=await fetch('https://text.pollinations.ai/' + prompt + '?model=openai');
+    const text=await res.text();
+    // parse
+    let summary='', tags='';
+    const m1=text.match(/OZET:\s*(.*)/i); if(m1) summary=m1[1].split('|')[0].trim();
+    const m2=text.match(/ETIKET:\s*(.*)/i); if(m2) tags=m2[1].trim();
+    if(!summary) summary=text.slice(0,140).split('\n')[0];
+    if(summary) document.getElementById('bExcerpt').value=summary.slice(0,160);
+    if(tags) document.getElementById('bTags').value=tags;
+    status.textContent='✅ Özet ve etiketler dolduruldu — kontrol et, gerekirse düzelt.';
+    status.className='text-xs text-emerald-400 mt-1';
+  }catch(e){
+    status.textContent='⚠️ AI hata: '+e.message+' — manuel doldur.';
+    status.className='text-xs text-red-400 mt-1';
+  }
+}
 function getChat(){ try{return JSON.parse(localStorage.getItem('kerem_chat')||'[]')}catch(e){return []} }
 function renderChat(){
   const box=document.getElementById('chatBox'); if(!box) return;
@@ -2171,7 +2280,101 @@ function sendChat(){
   localStorage.setItem('kerem_chat', JSON.stringify(arr.slice(-100)));
   input.value=''; renderChat();
 }
-document.addEventListener('DOMContentLoaded',()=>{ renderChat(); });
+function getSupporters(){ try{return JSON.parse(localStorage.getItem('kerem_supporters')||'[]')}catch(e){return []} }
+function renderSupportWall(){
+  const el=document.getElementById('supportWall'); if(!el) return;
+  const arr=getSupporters();
+  el.innerHTML='';
+  if(arr.length===0) el.innerHTML='<span class="text-xs text-zinc-500">Henüz destek yok — ilk sen ol!</span>';
+  else arr.slice(-12).forEach(n=>{
+    const s=document.createElement('span');
+    s.className='text-xs bg-white/10 border border-white/10 px-2.5 py-1 rounded-full text-amber-200';
+    s.textContent='♥ '+n;
+    el.appendChild(s);
+  });
+}
+function addSupporter(){
+  const name=userName || authEmail?.split('@')[0] || 'Misafir';
+  const arr=getSupporters();
+  if(!arr.includes(name)) arr.push(name);
+  localStorage.setItem('kerem_supporters', JSON.stringify(arr.slice(-20)));
+  renderSupportWall();
+}
+// Playground — 1-mod
+function runPlayground(){
+  const code=document.getElementById('pgCode').value;
+  const iframe=document.getElementById('pgPreview');
+  const doc=iframe.contentDocument || iframe.contentWindow.document;
+  doc.open(); doc.write(code); doc.close();
+  localStorage.setItem('kerem_playground', code);
+}
+function clearPlayground(){ document.getElementById('pgCode').value=''; runPlayground(); }
+function sharePlayground(){
+  const code=document.getElementById('pgCode').value;
+  const url=location.origin+location.pathname+'#playground';
+  if(navigator.clipboard) navigator.clipboard.writeText(code).then(()=> alert('Kod kopyalandı!'));
+  else prompt('Kod:', code);
+}
+function loadPgExample(v){
+  const examples={
+    neon:`<div style="display:grid;place-items:center;height:100%;background:#070709"><button style="background:linear-gradient(90deg,#8b5cf6,#06b6d4);color:#fff;border:0;padding:14px 28px;border-radius:999px;font-weight:700;box-shadow:0 8px 24px rgba(139,92,246,.4);cursor:pointer;transition:transform .15s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Neon Buton — hover!</button></div>`,
+    card:`<div style="max-width:320px;margin:40px auto;background:#0F0F11;border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden;color:#fff;font-family:Inter"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600" style="width:100%;height:180px;object-fit:cover"><div style="padding:16px"><div style="font-size:12px;letter-spacing:.1em;color:#a78bfa">KARAKTER</div><div style="font-weight:700;margin-top:4px">Neon Ronin</div><p style="font-size:13px;color:#a1a1aa;margin-top:6px">Siberpunk zırh konsepti.</p></div></div>`,
+    game:`<canvas id="c" width="300" height="200" style="display:block;margin:20px auto;background:#0a0a0f;border-radius:12px"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');let p={x:150,y:100,vx:2,vy:2};setInterval(()=>{x.fillStyle='#0a0a0f';x.fillRect(0,0,300,200);p.x+=p.vx;p.y+=p.vy;if(p.x<10||p.x>290)p.vx*=-1;if(p.y<10||p.y>190)p.vy*=-1;x.fillStyle='#8b5cf6';x.beginPath();x.arc(p.x,p.y,10,0,Math.PI*2);x.fill()},16)<\/script>`
+  };
+  if(examples[v]){ document.getElementById('pgCode').value=examples[v]; runPlayground(); }
+}
+// Lore — 5
+const loreData=[
+  {title:'TRUST NO ONE', cat:'Oyun', icon:'🎮', desc:'Gizli servis, tek oyuncu. Python tabanlı, karar ve gizlilik mekanikleri. Yayında: github.com/keremmkilincc-wq/TRUST-NO-ONE', tags:['gizli','tek oyuncu']},
+  {title:'Neon Ronin', cat:'Karakter', icon:'🤖', desc:'Siberpunk zırh, katana + pulse tüfek. Gece şehrinde lone wolf. Harita: Kayıp Sektör.', tags:['siberpunk','ronin']},
+  {title:'Kayıp Sektör', cat:'Harita', icon:'🗺️', desc:'Atmosferik FPS haritası, sisli koridorlar, neon reklamlar. ECHOES projesinin kalbi.', tags:['fps','atmosfer']},
+  {title:'Pulse Tüfek', cat:'Silah', icon:'🔫', desc:'Enerji mermisi, şarjlı atış. Ronin’in imzası.', tags:['silah']},
+  {title:'Gece Şehri', cat:'Şehir', icon:'🌃', desc:'Yağmurlu, neon, drone’lar. 3 fraksiyon: Corp, Ronin, Gölge.', tags:['şehir']},
+  {title:'Gölge Protokolü', cat:'Lore', icon:'📜', desc:'Kimseye güvenme — her diyalog bir test. Seçimlerin yolunu açar.', tags:['hikaye']},
+];
+function renderLore(){
+  const q=(document.getElementById('loreSearch')?.value||'').toLowerCase();
+  const grid=document.getElementById('loreGrid'); if(!grid) return;
+  grid.innerHTML='';
+  loreData.filter(l=> !q || (l.title+l.desc+l.tags.join(' ')).toLowerCase().includes(q)).forEach(l=>{
+    const d=document.createElement('div');
+    d.className='rounded-2xl border border-white/10 bg-[#0F0F11] p-5 hover:border-violet-500/20 transition';
+    d.innerHTML=`<div class="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/10 grid place-items-center">${l.icon}</div><div class="text-xs font-mono tracking-widest text-violet-400 mt-3">${l.cat.toUpperCase()}</div><div class="font-grotesk font-bold text-white mt-1">${l.title}</div><p class="text-sm text-zinc-400 mt-1">${l.desc}</p><div class="flex gap-1.5 mt-3">${l.tags.map(t=>'<span class="text-xs bg-white/5 border border-white/10 px-2 py-1 rounded-full">#'+t+'</span>').join('')}</div>`;
+    grid.appendChild(d);
+  });
+  if(grid.children.length===0) grid.innerHTML='<div class="col-span-3 text-center text-zinc-500 py-10">Sonuç yok.</div>';
+}
+// Wall — 4
+function getWall(){ try{return JSON.parse(localStorage.getItem('kerem_wall')||'[]')}catch(e){return []} }
+function saveWall(arr){ localStorage.setItem('kerem_wall', JSON.stringify(arr.slice(-2000))); }
+function renderWall(){
+  const c=document.getElementById('wallCanvas'); if(!c) return;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#050508'; ctx.fillRect(0,0,640,360);
+  ctx.fillStyle='rgba(255,255,255,0.02)'; for(let x=0;x<640;x+=20){ ctx.fillRect(x,0,1,360); } for(let y=0;y<360;y+=20){ ctx.fillRect(0,y,640,1); }
+  const arr=getWall();
+  arr.forEach(p=>{ ctx.fillStyle=p.color; ctx.fillRect(p.x-2,p.y-2,4,4); });
+  document.getElementById('wallCount').textContent=arr.length+' piksel';
+}
+function clearWall(){ if(confirm('Duvar temizlensin mi?')){ localStorage.removeItem('kerem_wall'); renderWall(); } }
+(function initWall(){
+  const c=document.getElementById('wallCanvas');
+  if(!c) return;
+  let drawing=false;
+  function add(e){
+    const rect=c.getBoundingClientRect();
+    const x=Math.round((e.clientX-rect.left)/rect.width*640);
+    const y=Math.round((e.clientY-rect.top)/rect.height*360);
+    const color=document.getElementById('wallColor').value;
+    const arr=getWall(); arr.push({x,y,color}); saveWall(arr); renderWall();
+  }
+  c.addEventListener('mousedown',e=>{ drawing=true; add(e); });
+  c.addEventListener('mousemove',e=>{ if(drawing) add(e); });
+  window.addEventListener('mouseup',()=> drawing=false);
+  c.addEventListener('touchstart',e=>{ drawing=true; add(e.touches[0]); e.preventDefault(); },{passive:false});
+  c.addEventListener('touchmove',e=>{ if(drawing) add(e.touches[0]); e.preventDefault(); },{passive:false});
+})();
+document.addEventListener('DOMContentLoaded',()=>{ renderChat(); renderSupportWall(); renderLore(); renderWall(); if(document.getElementById('pgCode')) runPlayground(); });
 </script>
 </body>
 </html>
