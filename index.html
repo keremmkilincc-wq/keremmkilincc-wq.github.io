@@ -1097,7 +1097,7 @@ document.getElementById('contactForm').addEventListener('submit', async (e)=>{
 // ===== ARCADE MOTORU - 10 OYUN =====
 const canvas=document.getElementById('gameCanvas');
 const ctx=canvas.getContext('2d');
-let gameLoop=null, currentGame=null, keys={}, score=0;
+var gameLoop=null, currentGame=null, keys={}, score=0;
 const bestKey=g=>`best_${g}`;
 function updateScore(v){
   score=v;
