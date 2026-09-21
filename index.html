@@ -96,6 +96,36 @@ body{background:var(--bg); transition: background 0.4s}
 .card, .reveal, .btn-micro{ will-change: transform, opacity; }
 </head>
 <body class="font-inter text-zinc-300 antialiased selection:bg-violet-500/30 overflow-x-hidden">
+<script>
+// zorunlu SW güncelleme + siyah ekran fallback — Ctrl+F5 gerekmesin
+(function(){
+  const V='v7';
+  try{
+    if(localStorage.getItem('kerem_sw')!==V){
+      if('serviceWorker' in navigator){
+        navigator.serviceWorker.getRegistrations().then(rs=> rs.forEach(r=> r.unregister()));
+        caches.keys().then(ks=> ks.forEach(k=> caches.delete(k)));
+      }
+      localStorage.setItem('kerem_sw', V);
+      if(!sessionStorage.getItem('sw_reloaded')){
+        sessionStorage.setItem('sw_reloaded','1');
+        location.reload();
+        return;
+      }
+    }
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+        if(!window.__reloaded){ window.__reloaded=true; location.reload(); }
+      });
+      // her açılışta güncelle kontrol et
+      navigator.serviceWorker.getRegistrations().then(rs=> rs.forEach(r=> r.update()));
+    }
+    // siyah ekran fallback
+    setTimeout(()=> document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in')), 1200);
+  }catch(e){}
+})();
+</script>
+<noscript><style>.reveal{opacity:1 !important; transform:none !important;}</style></noscript>
 <!-- progress -->
 <div id="progress" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-violet-600 to-cyan-400 w-0 z-[60] transition-[width] duration-150"></div>
 
@@ -2307,7 +2337,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('loginEmail')?.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
   document.getElementById('loginCode')?.addEventListener('keydown',e=>{ if(e.key==='Enter') verifyAdminCode(); });
   document.getElementById('nickInput')?.addEventListener('keydown',e=>{ if(e.key==='Enter') changeNick(); });
-  if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js?v=7').catch(()=>{}); }
   // A — reveal (try/catch ile siyah ekran engelle)
   try{
     const ro=new IntersectionObserver((ents)=>ents.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:0.12});
