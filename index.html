@@ -873,7 +873,10 @@ function drawLoseOverlay(){
   }
   return false;
 }
-window.addEventListener('keydown',e=>{ if(e.key.toLowerCase()==='r' && currentGame) restartGame(); });
+window.addEventListener('keydown',e=>{
+  const t=e.target; if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return;
+  if(e.key.toLowerCase()==='r' && currentGame) restartGame();
+});
 const gameMeta={
   tetris3d:{title:'3D Tetris — Neon Stack',sub:'← → hareket • ↓ hızlandır • ↑ döndür • Space düşür',icon:'3D'},
   flappy3d:{title:'3D Flappy Bird — Voxel Hop',sub:'Space / Tıkla: zıpla',icon:'F3'},
@@ -909,6 +912,7 @@ function closeGame(){
 }
 function restartGame(){ if(currentGame) openGame(currentGame); }
 window.addEventListener('keydown',e=>{
+  const t=e.target; if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return;
   keys[e.key.toLowerCase()]=true;
   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
   if(e.key==='Escape') closeGame();
@@ -1392,6 +1396,7 @@ function initGame(name){
 }
 // klavye 2048
 window.addEventListener('keydown',e=>{
+  const t=e.target; if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return;
   if(currentGame==='2048'){
     if(e.key==='ArrowLeft') move2048('left');
     if(e.key==='ArrowRight') move2048('right');
