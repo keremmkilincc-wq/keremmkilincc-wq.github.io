@@ -1,0 +1,13 @@
+{
+  "name": "Kerem KILINÇ — Portfolio",
+  "short_name": "Kerem",
+  "description": "Oyun dünyaları tasarlıyorum — GitHub canlı, Arcade 10 oyun, Blog",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070709",
+  "theme_color": "#8b5cf6",
+  "icons": [
+    { "src": "https://github.com/keremmkilincc-wq.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "https://github.com/keremmkilincc-wq.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

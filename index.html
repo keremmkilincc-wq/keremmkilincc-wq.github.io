@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kerem KILINÇ — Oyun Geliştirici & Dijital Tasarımcı</title>
 <meta name="description" content="Kerem KILINÇ - Oyun konseptleri, harita/karakter tasarımları ve dijital üretimler. GitHub: keremmkilincc-wq">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8b5cf6">
 <script src="https://cdn.tailwindcss.com"></script>
+<script type="module" src="https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <script>
 tailwind.config={theme:{extend:{fontFamily:{grotesk:['Space Grotesk','sans-serif'],inter:['Inter','sans-serif'],mono:['JetBrains Mono','monospace']},animation:{'pulse-slow':'pulse 3s infinite'}}}}
@@ -88,6 +91,30 @@ body{background:var(--bg); transition: background 0.4s}
   <button id="dockUserBtn" onclick="handleUserBtn()" class="hidden w-11 h-11 rounded-xl border border-white/10 bg-white/[0.06] grid place-items-center hover:bg-white/10 text-xs font-medium text-white" title="Hesap"><span id="dockUserLabel">K</span></button>
   <button onclick="switchTab('iletisim')" class="w-11 h-11 rounded-xl bg-violet-600 hover:bg-violet-500 text-white grid place-items-center transition text-xs font-bold" title="İletişim">✉️</button>
 </div>
+
+<!-- AI ASİSTAN — bildiğimiz AI gibi (12) -->
+<button id="aiBtn" onclick="toggleAI()" class="fixed left-4 bottom-4 z-40 w-14 h-14 rounded-full bg-gradient-to-br from-violet-600 to-cyan-500 shadow-2xl grid place-items-center text-white text-xl hover:scale-105 transition border border-white/20" title="AI Asistan">🤖</button>
+<div id="aiPanel" class="fixed left-4 bottom-[74px] z-40 w-[360px] max-w-[92vw] bg-[#0F0F11] border border-white/10 rounded-[20px] shadow-2xl hidden flex-col overflow-hidden">
+  <div class="px-4 py-3 border-b border-white/10 bg-gradient-to-r from-violet-600/10 to-cyan-500/10 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-gradient-to-br from-violet-600 to-cyan-500 grid place-items-center text-xs">🤖</span><div><div class="text-sm font-semibold text-white leading-none">Kerem AI</div><div class="text-xs text-zinc-500">Portfolyo asistanı • anında cevap</div></div></div>
+    <button onclick="toggleAI()" class="w-7 h-7 rounded-full bg-white text-black grid place-items-center text-xs font-bold">×</button>
+  </div>
+  <div id="aiMessages" class="h-[320px] overflow-auto p-4 space-y-2 text-sm"></div>
+  <div class="p-3 border-t border-white/10 flex gap-2">
+    <input id="aiInput" placeholder="Sor: TRUST NO ONE nedir?" class="flex-1 bg-white/[0.04] border border-white/10 rounded-full px-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500" onkeydown="if(event.key==='Enter') sendAI()">
+    <button onclick="sendAI()" class="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">Gönder</button>
+  </div>
+</div>
+
+<!-- MÜZİK / SFX ÇALAR — 9 -->
+<div id="musicBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 hidden lg:flex items-center gap-3 bg-[#0F0F11]/90 backdrop-blur border border-white/10 rounded-full px-3 py-2 shadow-2xl">
+  <button onclick="toggleMusic()" id="musicPlayBtn" class="w-8 h-8 rounded-full bg-white text-black grid place-items-center text-xs">▶️</button>
+  <div class="text-xs text-white font-medium">Neon Loop — müq</div>
+  <div class="text-xs text-zinc-500">SFX demo</div>
+  <audio id="musicAudio" loop preload="none" src="https://cdn.pixabay.com/audio/2022/03/10/audio_9bd4170e8c.mp3"></audio>
+  <button onclick="document.getElementById('musicBar').classList.add('hidden')" class="w-7 h-7 rounded-full bg-white/5 grid place-items-center text-xs">×</button>
+</div>
+<button onclick="document.getElementById('musicBar').classList.remove('hidden')" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 lg:hidden bg-[#0F0F11] border border-white/10 rounded-full px-4 py-2 text-xs text-white">🎵 Müq Müzik</button>
 
 <!-- SETTINGS MODAL - MÜKEMMEL -->
 <div id="settingsModal" class="fixed inset-0 z-[80] hidden">
@@ -297,6 +324,15 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
   </div>
 
+  <!-- filtre chips — 2 -->
+  <div id="githubFilters" class="flex flex-wrap gap-2 mb-4">
+    <button onclick="setGithubFilter('all')" data-ghfilter="all" class="gh-filter active px-3 py-1.5 rounded-full bg-white text-black text-xs font-medium border border-white">Hepsi</button>
+    <button onclick="setGithubFilter('JavaScript')" data-ghfilter="JavaScript" class="gh-filter px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-zinc-400 hover:text-white">JavaScript</button>
+    <button onclick="setGithubFilter('Python')" data-ghfilter="Python" class="gh-filter px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-zinc-400 hover:text-white">Python</button>
+    <button onclick="setGithubFilter('HTML')" data-ghfilter="HTML" class="gh-filter px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-zinc-400 hover:text-white">HTML</button>
+    <button onclick="setGithubFilter('Other')" data-ghfilter="Other" class="gh-filter px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-zinc-400 hover:text-white">Diğer</button>
+  </div>
+
   <!-- skeletons -->
   <div id="skeletons" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
     <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5"><div class="h-5 w-32 shimmer rounded"></div><div class="h-3 w-full shimmer rounded mt-4"></div><div class="h-3 w-2/3 shimmer rounded mt-2"></div></div>
@@ -329,6 +365,14 @@ body{background:var(--bg); transition: background 0.4s}
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-fuchsia-300">KARAKTER</div><div class="font-grotesk font-semibold text-white mt-1">Neon Ronin</div><p class="text-sm text-zinc-400 mt-1">Siberpunk zırh & silah konsepti.</p></div>
       </div>
     </div>
+    <!-- 3D VIEWER — 6 -->
+    <div class="mt-6 rounded-2xl border border-white/10 bg-[#0F0F11] p-4">
+      <div class="flex items-center justify-between mb-3"><h4 class="font-grotesk font-semibold text-white text-sm">3D Karakter — Neon Ronin (demo)</h4><span class="text-xs font-mono text-zinc-500">model-viewer • sürükle</span></div>
+      <div class="aspect-[16/9] rounded-xl overflow-hidden bg-gradient-to-br from-violet-600/10 to-cyan-500/10 border border-white/5 relative grid place-items-center" style="min-height:260px">
+        <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" alt="Neon Ronin" camera-controls auto-rotate ar shadow-intensity="1" style="width:100%;height:100%;min-height:260px"></model-viewer>
+        <div class="absolute bottom-2 left-2 text-xs bg-black/60 backdrop-blur px-2 py-1 rounded-full text-white pointer-events-none">Sürükle • Zoom • AR</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -346,9 +390,10 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="lg:col-span-7 relative border-l border-white/10 ml-3 pl-8 space-y-4">
       <div class="absolute -left-[5px] top-2 w-[9px] h-[9px] bg-violet-500 rounded-full ring-4 ring-violet-500/20"></div>
-      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><div class="text-xs font-mono text-violet-400">19 EYLÜL 2026 • YAYINDA</div><div class="font-grotesk font-semibold text-white">Portfolio v2 — Aşırı modern arayüz + canlı GitHub</div><p class="text-sm text-zinc-400 mt-1">Dinamik proje çekme, aurora background, bento grid.</p></div>
-      <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5"><div class="text-xs font-mono text-zinc-500">8 EYLÜL 2026</div><div class="font-medium text-white">TRUST NO ONE yayında</div><p class="text-sm text-zinc-500 mt-1">Python tabanlı oyun GitHub'da.</p></div>
-      <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5"><div class="text-xs font-mono text-zinc-500">5 EYLÜL 2026</div><div class="font-medium text-white">SONISIK & indirgitsin güncellemeleri</div><p class="text-sm text-zinc-500 mt-1">JavaScript projeleri güncellendi.</p></div>
+      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-5 cursor-pointer hover:border-violet-500/20 transition" onclick="this.querySelector('.rm-detail').classList.toggle('hidden')"><div class="flex items-center justify-between"><div class="text-xs font-mono text-violet-400">19 EYLÜL 2026 • YAYINDA</div><span class="text-xs text-zinc-500">▼</span></div><div class="font-grotesk font-semibold text-white">Portfolio v2 — Aşırı modern arayüz + canlı GitHub</div><p class="text-sm text-zinc-400 mt-1">Dinamik proje çekme, aurora background, bento grid.</p><div class="rm-detail hidden mt-3 pt-3 border-t border-white/5 text-xs text-zinc-400 leading-relaxed">Roadmap: Sonraki → PWA, 3D viewer, AI asistan tamamlandı. Sırada: ses paketi + itch.io showcase.</div></div>
+      <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5 cursor-pointer hover:border-white/10 transition" onclick="this.querySelector('.rm-detail').classList.toggle('hidden')"><div class="flex items-center justify-between"><div class="text-xs font-mono text-zinc-500">8 EYLÜL 2026</div><span class="text-xs text-zinc-500">▼</span></div><div class="font-medium text-white">TRUST NO ONE yayında</div><p class="text-sm text-zinc-500 mt-1">Python tabanlı oyun GitHub'da.</p><div class="rm-detail hidden mt-3 text-xs text-zinc-500">Steam/itch.io entegrasyonu planlanıyor — şimdilik GitHub üzerinden oynanabilir.</div></div>
+      <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-5 cursor-pointer hover:border-white/10 transition" onclick="this.querySelector('.rm-detail').classList.toggle('hidden')"><div class="flex items-center justify-between"><div class="text-xs font-mono text-zinc-500">5 EYLÜL 2026</div><span class="text-xs text-zinc-500">▼</span></div><div class="font-medium text-white">SONISIK & indirgitsin güncellemeleri</div><p class="text-sm text-zinc-500 mt-1">JavaScript projeleri güncellendi.</p><div class="rm-detail hidden mt-3 text-xs text-zinc-500">Arcade filtre ve rozet sistemi bu sürümde eklendi.</div></div>
+      <div class="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5"><div class="text-xs font-mono text-amber-300">Q4 2026 • YOL HARİTASI</div><div class="font-grotesk font-semibold text-white">Sırada: Turnuva + Liderlik Sezonu</div><p class="text-sm text-zinc-400 mt-1">Haftalık turnuva, sezon rozetleri 🥇🥈🥉 ve canlı sıralama.</p></div>
     </div>
   </div>
 </section>
@@ -383,6 +428,15 @@ body{background:var(--bg); transition: background 0.4s}
       <div id="f-status" class="hidden text-sm text-center rounded-xl px-4 py-3"></div>
       <div class="text-xs text-center text-zinc-500">İlk gönderimde seçili adrese doğrulama maili gelir — Confirm etmen yeterli.</div>
     </form>
+  </div>
+  <!-- Canlı Sohbet — 10 -->
+  <div class="mt-6 rounded-[20px] border border-white/10 bg-[#0F0F11] p-5">
+    <div class="flex items-center justify-between mb-3"><h3 class="font-grotesk font-semibold text-white text-sm">💬 Canlı Sohbet — herkese açık</h3><span class="text-xs font-mono text-emerald-300">local • anında</span></div>
+    <div id="chatBox" class="h-[180px] overflow-auto bg-black/30 border border-white/5 rounded-xl p-3 space-y-2 text-sm"></div>
+    <div class="flex gap-2 mt-3">
+      <input id="chatInput" placeholder="Mesaj yaz..." class="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500" onkeydown="if(event.key==='Enter') sendChat()">
+      <button onclick="sendChat()" class="bg-white text-black px-4 py-2 rounded-xl text-sm font-medium">Gönder</button>
+    </div>
   </div>
 </section>
 
@@ -453,6 +507,21 @@ body{background:var(--bg); transition: background 0.4s}
         <img id="blogReadCover" class="hidden mt-4 w-full h-[280px] object-cover rounded-xl border border-white/10">
         <div id="blogReadContent" class="prose prose-invert prose-sm max-w-none mt-6 text-zinc-300 leading-relaxed whitespace-pre-wrap"></div>
         <div id="blogReadTags" class="flex flex-wrap gap-1.5 mt-6"></div>
+        <!-- Beğeni / Paylaş -->
+        <div class="flex flex-wrap items-center gap-2 mt-6 pt-6 border-t border-white/10">
+          <button id="blogLikeBtn" onclick="likeBlog(currentBlogId)" class="inline-flex items-center gap-1.5 bg-white/[0.04] border border-white/10 px-4 py-2 rounded-full text-sm hover:bg-white/10"><span>♥</span> <span id="blogLikeCount">0</span> Beğen</button>
+          <button onclick="shareBlog(currentBlogId)" class="inline-flex items-center gap-1.5 bg-white text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-zinc-100">🔗 Paylaş</button>
+          <span id="blogShareMsg" class="hidden text-xs text-emerald-300"></span>
+        </div>
+        <!-- Yorumlar -->
+        <div class="mt-6">
+          <h3 class="font-grotesk font-semibold text-white text-sm">Yorumlar — herkes yazabilir</h3>
+          <div id="blogComments" class="mt-3 space-y-2"></div>
+          <div class="flex gap-2 mt-3">
+            <input id="commentInput" placeholder="Yorum ekle..." class="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+            <button onclick="addComment(currentBlogId)" class="bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-xl text-sm font-medium">Gönder</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -621,6 +690,20 @@ const langColor={JavaScript:"#f1e05a",Python:"#3572A5",HTML:"#e34c26",CSS:"#563d
 const langGradient={JavaScript:"from-yellow-400 to-amber-500",Python:"from-blue-500 to-cyan-400",HTML:"from-orange-500 to-red-500",JavaScript:"from-yellow-400 to-amber-500"};
 
 function formatDate(d){return new Date(d).toLocaleDateString('tr-TR',{day:'2-digit',month:'short',year:'numeric'})}
+let githubFilter='all';
+function setGithubFilter(v){
+  githubFilter=v;
+  document.querySelectorAll('.gh-filter').forEach(b=>{
+    const isActive=b.dataset.ghfilter===v;
+    b.classList.toggle('bg-white', isActive);
+    b.classList.toggle('text-black', isActive);
+    b.classList.toggle('border-white', isActive);
+    b.classList.toggle('bg-white/[0.04]', !isActive);
+    b.classList.toggle('text-zinc-400', !isActive);
+    b.classList.toggle('border-white/10', !isActive);
+  });
+  loadRepos();
+}
 
 async function loadRepos(){
   const grid=document.getElementById('github-projects');
@@ -640,7 +723,12 @@ async function loadRepos(){
     grid.classList.remove('hidden');
     grid.innerHTML="";
     const filtered=document.getElementById('search').value.toLowerCase();
-    repos.filter(r=> !filtered || r.name.toLowerCase().includes(filtered) || (r.description||"").toLowerCase().includes(filtered)).forEach(repo=>{
+    repos.filter(r=>{
+      const qMatch = !filtered || r.name.toLowerCase().includes(filtered) || (r.description||"").toLowerCase().includes(filtered);
+      const lang=(r.language||'Other');
+      const langMatch = githubFilter==='all' || (githubFilter==='Other' ? !['JavaScript','Python','HTML'].includes(lang) : lang===githubFilter);
+      return qMatch && langMatch;
+    }).forEach(repo=>{
       const lang=repo.language||"Other";
       const color=langColor[lang]||"#8b5cf6";
       const isPortfolio=repo.name.includes("github.io");
@@ -1458,9 +1546,10 @@ function renderLeaderboard(){
     let arr=[]; try{ arr=JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){}
     if(arr.length===0) arr=[{name:'—',score:0,date:''}];
     const top=arr[0];
+    const badge = top.score>=250 ? '🥇' : top.score>=100 ? '🥈' : top.score>=50 ? '🥉' : '◯';
     const div=document.createElement('div');
     div.className='flex items-center justify-between bg-white/[0.03] border border-white/10 rounded-xl px-3 py-2';
-    div.innerHTML=`<div><div class="font-medium text-white text-sm">${names[g]}</div><div class="text-xs text-zinc-500">${top.name} • ${top.date}</div></div><div class="text-right"><div class="font-bold text-white">${top.score}</div><div class="text-xs text-zinc-500">Lvl ${Math.floor(top.score/50)+1}</div></div>`;
+    div.innerHTML=`<div class="flex items-center gap-2"><span class="text-lg">${badge}</span><div><div class="font-medium text-white text-sm">${names[g]}</div><div class="text-xs text-zinc-500">${top.name} • ${top.date}</div></div></div><div class="text-right"><div class="font-bold text-white">${top.score}</div><div class="text-xs text-zinc-500">Lvl ${Math.floor(top.score/50)+1}</div></div>`;
     board.appendChild(div);
   });
   const el=document.getElementById('leaderboardUser');
@@ -1730,7 +1819,7 @@ function renderBlogs(){
           <p class="text-sm text-zinc-400 mt-2 flex-1 line-clamp-2">${b.excerpt || b.content.slice(0,110)+'...'}</p>
           <div class="flex flex-wrap gap-1.5 mt-3">${b.tags.slice(0,3).map(t=>`<span class="text-xs bg-white/[0.04] border border-white/10 px-2 py-1 rounded-full">#${t}</span>`).join('')}</div>
           <div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
-            <span class="text-xs font-mono text-zinc-500">${new Date(b.date).toLocaleDateString('tr-TR')}</span>
+            <span class="text-xs font-mono text-zinc-500">${new Date(b.date).toLocaleDateString('tr-TR')} • ♥ ${ (JSON.parse(localStorage.getItem('kerem_blog_likes')||'{}')[b.id]||0)} • 💬 ${(JSON.parse(localStorage.getItem('kerem_blog_comments')||'{}')[b.id]||[]).length}</span>
             <span class="text-sm font-medium text-white group-hover:gap-2 flex items-center gap-1">Oku <span class="group-hover:translate-x-1 transition">→</span></span>
           </div>
         </div>`;
@@ -1743,6 +1832,7 @@ function renderBlogs(){
 function openBlogRead(id){
   const b=getBlogs().find(x=>x.id===id);
   if(!b) return;
+  currentBlogId=id;
   document.getElementById('blogReadTitle').textContent=b.title;
   document.getElementById('blogReadMeta').textContent=`${b.cat} • ${new Date(b.date).toLocaleDateString('tr-TR')} • ${b.readTime} • ${b.tags.join(', ')}`;
   document.getElementById('blogReadContent').textContent=b.content;
@@ -1752,8 +1842,54 @@ function openBlogRead(id){
   tags.innerHTML=b.tags.map(t=>`<span class="text-xs bg-violet-500/10 border border-violet-500/20 text-violet-300 px-2.5 py-1 rounded-full">#${t}</span>`).join('');
   document.getElementById('blogReadModal').classList.remove('hidden');
   document.body.style.overflow='hidden';
+  renderComments(id);
 }
 function closeBlogRead(){ document.getElementById('blogReadModal').classList.add('hidden'); document.body.style.overflow=''; }
+let currentBlogId=null;
+function getLikes(){ try{return JSON.parse(localStorage.getItem('kerem_blog_likes')||'{}')}catch(e){return{}} }
+function getComments(){ try{return JSON.parse(localStorage.getItem('kerem_blog_comments')||'{}')}catch(e){return{}} }
+function likeBlog(id){
+  const likes=getLikes(); likes[id]=(likes[id]||0)+1; localStorage.setItem('kerem_blog_likes', JSON.stringify(likes));
+  document.getElementById('blogLikeCount').textContent=likes[id];
+  // also update card badge if needed
+  renderBlogs();
+}
+function shareBlog(id){
+  const b=getBlogs().find(x=>x.id===id);
+  const url=location.origin+location.pathname+'#blog-'+(b?.slug||id);
+  const text=b ? b.title : 'Blog';
+  const msg=document.getElementById('blogShareMsg');
+  if(navigator.share){ navigator.share({title:text, url}).catch(()=>{}); }
+  else if(navigator.clipboard){ navigator.clipboard.writeText(url).then(()=>{ msg.textContent='🔗 Link kopyalandı!'; msg.classList.remove('hidden'); setTimeout(()=>msg.classList.add('hidden'),1500); }); }
+  else { prompt('Link:', url); }
+}
+function renderComments(id){
+  const all=getComments(); const list=all[id]||[];
+  const el=document.getElementById('blogComments');
+  if(!el) return;
+  el.innerHTML='';
+  if(list.length===0){ el.innerHTML='<div class="text-xs text-zinc-500">Henüz yorum yok — ilk yorumu sen yap!</div>'; }
+  else list.forEach(c=>{
+    const d=document.createElement('div');
+    d.className='bg-white/[0.03] border border-white/5 rounded-xl px-3 py-2';
+    d.innerHTML=`<div class="text-xs font-medium text-white">${c.name} <span class="text-zinc-500 font-normal">• ${c.date}</span></div><div class="text-sm text-zinc-300 mt-1 whitespace-pre-wrap">${c.text}</div>`;
+    el.appendChild(d);
+  });
+  const likeCount=getLikes()[id]||0;
+  const lc=document.getElementById('blogLikeCount'); if(lc) lc.textContent=likeCount;
+}
+function addComment(id){
+  const input=document.getElementById('commentInput');
+  const text=input.value.trim();
+  if(!text) return;
+  const name=userName || authEmail?.split('@')[0] || 'Misafir';
+  const all=getComments(); if(!all[id]) all[id]=[];
+  all[id].push({name, text, date: new Date().toLocaleDateString('tr-TR')});
+  localStorage.setItem('kerem_blog_comments', JSON.stringify(all));
+  input.value='';
+  renderComments(id);
+  renderBlogs();
+}
 function renderAdmin(){
   const blogs=getBlogs();
   document.getElementById('statBlogCount').textContent=blogs.length;
@@ -1885,7 +2021,62 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('loginEmail')?.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
   document.getElementById('loginCode')?.addEventListener('keydown',e=>{ if(e.key==='Enter') verifyAdminCode(); });
   document.getElementById('nickInput')?.addEventListener('keydown',e=>{ if(e.key==='Enter') changeNick(); });
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 });
+// AI — basit rule-based ama gerçek gibi (12)
+function toggleAI(){ const p=document.getElementById('aiPanel'); p.classList.toggle('hidden'); p.classList.toggle('flex'); if(!p.classList.contains('hidden') && !p.dataset.welcomed){ p.dataset.welcomed='1'; addAIMsg('ai','Merhaba! Ben Kerem AI — TRUST NO ONE, harita/karakter, Arcade oyunları ve blog hakkında sor. Ne merak ediyorsun?'); } }
+function addAIMsg(role, text){
+  const c=document.getElementById('aiMessages');
+  const d=document.createElement('div');
+  d.className= role==='user' ? 'ml-8 bg-violet-600 text-white rounded-2xl rounded-br-sm px-3 py-2' : 'mr-8 bg-white/[0.06] border border-white/10 text-zinc-200 rounded-2xl rounded-bl-sm px-3 py-2';
+  d.textContent=text;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+function sendAI(){
+  const input=document.getElementById('aiInput');
+  const q=input.value.trim(); if(!q) return;
+  addAIMsg('user', q); input.value='';
+  setTimeout(()=>{
+    const low=q.toLowerCase();
+    let ans='Harika soru! Ben Kerem’in portfolyosunu iyi bilirim — TRUST NO ONE Python tabanlı gizlilik oyunu, Arcade’de 10 oyun var, blogda tasarım notları paylaşılıyor. Daha spesifik sorabilir misin? (örn: harita, karakter, Flappy)';
+    if(low.includes('trust')) ans='TRUST NO ONE — gizli servis, tek oyuncu. Python ile yapıldı, GitHub’da yayında: github.com/keremmkilincc-wq/TRUST-NO-ONE. Karar ve gizlilik mekanikleri var, hemen oyna!';
+    else if(low.includes('flappy')||low.includes('tetris')||low.includes('arcade')) ans='Arcade’de 10 oyun var: 3D Tetris, Flappy, Snake, Breakout, Pong (güçlü AI), Invaders, Asteroids, Runner, 2048, Memory. Skorlar localStorage, seviye her 50 puanda artar, R ile yeniden başlat.';
+    else if(low.includes('blog')) ans='Blog herkesin okuyabildiği, sadece Kerem’in (keremmkilincc@gmail.com kodla) yazabildiği bir günlük. Yazılar, beğeni ve yorumla etkileşimli.';
+    else if(low.includes('harita')||low.includes('karakter')||low.includes('neon ronin')) ans='Harita: ECHOES Kayıp Sektör (FPS atmosferik), Karakter: Neon Ronin (siberpunk zırh). Projeler sekmesinde kürasyon var.';
+    else if(low.includes('iletişim')||low.includes('mail')) ans='İletişim için sitedeki form yeterli — keremmkilincc@gmail.com / hotmail seçmeli, AJAX ile gidiyor. Telefon kaldırıldı (spam).';
+    else if(low.includes('müzik')||low.includes('music')) ans='Alt ortadaki 🎵 çalar demo neon loop çalıyor — PWA ile offline da çalışır.';
+    else if(low.includes('kim')||low.includes('kerem')) ans='Kerem KILINÇ — oyun dünyaları tasarlıyorum, harita & karakter, kod kalabalığı değil görsel/oynanabilir sonuç odaklıyım. GitHub: keremmkilincc-wq';
+    addAIMsg('ai', ans);
+  }, 400);
+}
+function toggleMusic(){
+  const a=document.getElementById('musicAudio');
+  const btn=document.getElementById('musicPlayBtn');
+  if(a.paused){ a.play().catch(()=>{}); btn.textContent='⏸️'; } else { a.pause(); btn.textContent='▶️'; }
+}
+function getChat(){ try{return JSON.parse(localStorage.getItem('kerem_chat')||'[]')}catch(e){return []} }
+function renderChat(){
+  const box=document.getElementById('chatBox'); if(!box) return;
+  const msgs=getChat().slice(-30);
+  box.innerHTML='';
+  if(msgs.length===0) box.innerHTML='<div class="text-xs text-zinc-500">Henüz mesaj yok — ilk mesajı sen yaz!</div>';
+  else msgs.forEach(m=>{
+    const d=document.createElement('div');
+    d.className='bg-white/[0.04] border border-white/5 rounded-xl px-3 py-2';
+    d.innerHTML=`<div class="text-xs font-medium text-white">${m.name} <span class="text-zinc-500 font-normal">• ${m.time}</span></div><div class="text-sm text-zinc-300 mt-1 whitespace-pre-wrap">${m.text}</div>`;
+    box.appendChild(d);
+  });
+  box.scrollTop=box.scrollHeight;
+}
+function sendChat(){
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim(); if(!text) return;
+  const name=userName || authEmail?.split('@')[0] || 'Misafir';
+  const arr=getChat(); arr.push({name, text, time: new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem('kerem_chat', JSON.stringify(arr.slice(-100)));
+  input.value=''; renderChat();
+}
+document.addEventListener('DOMContentLoaded',()=>{ renderChat(); });
 </script>
 </body>
 </html>
