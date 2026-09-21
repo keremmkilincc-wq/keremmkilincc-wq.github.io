@@ -24,7 +24,8 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Kerem KILINÇ","url":"https://keremmkilincc-wq.github.io/","sameAs":["https://github.com/keremmkilincc-wq"],"jobTitle":"Oyun Geliştirici & Dijital Tasarımcı","description":"Oyun dünyaları tasarlıyorum — TRUST NO ONE yayında"}</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <script>
 tailwind.config={theme:{extend:{fontFamily:{grotesk:['Space Grotesk','sans-serif'],inter:['Inter','sans-serif'],mono:['JetBrains Mono','monospace']},animation:{'pulse-slow':'pulse 3s infinite'}}}}
 </script>
@@ -79,6 +80,14 @@ body{background:var(--bg); transition: background 0.4s}
 .btn-micro:hover{transform:translateY(-1px) scale(1.015); filter:brightness(1.06); box-shadow:0 10px 24px -16px var(--accent)}
 .btn-micro:active{transform:scale(0.98)}
 .hero-video{filter: saturate(1.1) contrast(1.05)}
+/* yazılımcı portfolio — glow & glass (indirilen dosyadan) */
+.glow-text{ text-shadow: 0 0 12px rgba(6,182,212,.6); }
+.glow-box{ box-shadow: 0 0 25px rgba(6,182,212,.15); }
+.glow-box-lg{ box-shadow: 0 0 45px rgba(6,182,212,.25); }
+.glass-panel{ background: rgba(17,24,39,.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.08); }
+.glass-panel-hover:hover{ border-color: rgba(6,182,212,.4); box-shadow: 0 10px 30px -10px rgba(6,182,212,.3); transform: translateY(-3px); }
+.bg-grid-pattern{ background-size:40px 40px; background-image: linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px); }
+::-webkit-scrollbar{ width:8px; } ::-webkit-scrollbar-track{ background:var(--bg); } ::-webkit-scrollbar-thumb{ background:#1f2937; border-radius:4px; } ::-webkit-scrollbar-thumb:hover{ background:var(--accent); }
 </style>
 </head>
 <body class="font-inter text-zinc-300 antialiased selection:bg-violet-500/30 overflow-x-hidden">
@@ -89,15 +98,19 @@ body{background:var(--bg); transition: background 0.4s}
 <nav class="sticky top-0 z-50 border-b border-white/[0.06] bg-[#070709]/70 glass">
   <div class="max-w-[1280px] mx-auto px-6 h-[68px] flex items-center justify-between">
     <div class="flex items-center gap-8">
-      <div class="font-grotesk font-bold tracking-tight text-white text-[18px]">KEREM KILINÇ<span class="text-violet-500">.</span><span class="hidden sm:inline font-medium text-zinc-500 text-[11px] tracking-[0.2em] ml-3 align-middle">PORTFOLIO 2026</span></div>
-
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20"><span class="font-mono font-bold text-xs text-black">&lt;K/&gt;</span></div>
+        <div class="font-grotesk font-bold tracking-tight text-white text-[18px]">KEREM KILINÇ<span class="text-violet-500">.</span><span class="hidden sm:inline font-medium text-zinc-500 text-[11px] tracking-[0.2em] ml-3 align-middle">PORTFOLIO 2026</span><div class="hidden sm:block text-[10px] font-mono text-cyan-400 -mt-1">SOFTWARE DEVELOPER</div></div>
+      </div>
     </div>
     <div class="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] rounded-full p-1">
       <button onclick="switchTab('github')" data-tab="github" class="tab-btn active whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white text-black text-sm font-medium">GitHub <span class="opacity-60 text-xs ml-1">Canlı</span></button>
       <button onclick="switchTab('projeler')" data-tab="projeler" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Projeler</button>
       <button onclick="switchTab('arcade')" data-tab="arcade" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Arcade <span class="text-xs ml-1">10 Oyun</span></button>
       <button onclick="switchTab('blog')" data-tab="blog" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Blog <span id="blogCountBadge" class="text-xs ml-1 bg-white/10 px-1.5 py-0.5 rounded-full">0</span></button>
-      <button onclick="switchTab('playground')" data-tab="playground" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Playground <span class="text-xs ml-1">HTML</span></button>
+      <button onclick="switchTab('yetenekler')" data-tab="yetenekler" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white"><i class="fa-solid fa-code mr-1"></i> Yetenekler</button>
+      <button onclick="switchTab('playground')" data-tab="playground" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Playground</button>
+      <button onclick="switchTab('terminal')" data-tab="terminal" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white"><i class="fa-solid fa-terminal mr-1"></i> Terminal</button>
       <button onclick="switchTab('evren')" data-tab="evren" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Evren</button>
       <button onclick="switchTab('wall')" data-tab="wall" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Duvar</button>
       <button onclick="switchTab('surec')" data-tab="surec" class="tab-btn whitespace-nowrap px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.04] text-sm text-zinc-400 hover:text-white">Süreç</button>
@@ -272,11 +285,19 @@ body{background:var(--bg); transition: background 0.4s}
       </div>
       <h1 class="font-grotesk font-bold tracking-[-0.04em] text-white text-[42px] md:text-[64px] leading-[0.9] mt-6">
         <span data-i18n="hero.title1">Oyun dünyaları</span><br>
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400" data-i18n="hero.title2">tasarlıyorum.</span>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 glow-text" data-i18n="hero.title2">tasarlıyorum.</span>
       </h1>
       <p class="text-[17px] leading-relaxed text-zinc-400 mt-6 max-w-[620px]" data-i18n="hero.desc">
         Ben <span class="text-white font-semibold">Kerem KILINÇ</span> — harita & karakter tasarımları, oyun konseptleri ve dijital üretimler. Kod kalabalığı değil, <span class="text-zinc-200">görsel ve oynanabilir sonuç</span> odaklıyım. Tüm projelerim GitHub'da canlı.
       </p>
+      <!-- Tech Tags — yazılımcı dosyasından -->
+      <div class="flex flex-wrap gap-2 text-xs font-mono text-zinc-400 mt-4">
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-brands fa-js mr-1 text-yellow-400"></i>#JavaScript</span>
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-brands fa-python mr-1 text-blue-400"></i>#Python</span>
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-brands fa-react mr-1 text-cyan-400"></i>#React</span>
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-solid fa-cube mr-1 text-violet-400"></i>#FullStack</span>
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-solid fa-gamepad mr-1 text-emerald-400"></i>#GameDev</span>
+      </div>
       <div class="flex flex-wrap gap-3 mt-8">
         <a href="#github" class="bg-white text-black px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200 transition inline-flex items-center gap-2 btn-micro"><span data-i18n="hero.cta1">GitHub Projelerimi Gör</span> <span>↓</span></a>
         <a href="#iletisim" onclick="switchTab('iletisim')" class="border border-white/10 bg-white/[0.06] backdrop-blur px-7 py-3.5 rounded-full font-medium hover:bg-white/[0.1] transition btn-micro">İletişime Geç →</a>
@@ -298,28 +319,28 @@ body{background:var(--bg); transition: background 0.4s}
         <span>github.com/<b class="text-zinc-300">keremmkilincc-wq</b></span><span class="w-1 h-1 bg-zinc-600 rounded-full"></span><span class="text-zinc-400">İletişim için form kullanın</span>
       </div>
     </div>
-    <!-- bento — reveal + float -->
+    <!-- bento — reveal + float + glow -->
     <div class="lg:col-span-5 grid grid-cols-2 gap-4 reveal" style="transition-delay:120ms">
-      <div class="col-span-2 rounded-[24px] overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-[1px]">
+      <div class="col-span-2 rounded-[24px] overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-[1px] glow-box">
         <div class="rounded-[23px] bg-[#0F0F11] p-5 h-full relative overflow-hidden">
           <div class="absolute -right-10 -top-10 w-48 h-48 bg-violet-600/20 blur-[40px] rounded-full"></div>
           <div class="text-xs font-mono tracking-[0.2em] text-violet-400">ÖNE ÇIKAN — TRUST NO ONE</div>
           <div class="font-grotesk text-xl font-bold text-white mt-2 leading-tight">Gizli servis, tek oyuncu.<br>Kime güveneceksin?</div>
           <p class="text-sm text-zinc-400 mt-2">Python tabanlı, yayında. Hemen oyna.</p>
-          <a href="https://github.com/keremmkilincc-wq/TRUST-NO-ONE" target="_blank" class="mt-4 inline-flex bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-full text-sm font-medium">Oyunu İncele →</a>
+          <a href="https://github.com/keremmkilincc-wq/TRUST-NO-ONE" target="_blank" class="mt-4 inline-flex bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-full text-sm font-medium btn-micro"><i class="fa-solid fa-gamepad mr-1"></i> Oyunu İncele →</a>
           <div class="mt-4 flex gap-2">
-            <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">Python</span>
+            <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full"><i class="fa-brands fa-python mr-1"></i>Python</span>
             <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">Game</span>
           </div>
         </div>
       </div>
-      <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-4">
-        <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/20 grid place-items-center text-cyan-300">◈</div>
+      <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-4 glass-panel glass-panel-hover transition-all">
+        <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/20 grid place-items-center text-cyan-300"><i class="fa-solid fa-map"></i></div>
         <div class="font-grotesk font-semibold text-white mt-3 text-sm" data-i18n="bento.map">Harita Tasarımı</div>
         <div class="text-xs text-zinc-500 mt-1" data-i18n="bento.mapSub">Level & environment</div>
       </div>
-      <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-4">
-        <div class="w-10 h-10 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/20 grid place-items-center text-fuchsia-300">⬡</div>
+      <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-4 glass-panel glass-panel-hover transition-all">
+        <div class="w-10 h-10 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/20 grid place-items-center text-fuchsia-300"><i class="fa-solid fa-user-astronaut"></i></div>
         <div class="font-grotesk font-semibold text-white mt-3 text-sm" data-i18n="bento.char">Karakter</div>
         <div class="text-xs text-zinc-500 mt-1" data-i18n="bento.charSub">2D / konsept</div>
       </div>
@@ -403,6 +424,71 @@ body{background:var(--bg); transition: background 0.4s}
         <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" alt="Neon Ronin" camera-controls auto-rotate ar shadow-intensity="1" style="width:100%;height:100%;min-height:260px"></model-viewer>
         <div class="absolute bottom-2 left-2 text-xs bg-black/60 backdrop-blur px-2 py-1 rounded-full text-white pointer-events-none">Sürükle • Zoom • AR</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- YETENEKLER — yazılımcı dosyasından (progress + code) -->
+<section id="yetenekler" class="tab-panel max-w-[1280px] mx-auto px-6 py-8">
+  <div class="text-center max-w-3xl mx-auto mb-10">
+    <h2 class="font-grotesk text-[30px] font-bold tracking-tight text-white">Yetenekler & Uzmanlıklar</h2>
+    <div class="h-1 w-20 bg-gradient-to-r from-cyan-500 to-blue-600 mx-auto mt-3 rounded-full"></div>
+    <p class="text-zinc-500 text-sm mt-3">Modern yazılım ekosisteminde yetkinlikler — oyun ve web odaklı.</p>
+  </div>
+  <div class="grid lg:grid-cols-2 gap-8 items-start">
+    <div class="space-y-4">
+      <h3 class="text-sm font-semibold text-cyan-400 flex items-center gap-2"><i class="fa-solid fa-layer-group"></i> Teknik Yetkinlikler</h3>
+      <div class="glass-panel p-4 rounded-xl border border-white/10 space-y-2">
+        <div class="flex justify-between text-sm"><span class="font-medium text-zinc-200">Frontend (React, Tailwind, JS ES6+)</span><span class="font-mono text-cyan-400">92%</span></div>
+        <div class="w-full h-2.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" style="width:92%"></div></div>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border border-white/10 space-y-2">
+        <div class="flex justify-between text-sm"><span class="font-medium text-zinc-200">Backend (Node.js, Python)</span><span class="font-mono text-cyan-400">88%</span></div>
+        <div class="w-full h-2.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" style="width:88%"></div></div>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border border-white/10 space-y-2">
+        <div class="flex justify-between text-sm"><span class="font-medium text-zinc-200">Oyun (Level & Karakter)</span><span class="font-mono text-cyan-400">90%</span></div>
+        <div class="w-full h-2.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full" style="width:90%"></div></div>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border border-white/10 space-y-2">
+        <div class="flex justify-between text-sm"><span class="font-medium text-zinc-200">DevOps & Araçlar (Git, Docker)</span><span class="font-mono text-cyan-400">85%</span></div>
+        <div class="w-full h-2.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" style="width:85%"></div></div>
+      </div>
+    </div>
+    <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 shadow-xl">
+      <div class="bg-white/[0.03] px-4 py-3 border-b border-white/10 flex items-center justify-between">
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span><span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="ml-2 text-xs font-mono text-zinc-500">developer.js</span></div>
+        <button onclick="copyDevCode()" id="copyDevBtn" class="text-xs font-mono text-zinc-400 hover:text-cyan-400 flex items-center gap-1"><i class="fa-regular fa-copy"></i> Kopyala</button>
+      </div>
+      <pre class="p-5 font-mono text-xs sm:text-sm text-zinc-300 overflow-x-auto leading-relaxed bg-black/30"><code><span class="text-purple-400">const</span> <span class="text-yellow-400">developer</span> = {
+    <span class="text-cyan-400">name</span>: <span class="text-green-300">'Kerem KILINÇ'</span>,
+    <span class="text-cyan-400">role</span>: <span class="text-green-300">'Software Developer'</span>,
+    <span class="text-cyan-400">focus</span>: [<span class="text-green-300">'GameDev'</span>, <span class="text-green-300">'FullStack'</span>],
+    <span class="text-blue-400">getProfile</span>() { <span class="text-purple-400">return</span> <span class="text-green-300">`Hello, I am ${this.name}`</span>; }
+};</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- TERMINAL — yazılımcı dosyasından -->
+<section id="terminal" class="tab-panel max-w-[1280px] mx-auto px-6 py-8">
+  <div class="text-center mb-8">
+    <h2 class="font-grotesk text-[30px] font-bold tracking-tight text-white">Etkileşimli Terminal</h2>
+    <div class="h-1 w-20 bg-gradient-to-r from-cyan-500 to-blue-600 mx-auto mt-3 rounded-full"></div>
+    <p class="text-zinc-500 text-sm mt-2">Komut yaz: <code class="text-cyan-400">help</code> — about/skills/contact/clear</p>
+  </div>
+  <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden shadow-2xl font-mono max-w-4xl mx-auto">
+    <div class="bg-white/[0.04] px-4 py-3 flex items-center justify-between border-b border-white/10">
+      <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span><span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span><span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span></div>
+      <span class="text-xs text-zinc-500">kerem@kilinc-dev:~</span><span class="text-xs text-zinc-600">bash</span>
+    </div>
+    <div id="termOutput" class="p-6 h-64 overflow-y-auto text-sm space-y-2 text-zinc-300">
+      <p class="text-cyan-400">Kerem KILINÇ Terminal v1.0 — hoş geldin.</p>
+      <p class="text-zinc-500">Komutlar: <span class="text-yellow-400 font-bold">help</span> yaz.</p>
+    </div>
+    <div class="bg-black/30 px-4 py-3 border-t border-white/5 flex items-center gap-2">
+      <span class="text-emerald-400 text-sm">guest@kerem:~$</span>
+      <input id="termInput" autocomplete="off" class="bg-transparent border-none outline-none flex-1 text-white font-mono text-sm" placeholder="Komut yaz...">
     </div>
   </div>
 </section>
@@ -790,10 +876,19 @@ body{background:var(--bg); transition: background 0.4s}
   </div>
 </section>
 
-<footer class="border-t border-white/5">
-  <div class="max-w-[1280px] mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-zinc-500">
-    <div><span data-i18n="footer">© 2026 Kerem KILINÇ</span> • <span class="text-zinc-300">keremmkilincc-wq.github.io</span></div>
-    <div class="flex gap-4"><a href="https://github.com/keremmkilincc-wq" class="hover:text-white">GitHub</a><span>•</span><a href="#iletisim" onclick="switchTab('iletisim')" class="hover:text-white">İletişim</a></div>
+<footer class="bg-black border-t border-white/5 py-8">
+  <div class="max-w-[1280px] mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-2 text-sm text-zinc-500">
+      <span class="font-mono text-cyan-400 font-bold">&lt;Kerem KILINÇ/&gt;</span>
+      <span data-i18n="footer">© 2026 Tüm Hakları Saklıdır.</span>
+      <span>•</span><span class="text-zinc-300">keremmkilincc-wq.github.io</span>
+    </div>
+    <div class="flex items-center gap-5 text-zinc-400">
+      <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hover:text-cyan-400 transition"><i class="fa-brands fa-github text-lg"></i></a>
+      <a href="#" class="hover:text-cyan-400 transition"><i class="fa-brands fa-linkedin text-lg"></i></a>
+      <a href="#" class="hover:text-cyan-400 transition"><i class="fa-brands fa-twitter text-lg"></i></a>
+      <a href="#iletisim" onclick="switchTab('iletisim')" class="hover:text-white text-sm">İletişim</a>
+    </div>
   </div>
 </footer>
 
@@ -2375,7 +2470,37 @@ function clearWall(){ if(confirm('Duvar temizlensin mi?')){ localStorage.removeI
   c.addEventListener('touchstart',e=>{ drawing=true; add(e.touches[0]); e.preventDefault(); },{passive:false});
   c.addEventListener('touchmove',e=>{ if(drawing) add(e.touches[0]); e.preventDefault(); },{passive:false});
 })();
+function copyDevCode(){
+  const code=`const developer = {\n    name: 'Kerem KILINÇ',\n    role: 'Software Developer',\n    focus: ['GameDev','FullStack'],\n    getProfile(){ return \`Hello, I am \${this.name}\`; }\n};`;
+  navigator.clipboard.writeText(code).then(()=>{
+    const b=document.getElementById('copyDevBtn');
+    if(b){ b.innerHTML='<i class="fa-solid fa-check text-green-400"></i> Kopyalandı!'; setTimeout(()=> b.innerHTML='<i class="fa-regular fa-copy"></i> Kopyala',2000); }
+  });
+}
+function initTerminal(){
+  const input=document.getElementById('termInput');
+  const out=document.getElementById('termOutput');
+  if(!input||!out) return;
+  const cmds={
+    help:'Kullanılabilir: <span class="text-cyan-400">about</span>, <span class="text-cyan-400">skills</span>, <span class="text-cyan-400">contact</span>, <span class="text-cyan-400">clear</span>, <span class="text-cyan-400">projects</span>',
+    about:'Kerem KILINÇ — Yazılımcı / Software Developer. Oyun ve web sistemleri.',
+    skills:'Frontend: React/Tailwind | Backend: Node/Python | Game: Level/Character | DB: PostgreSQL',
+    contact:'E-posta: keremmkilincc@gmail.com | GitHub: keremmkilincc-wq',
+    projects:'Projeler sekmesine geç: TRUST NO ONE, SONISIK, indirgitsin...'
+  };
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){
+      const cmd=input.value.trim().toLowerCase(); input.value='';
+      const line=document.createElement('p'); line.innerHTML='<span class="text-emerald-400">guest@kerem:~$</span> '+ (cmd||''); out.appendChild(line);
+      if(cmd==='clear'){ out.innerHTML=''; }
+      else if(cmds[cmd]){ const r=document.createElement('p'); r.className='text-zinc-300 ml-2'; r.innerHTML=cmds[cmd]; out.appendChild(r); if(cmd==='projects') setTimeout(()=>switchTab('github'),400); }
+      else if(cmd){ const err=document.createElement('p'); err.className='text-red-400 ml-2'; err.textContent="Komut bulunamadı: '"+cmd+"'. help yaz."; out.appendChild(err); }
+      out.scrollTop=out.scrollHeight;
+    }
+  });
+}
 document.addEventListener('DOMContentLoaded',()=>{
+  initTerminal();
   renderChat(); renderSupportWall(); renderLore(); renderWall();
   const pg=document.getElementById('pgCode');
   if(pg){
