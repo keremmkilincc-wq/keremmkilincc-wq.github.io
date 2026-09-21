@@ -880,9 +880,18 @@ body{background:var(--bg); transition: background 0.4s}
         <div class="rounded-xl bg-white/[0.04] border border-white/10 p-4"><div class="text-sm font-medium text-white">Blog Başlığı</div><div class="text-xs text-zinc-500">Tasarım Günlüğü — Kerem KILINÇ</div></div>
         <div class="rounded-xl bg-white/[0.04] border border-white/10 p-4"><div class="text-sm font-medium text-white">Müq Modu</div><div class="text-xs text-zinc-500">Açık ✨ (aurora yoğun)</div></div>
       </div>
-      <div class="rounded-xl bg-gradient-to-r from-violet-600/10 to-cyan-500/10 border border-violet-500/20 p-4 text-sm text-zinc-300">İpucu: Bloglar <code class="text-violet-300">localStorage: kerem_blogs</code> içinde saklanır. GitHub Pages statik olduğu için kalıcı backend yok — dışa aktar ile JSON al, yedekle.</div>
+      <div class="rounded-xl bg-gradient-to-r from-violet-600/10 to-cyan-500/10 border border-violet-500/20 p-4 text-sm text-zinc-300">İpucu: Bloglar artık GitHub <code class="text-violet-300">data/shared.json</code> ile ortak — PAT girersen herkes görür, yoksa sadece local.</div>
+      <div class="rounded-xl border border-white/10 p-4 space-y-2">
+        <div class="text-sm font-medium text-white">GitHub PAT (ortak veri için) — opsiyonel</div>
+        <p class="text-xs text-zinc-500">Blog/chat/duvar herkes için ortak olsun istiyorsan <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener" class="text-violet-400 underline">github.com/settings/tokens/new</a> → repo scope ile token oluştur, buraya yapıştır.</p>
+        <div class="flex gap-2">
+          <input id="patInput" type="password" placeholder="ghp_..." class="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500">
+          <button onclick="savePat()" class="bg-white text-black px-4 py-2 rounded-xl text-sm font-medium hover:bg-zinc-100">Kaydet</button>
+          <button onclick="clearPat()" class="border border-white/10 bg-white/[0.04] px-4 py-2 rounded-xl text-sm hover:bg-white/10">Sil</button>
+        </div>
+        <p id="patMsg" class="hidden text-xs text-center rounded-xl px-3 py-2"></p>
+      </div>
     </div>
-  </div>
   </div>
 </div>
 
@@ -2067,34 +2076,51 @@ switchTab = function(id){
   _origSwitchTab(id);
 };
 
-// ===== PAYLAŞIMLI DEPOLAMA — kvdb.io (herkes için ortak, Ctrl+F5 gerekmez) =====
-const SHARED_BUCKET='KeremPortfolio2026_9Z8X';
+// ===== PAYLAŞIMLI DEPOLAMA — GitHub data/shared.json (herkes için ortak, kvdb 404 düzeltildi) =====
+const SHARED_URL='data/shared.json';
 async function sharedGet(key){
   try{
-    const r=await fetch(`https://kvdb.io/${SHARED_BUCKET}/${key}`, {cache:'no-store'});
+    const r=await fetch(SHARED_URL + '?t=' + Date.now(), {cache:'no-store'});
     if(!r.ok) return null;
-    const txt=await r.text();
-    return txt ? JSON.parse(txt) : null;
+    const j=await r.json();
+    return j[key] ?? null;
   }catch(e){ return null; }
 }
 async function sharedSet(key, val){
+  const pat=(localStorage.getItem('github_pat')||'').trim();
+  if(!pat){
+    console.warn('PAT yok, sadece local');
+    return;
+  }
   try{
-    await fetch(`https://kvdb.io/${SHARED_BUCKET}/${key}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(val)});
-  }catch(e){ console.warn('sharedSet fail', e); }
+    const api='https://api.github.com/repos/keremmkilincc-wq/keremmkilincc-wq.github.io/contents/data/shared.json';
+    const getRes=await fetch(api, {headers:{'Authorization':`token ${pat}`,'Accept':'application/vnd.github.v3+json'}});
+    if(!getRes.ok) throw new Error('get sha');
+    const getJson=await getRes.json();
+    const sha=getJson.sha;
+    const content=atob(getJson.content.replace(/\n/g,''));
+    const data=JSON.parse(content);
+    data[key]=val;
+    const newContent=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    const putRes=await fetch(api, {
+      method:'PUT',
+      headers:{'Authorization':`token ${pat}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({message:`update ${key} via admin`, content:newContent, sha})
+    });
+    if(!putRes.ok) throw new Error('put fail '+putRes.status);
+  }catch(e){ console.warn('sharedSet github fail', e); }
 }
 async function syncFromShared(){
   try{
-    const [b,c,w,s] = await Promise.all([sharedGet('blogs'), sharedGet('chat'), sharedGet('wall'), sharedGet('supporters')]);
-    let needRender=false;
-    if(b && Array.isArray(b)){ localStorage.setItem('kerem_blogs', JSON.stringify(b)); needRender=true; }
-    else if(b===null){ await sharedSet('blogs', getBlogs()); }
-    if(c && Array.isArray(c)){ localStorage.setItem('kerem_chat', JSON.stringify(c)); needRender=true; }
-    else if(c===null){ await sharedSet('chat', getChat()); }
-    if(w && Array.isArray(w)){ localStorage.setItem('kerem_wall', JSON.stringify(w)); needRender=true; }
-    else if(w===null){ await sharedSet('wall', getWall()); }
-    if(s && Array.isArray(s)){ localStorage.setItem('kerem_supporters', JSON.stringify(s)); needRender=true; }
-    else if(s===null){ await sharedSet('supporters', getSupporters()); }
-    if(needRender){ renderBlogs(); renderChat(); renderWall(); renderSupportWall(); }
+    const r=await fetch(SHARED_URL + '?t=' + Date.now(), {cache:'no-store'});
+    if(!r.ok) return;
+    const data=await r.json();
+    let need=false;
+    if(data.blogs && Array.isArray(data.blogs)){ localStorage.setItem('kerem_blogs', JSON.stringify(data.blogs)); need=true; }
+    if(data.chat && Array.isArray(data.chat)){ localStorage.setItem('kerem_chat', JSON.stringify(data.chat)); need=true; }
+    if(data.wall && Array.isArray(data.wall)){ localStorage.setItem('kerem_wall', JSON.stringify(data.wall)); need=true; }
+    if(data.supporters && Array.isArray(data.supporters)){ localStorage.setItem('kerem_supporters', JSON.stringify(data.supporters)); need=true; }
+    if(need){ renderBlogs(); renderChat(); renderWall(); renderSupportWall(); }
   }catch(e){}
 }
 setTimeout(syncFromShared, 800);
@@ -2451,6 +2477,20 @@ async function aiSummarizeBlog(){
     status.textContent='⚠️ AI hata: '+e.message+' — manuel doldur.';
     status.className='text-xs text-red-400 mt-1';
   }
+}
+function savePat(){
+  const v=document.getElementById('patInput').value.trim();
+  const msg=document.getElementById('patMsg');
+  if(!v){ msg.textContent='Token boş'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); return; }
+  localStorage.setItem('github_pat', v);
+  msg.textContent='✅ Kaydedildi — artık ortak veri GitHub'a yazılacak';
+  msg.className='text-xs text-center rounded-xl px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300';
+  msg.classList.remove('hidden');
+}
+function clearPat(){
+  localStorage.removeItem('github_pat');
+  const inp=document.getElementById('patInput'); if(inp) inp.value='';
+  const msg=document.getElementById('patMsg'); msg.textContent='Silindi — artık sadece local'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-white/[0.04] border border-white/10 text-zinc-400'; msg.classList.remove('hidden');
 }
 function getChat(){ try{return JSON.parse(localStorage.getItem('kerem_chat')||'[]')}catch(e){return []} }
 function renderChat(){
