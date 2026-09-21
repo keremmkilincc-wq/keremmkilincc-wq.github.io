@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#8b5cf6">
 <script src="https://cdn.tailwindcss.com"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js"></script>
+<script type="importmap">{"imports":{"@mlc-ai/web-llm":"https://esm.run/@mlc-ai/web-llm@0.2.61"}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <script>
 tailwind.config={theme:{extend:{fontFamily:{grotesk:['Space Grotesk','sans-serif'],inter:['Inter','sans-serif'],mono:['JetBrains Mono','monospace']},animation:{'pulse-slow':'pulse 3s infinite'}}}}
@@ -94,15 +95,20 @@ body{background:var(--bg); transition: background 0.4s}
 
 <!-- AI ASİSTAN — bildiğimiz AI gibi (12) -->
 <button id="aiBtn" onclick="toggleAI()" class="fixed left-4 bottom-4 z-40 w-14 h-14 rounded-full bg-gradient-to-br from-violet-600 to-cyan-500 shadow-2xl grid place-items-center text-white text-xl hover:scale-105 transition border border-white/20" title="AI Asistan">🤖</button>
-<div id="aiPanel" class="fixed left-4 bottom-[74px] z-40 w-[360px] max-w-[92vw] bg-[#0F0F11] border border-white/10 rounded-[20px] shadow-2xl hidden flex-col overflow-hidden">
+<div id="aiPanel" class="fixed left-4 bottom-[74px] z-40 w-[380px] max-w-[92vw] bg-[#0F0F11] border border-white/10 rounded-[20px] shadow-2xl hidden flex-col overflow-hidden">
   <div class="px-4 py-3 border-b border-white/10 bg-gradient-to-r from-violet-600/10 to-cyan-500/10 flex items-center justify-between">
-    <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-gradient-to-br from-violet-600 to-cyan-500 grid place-items-center text-xs">🤖</span><div><div class="text-sm font-semibold text-white leading-none">Kerem AI</div><div class="text-xs text-zinc-500">Portfolyo asistanı • anında cevap</div></div></div>
+    <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-gradient-to-br from-violet-600 to-cyan-500 grid place-items-center text-xs">🤖</span><div><div class="text-sm font-semibold text-white leading-none">Kerem AI</div><div class="text-xs text-zinc-500">WebLLM • tarayıcıda • anahtarsız</div></div></div>
     <button onclick="toggleAI()" class="w-7 h-7 rounded-full bg-white text-black grid place-items-center text-xs font-bold">×</button>
+  </div>
+  <div id="aiProgress" class="hidden px-4 py-2 bg-amber-500/10 border-b border-amber-500/20">
+    <div class="flex items-center justify-between text-xs"><span class="text-amber-300 font-medium" id="aiProgressLabel">Model indiriliyor...</span><span class="text-amber-300/60 font-mono" id="aiProgressPct">0%</span></div>
+    <div class="mt-1 h-1.5 bg-black/30 rounded-full overflow-hidden"><div id="aiProgressBar" class="h-full bg-amber-500 transition-all" style="width:0%"></div></div>
+    <div class="text-xs text-zinc-500 mt-1">İlk açılışta ~500MB indirilir, sonra cache’ten anında. Qwen2-0.5B</div>
   </div>
   <div id="aiMessages" class="h-[320px] overflow-auto p-4 space-y-2 text-sm"></div>
   <div class="p-3 border-t border-white/10 flex gap-2">
     <input id="aiInput" placeholder="Sor: TRUST NO ONE nedir?" class="flex-1 bg-white/[0.04] border border-white/10 rounded-full px-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-violet-500" onkeydown="if(event.key==='Enter') sendAI()">
-    <button onclick="sendAI()" class="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">Gönder</button>
+    <button onclick="sendAI()" id="aiSendBtn" class="bg-white text-black px-4 py-2 rounded-full text-sm font-medium">Gönder</button>
   </div>
 </div>
 
@@ -2029,18 +2035,97 @@ document.addEventListener('DOMContentLoaded',()=>{
   if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 });
 // AI — basit rule-based ama gerçek gibi (12)
-function toggleAI(){ const p=document.getElementById('aiPanel'); p.classList.toggle('hidden'); p.classList.toggle('flex'); if(!p.classList.contains('hidden') && !p.dataset.welcomed){ p.dataset.welcomed='1'; addAIMsg('ai','Merhaba! Ben Kerem AI — TRUST NO ONE, harita/karakter, Arcade oyunları ve blog hakkında sor. Ne merak ediyorsun?'); } }
+let mlcEngine=null, mlcReady=false, mlcLoading=false;
+function toggleAI(){
+  const p=document.getElementById('aiPanel');
+  const isHidden=p.classList.contains('hidden');
+  if(isHidden){
+    p.classList.remove('hidden'); p.classList.add('flex');
+    if(!mlcReady && !mlcLoading) initWebLLM();
+    if(!p.dataset.welcomed){
+      p.dataset.welcomed='1';
+      addAIMsg('ai','Merhaba! Ben Kerem AI — artık WebLLM ile gerçek AI, tarayıcında çalışıyor. İlk açılışta model indiriliyor (~500MB), sonra anında. TRUST NO ONE, Arcade, blog — ne soracaksın?');
+    }
+  } else { p.classList.add('hidden'); p.classList.remove('flex'); }
+}
+async function initWebLLM(){
+  if(mlcLoading || mlcReady) return;
+  mlcLoading=true;
+  const bar=document.getElementById('aiProgress');
+  const label=document.getElementById('aiProgressLabel');
+  const pct=document.getElementById('aiProgressPct');
+  const fill=document.getElementById('aiProgressBar');
+  const sendBtn=document.getElementById('aiSendBtn');
+  bar.classList.remove('hidden');
+  if(sendBtn) sendBtn.disabled=true;
+  addAIMsg('ai','🧠 Model indiriliyor (Qwen2-0.5B) — ilk seferde biraz sürer, sonra cache’ten anında...');
+  try{
+    const {CreateMLCEngine}=await import('@mlc-ai/web-llm');
+    mlcEngine=await CreateMLCEngine('Qwen2-0.5B-Instruct-q4f16_1-MLC', {
+      initProgressCallback: (p)=>{
+        const txt=p.text || 'Yükleniyor...';
+        const prog=Math.round((p.progress||0)*100);
+        label.textContent=txt;
+        pct.textContent=prog+'%';
+        fill.style.width=prog+'%';
+      }
+    });
+    mlcReady=true;
+    bar.classList.add('hidden');
+    if(sendBtn) sendBtn.disabled=false;
+    addAIMsg('ai','✅ WebLLM hazır! Artık gerçek AI ile konuşuyoruz — sor bakalım (internetsiz bile çalışır).');
+  }catch(e){
+    console.error(e);
+    bar.classList.add('hidden');
+    if(sendBtn) sendBtn.disabled=false;
+    addAIMsg('ai','⚠️ WebLLM yüklenemedi ('+e.message+') — rule-based yedek ile devam ediyorum. Sayfayı yenile veya interneti kontrol et.');
+  } finally { mlcLoading=false; }
+}
 function addAIMsg(role, text){
   const c=document.getElementById('aiMessages');
   const d=document.createElement('div');
-  d.className= role==='user' ? 'ml-8 bg-violet-600 text-white rounded-2xl rounded-br-sm px-3 py-2' : 'mr-8 bg-white/[0.06] border border-white/10 text-zinc-200 rounded-2xl rounded-bl-sm px-3 py-2';
+  d.className= role==='user' ? 'ml-8 bg-violet-600 text-white rounded-2xl rounded-br-sm px-3 py-2 whitespace-pre-wrap' : 'mr-8 bg-white/[0.06] border border-white/10 text-zinc-200 rounded-2xl rounded-bl-sm px-3 py-2 whitespace-pre-wrap';
   d.textContent=text;
   c.appendChild(d); c.scrollTop=c.scrollHeight;
+  return d;
 }
-function sendAI(){
+async function sendAI(){
   const input=document.getElementById('aiInput');
   const q=input.value.trim(); if(!q) return;
   addAIMsg('user', q); input.value='';
+  // WebLLM hazırsa onu kullan
+  if(mlcReady && mlcEngine){
+    const sendBtn=document.getElementById('aiSendBtn');
+    if(sendBtn) sendBtn.disabled=true;
+    const aiBubble=addAIMsg('ai','…');
+    try{
+      const systemPrompt='Sen Kerem KILINÇ portfolyosunun asistanısın. TRUST NO ONE (Python gizlilik oyunu), Arcade 10 oyun (Tetris, Flappy, Snake, Breakout, Pong, Invaders, Asteroids, Runner, 2048, Memory), Blog (herkes okur admin yazar), harita ECHOES Kayıp Sektör, karakter Neon Ronin, iletişim form (mail), müzik çalar, PWA, 3D viewer hakkında bilgi ver. Türkçe, kısa, samimi, müq üslubu. Bilmediğini uydurma.';
+      const chunks=await mlcEngine.chat.completions.create({
+        messages:[{role:'system',content: systemPrompt},{role:'user',content:q}],
+        stream:true, temperature:0.7
+      });
+      let full='';
+      for await (const chunk of chunks){
+        const delta=chunk.choices[0]?.delta?.content || '';
+        full+=delta;
+        aiBubble.textContent=full;
+        document.getElementById('aiMessages').scrollTop=document.getElementById('aiMessages').scrollHeight;
+      }
+      if(!full) aiBubble.textContent='Cevap üretilemedi — tekrar dene.';
+    }catch(e){
+      aiBubble.textContent='Hata: '+e.message+' — yedek moda geçiyorum.';
+      fallbackAI(q);
+    } finally { if(sendBtn) sendBtn.disabled=false; }
+    return;
+  }
+  // WebLLM henüz yoksa — yedek rule-based + yüklemeyi tetikle
+  if(!mlcReady && !mlcLoading){
+    addAIMsg('ai','⏳ WebLLM henüz yüklenmedi — şimdi başlatıyorum, bir yandan yedek cevap veriyorum...');
+    initWebLLM();
+  }
+  fallbackAI(q);
+}
+function fallbackAI(q){
   setTimeout(()=>{
     const low=q.toLowerCase();
     let ans='Harika soru! Ben Kerem’in portfolyosunu iyi bilirim — TRUST NO ONE Python tabanlı gizlilik oyunu, Arcade’de 10 oyun var, blogda tasarım notları paylaşılıyor. Daha spesifik sorabilir misin? (örn: harita, karakter, Flappy)';
