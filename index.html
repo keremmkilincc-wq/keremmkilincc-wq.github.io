@@ -7,6 +7,21 @@
 <meta name="description" content="Kerem KILINÇ - Oyun konseptleri, harita/karakter tasarımları ve dijital üretimler. GitHub: keremmkilincc-wq">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#8b5cf6">
+<link rel="canonical" href="https://keremmkilincc-wq.github.io/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="preconnect" href="https://github.com">
+<meta property="og:title" content="Kerem KILINÇ — Oyun Geliştirici & Dijital Tasarımcı">
+<meta property="og:description" content="Oyun dünyaları tasarlıyorum — TRUST NO ONE yayında, Arcade 10 oyun, Blog, GitHub canlı.">
+<meta property="og:image" content="https://github.com/keremmkilincc-wq.png">
+<meta property="og:url" content="https://keremmkilincc-wq.github.io/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kerem KILINÇ — Oyun Geliştirici">
+<meta name="twitter:description" content="Oyun dünyaları, harita/karakter, Arcade ve blog.">
+<meta name="twitter:image" content="https://github.com/keremmkilincc-wq.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Kerem KILINÇ","url":"https://keremmkilincc-wq.github.io/","sameAs":["https://github.com/keremmkilincc-wq"],"jobTitle":"Oyun Geliştirici & Dijital Tasarımcı","description":"Oyun dünyaları tasarlıyorum — TRUST NO ONE yayında"}</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -55,6 +70,15 @@ body{background:var(--bg); transition: background 0.4s}
 .top-tab{transition: all 0.32s cubic-bezier(.2,.8,.2,1); position:relative}
 .top-tab.active{background:#fff !important; color:#000 !important; transform:scale(1.02); box-shadow:0 4px 14px rgba(0,0,0,0.2)}
 .top-tab:not(.active):hover{background:rgba(255,255,255,0.06) !important; color:#fff !important}
+/* A - micro animasyonlar */
+.reveal{opacity:0; transform:translateY(14px); transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1; transform:translateY(0)}
+.float{animation: float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.btn-micro{transition: transform .18s cubic-bezier(.2,.8,.2,1), filter .18s, box-shadow .18s}
+.btn-micro:hover{transform:translateY(-1px) scale(1.015); filter:brightness(1.06); box-shadow:0 10px 24px -16px var(--accent)}
+.btn-micro:active{transform:scale(0.98)}
+.hero-video{filter: saturate(1.1) contrast(1.05)}
 </style>
 </head>
 <body class="font-inter text-zinc-300 antialiased selection:bg-violet-500/30 overflow-x-hidden">
@@ -229,13 +253,17 @@ body{background:var(--bg); transition: background 0.4s}
   <div class="font-bold text-sm">🥚 Paskalya Yumurtası!</div><div class="text-xs opacity-90">Gizli karakter bulundu: Neon Ronin selam veriyor!</div>
 </div>
 
-<!-- HERO -->
+<!-- HERO — video + micro-animasyonlar -->
 <section class="relative overflow-hidden border-b border-white/[0.06]">
+  <video class="hero-video absolute inset-0 w-full h-full object-cover opacity-[0.18] pointer-events-none" autoplay muted loop playsinline preload="metadata" poster="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1280&auto=format&fit=crop">
+    <source src="https://cdn.pixabay.com/video/2020/02/06/32179-398773939_large.mp4" type="video/mp4">
+  </video>
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bg)] pointer-events-none"></div>
   <div class="aurora" id="aurora"></div>
   <div class="bg-grid absolute inset-0 opacity-[0.4]"></div>
   <div class="relative max-w-[1280px] mx-auto px-6 pt-12 md:pt-20 pb-10 grid lg:grid-cols-12 gap-8 items-center">
-    <div class="lg:col-span-7">
-      <div class="inline-flex items-center gap-2 bg-white/[0.06] border border-white/[0.08] rounded-full px-1 pr-3 py-1">
+    <div class="lg:col-span-7 reveal">
+      <div class="inline-flex items-center gap-2 bg-white/[0.06] border border-white/[0.08] rounded-full px-1 pr-3 py-1 float">
         <span class="bg-gradient-to-r from-violet-600 to-cyan-500 text-white text-[11px] font-bold tracking-widest px-3 py-1 rounded-full">YENİ</span>
         <span class="text-sm text-zinc-300" data-i18n="hero.badge">TRUST NO ONE — oyunum yayında, hemen oyna →</span>
       </div>
@@ -247,8 +275,8 @@ body{background:var(--bg); transition: background 0.4s}
         Ben <span class="text-white font-semibold">Kerem KILINÇ</span> — harita & karakter tasarımları, oyun konseptleri ve dijital üretimler. Kod kalabalığı değil, <span class="text-zinc-200">görsel ve oynanabilir sonuç</span> odaklıyım. Tüm projelerim GitHub'da canlı.
       </p>
       <div class="flex flex-wrap gap-3 mt-8">
-        <a href="#github" class="bg-white text-black px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200 transition inline-flex items-center gap-2"><span data-i18n="hero.cta1">GitHub Projelerimi Gör</span> <span>↓</span></a>
-        <a href="#iletisim" onclick="switchTab('iletisim')" class="border border-white/10 bg-white/[0.06] backdrop-blur px-7 py-3.5 rounded-full font-medium hover:bg-white/[0.1] transition">İletişime Geç →</a>
+        <a href="#github" class="bg-white text-black px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200 transition inline-flex items-center gap-2 btn-micro"><span data-i18n="hero.cta1">GitHub Projelerimi Gör</span> <span>↓</span></a>
+        <a href="#iletisim" onclick="switchTab('iletisim')" class="border border-white/10 bg-white/[0.06] backdrop-blur px-7 py-3.5 rounded-full font-medium hover:bg-white/[0.1] transition btn-micro">İletişime Geç →</a>
       </div>
       <!-- stats -->
       <div class="grid grid-cols-3 gap-3 mt-8 max-w-[520px]">
@@ -267,8 +295,8 @@ body{background:var(--bg); transition: background 0.4s}
         <span>github.com/<b class="text-zinc-300">keremmkilincc-wq</b></span><span class="w-1 h-1 bg-zinc-600 rounded-full"></span><span class="text-zinc-400">İletişim için form kullanın</span>
       </div>
     </div>
-    <!-- bento -->
-    <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+    <!-- bento — reveal + float -->
+    <div class="lg:col-span-5 grid grid-cols-2 gap-4 reveal" style="transition-delay:120ms">
       <div class="col-span-2 rounded-[24px] overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-[1px]">
         <div class="rounded-[23px] bg-[#0F0F11] p-5 h-full relative overflow-hidden">
           <div class="absolute -right-10 -top-10 w-48 h-48 bg-violet-600/20 blur-[40px] rounded-full"></div>
@@ -353,15 +381,15 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="grid md:grid-cols-3 gap-5 mt-6">
       <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
-        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""></div>
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-cyan-300">OYUN • PYTHON</div><div class="font-grotesk font-semibold text-white mt-1">TRUST NO ONE</div><p class="text-sm text-zinc-400 mt-1">Yayında. Gizlilik ve karar mekanikleri.</p></div>
       </div>
       <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
-        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""></div>
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-violet-300">HARİTA</div><div class="font-grotesk font-semibold text-white mt-1">ECHOES: Kayıp Sektör</div><p class="text-sm text-zinc-400 mt-1">Atmosferik FPS harita konsepti.</p></div>
       </div>
       <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
-        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""></div>
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-fuchsia-300">KARAKTER</div><div class="font-grotesk font-semibold text-white mt-1">Neon Ronin</div><p class="text-sm text-zinc-400 mt-1">Siberpunk zırh & silah konsepti.</p></div>
       </div>
     </div>
@@ -2033,6 +2061,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('loginCode')?.addEventListener('keydown',e=>{ if(e.key==='Enter') verifyAdminCode(); });
   document.getElementById('nickInput')?.addEventListener('keydown',e=>{ if(e.key==='Enter') changeNick(); });
   if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+  // A — reveal
+  const ro=new IntersectionObserver((ents)=>ents.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+  setTimeout(()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in')), 400);
 });
 // AI — Muse Spark direkt (model indirmeden, pollinations free)
 function toggleAI(){

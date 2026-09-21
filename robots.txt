@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://keremmkilincc-wq.github.io/sitemap.xml
