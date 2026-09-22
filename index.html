@@ -100,7 +100,7 @@ body{background:var(--bg); transition: background 0.4s}
 <script>
 // zorunlu SW güncelleme + siyah ekran fallback — Ctrl+F5 gerekmesin
 (function(){
-  const V='v7';
+  const V='v8';
   try{
     if(localStorage.getItem('kerem_sw')!==V){
       if('serviceWorker' in navigator){
@@ -2384,7 +2384,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('loginEmail')?.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
   document.getElementById('loginCode')?.addEventListener('keydown',e=>{ if(e.key==='Enter') verifyAdminCode(); });
   document.getElementById('nickInput')?.addEventListener('keydown',e=>{ if(e.key==='Enter') changeNick(); });
-  if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js?v=7').catch(()=>{}); }
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js?v=8').catch(()=>{}); }
   // A — reveal (try/catch ile siyah ekran engelle)
   try{
     const ro=new IntersectionObserver((ents)=>ents.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:0.12});
