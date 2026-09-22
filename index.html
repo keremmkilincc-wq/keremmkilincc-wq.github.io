@@ -29,8 +29,18 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Kerem KILINÇ","url":"https://keremmkilincc-wq.github.io/","sameAs":["https://github.com/keremmkilincc-wq"],"jobTitle":"Oyun Geliştirici & Dijital Tasarımcı","description":"Oyun dünyaları tasarlıyorum — TRUST NO ONE yayında"}</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script>
+// Tailwind CDN prod uyarısını sustur (sarı yazı)
+(function(){
+  const o=console.warn;
+  console.warn=function(...a){
+    if(typeof a[0]==='string' && a[0].includes('cdn.tailwindcss.com should not be used')) return;
+    return o.apply(console,a);
+  };
+})();
+</script>
 <script>
 tailwind.config={theme:{extend:{fontFamily:{grotesk:['Space Grotesk','sans-serif'],inter:['Inter','sans-serif'],mono:['JetBrains Mono','monospace']},animation:{'pulse-slow':'pulse 3s infinite'}}}}
 </script>
@@ -162,18 +172,18 @@ body{background:var(--bg); transition: background 0.4s}
 <!-- HAMBURGER MENÜ — sağ en üst 3 nokta, tıklayınca sırayla -->
 <div id="hamburgerMenu" class="fixed top-[68px] right-4 z-50 hidden w-[280px] bg-[#0F0F11] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
   <div class="p-2 flex flex-col">
-    <button onclick="switchTab('github'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-user w-5 text-center text-zinc-500"></i> Hakkımda</button>
-    <button onclick="switchTab('yetenekler'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-code w-5 text-center text-zinc-500"></i> Yetenekler</button>
-    <button onclick="switchTab('projeler'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-folder-open w-5 text-center text-zinc-500"></i> Projeler</button>
-    <button onclick="switchTab('arcade'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-gamepad w-5 text-center text-zinc-500"></i> Arcade</button>
-    <button onclick="switchTab('blog'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-book w-5 text-center text-zinc-500"></i> Blog</button>
-    <button onclick="switchTab('playground'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-laptop-code w-5 text-center text-zinc-500"></i> Playground</button>
-    <button onclick="switchTab('terminal'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-terminal w-5 text-center text-zinc-500"></i> Terminal</button>
-    <button onclick="switchTab('evren'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-earth-asia w-5 text-center text-zinc-500"></i> Evren</button>
-    <button onclick="switchTab('wall'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-paint-roller w-5 text-center text-zinc-500"></i> Duvar</button>
-    <button onclick="switchTab('surec'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-clock-rotate-left w-5 text-center text-zinc-500"></i> Süreç</button>
-    <button onclick="switchTab('iletisim'); toggleHamburger();" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-envelope w-5 text-center text-zinc-500"></i> İletişim</button>
-    <button id="hamburgerAdminBtn" onclick="openAdminPanel(); toggleHamburger();" class="hidden text-left px-4 py-3 flex items-center gap-3 hover:bg-amber-500/10 rounded-xl text-sm text-amber-300 transition"><i class="fa-solid fa-bolt w-5 text-center"></i> Admin Paneli</button>
+    <button onclick="try{switchTab('github')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('github'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-user w-5 text-center text-zinc-500"></i> Hakkımda</button>
+    <button onclick="try{switchTab('yetenekler')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('yetenekler'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-code w-5 text-center text-zinc-500"></i> Yetenekler</button>
+    <button onclick="try{switchTab('projeler')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('projeler'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-folder-open w-5 text-center text-zinc-500"></i> Projeler</button>
+    <button onclick="try{switchTab('arcade')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('arcade'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-gamepad w-5 text-center text-zinc-500"></i> Arcade</button>
+    <button onclick="try{switchTab('blog')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('blog'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-book w-5 text-center text-zinc-500"></i> Blog</button>
+    <button onclick="try{switchTab('playground')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('playground'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-laptop-code w-5 text-center text-zinc-500"></i> Playground</button>
+    <button onclick="try{switchTab('terminal')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('terminal'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-terminal w-5 text-center text-zinc-500"></i> Terminal</button>
+    <button onclick="try{switchTab('evren')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('evren'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-earth-asia w-5 text-center text-zinc-500"></i> Evren</button>
+    <button onclick="try{switchTab('wall')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('wall'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-paint-roller w-5 text-center text-zinc-500"></i> Duvar</button>
+    <button onclick="try{switchTab('surec')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('surec'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-clock-rotate-left w-5 text-center text-zinc-500"></i> Süreç</button>
+    <button onclick="try{switchTab('iletisim')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('iletisim'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-envelope w-5 text-center text-zinc-500"></i> İletişim</button>
+    <button id="hamburgerAdminBtn" onclick="try{openAdminPanel()}catch(e){} document.getElementById('hamburgerMenu').classList.add('hidden')" class="hidden text-left px-4 py-3 flex items-center gap-3 hover:bg-amber-500/10 rounded-xl text-sm text-amber-300 transition"><i class="fa-solid fa-bolt w-5 text-center"></i> Admin Paneli</button>
   </div>
 </div>
 <script>
@@ -465,15 +475,15 @@ function toggleHamburger(){
     </div>
     <div class="grid md:grid-cols-3 gap-5 mt-6">
       <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
-        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" loading="eager" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-cyan-300">OYUN • PYTHON</div><div class="font-grotesk font-semibold text-white mt-1">TRUST NO ONE</div><p class="text-sm text-zinc-400 mt-1">Yayında. Gizlilik ve karar mekanikleri.</p></div>
       </div>
       <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
-        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop" loading="eager" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-violet-300">HARİTA</div><div class="font-grotesk font-semibold text-white mt-1">ECHOES: Kayıp Sektör</div><p class="text-sm text-zinc-400 mt-1">Atmosferik FPS harita konsepti.</p></div>
       </div>
       <div class="card rounded-2xl overflow-hidden border border-white/10 bg-[#0F0F11]">
-        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=800&auto=format&fit=crop" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
+        <div class="aspect-[16/9] overflow-hidden"><img src="https://images.unsplash.com/photo-1560972550-aba3456b5564?q=80&w=800&auto=format&fit=crop" loading="eager" decoding="async" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt=""</div>
         <div class="p-5"><div class="text-[11px] font-mono tracking-widest text-fuchsia-300">KARAKTER</div><div class="font-grotesk font-semibold text-white mt-1">Neon Ronin</div><p class="text-sm text-zinc-400 mt-1">Siberpunk zırh & silah konsepti.</p></div>
       </div>
     </div>
