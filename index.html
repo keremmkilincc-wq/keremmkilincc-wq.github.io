@@ -155,7 +155,7 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="flex items-center gap-2">
       <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
-      <button id="hamburgerBtn" onclick="toggleHamburger()" class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 grid place-items-center hover:bg-white/10 text-white" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+      <button id="hamburgerBtn" onclick="(function(){ var m=document.getElementById('hamburgerMenu'); var b=document.getElementById('hamburgerBtn'); if(!m) return; m.classList.toggle('hidden'); if(b) b.setAttribute('aria-expanded', m.classList.contains('hidden')?'false':'true'); })()" class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 grid place-items-center hover:bg-white/10 text-white" aria-label="Menü" aria-expanded="false" aria-controls="hamburgerMenu"><i class="fa-solid fa-bars"></i></button>
     </div>
   </div>
 </nav>
