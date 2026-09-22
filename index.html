@@ -29,16 +29,14 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Kerem KILINÇ","url":"https://keremmkilincc-wq.github.io/","sameAs":["https://github.com/keremmkilincc-wq"],"jobTitle":"Oyun Geliştirici & Dijital Tasarımcı","description":"Oyun dünyaları tasarlıyorum — TRUST NO ONE yayında"}</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <script>
-// Tailwind CDN prod uyarısını sustur (sarı yazı)
+// Tailwind CDN prod uyarısını sustur (sarı yazı) — daha geniş
 (function(){
-  const o=console.warn;
-  console.warn=function(...a){
-    if(typeof a[0]==='string' && a[0].includes('cdn.tailwindcss.com should not be used')) return;
-    return o.apply(console,a);
-  };
+  const ow=console.warn, ol=console.log;
+  function isTailwind(a){ const s=a.map(x=>String(x)).join(' '); return s.includes('cdn.tailwindcss.com') || s.includes('should not be used in production'); }
+  console.warn=function(...a){ if(isTailwind(a)) return; return ow.apply(console,a); };
+  console.log=function(...a){ if(isTailwind(a)) return; return ol.apply(console,a); };
 })();
 </script>
 <script>
@@ -165,25 +163,25 @@ body{background:var(--bg); transition: background 0.4s}
     </div>
     <div class="flex items-center gap-2">
       <div id="live-dot" class="hidden sm:flex items-center gap-2 text-xs border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 px-3 py-1.5 rounded-full"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i18n="nav.live">5 repo • canlı</span></div>
-      <button id="hamburgerBtn" onclick="(function(){ var m=document.getElementById('hamburgerMenu'); var b=document.getElementById('hamburgerBtn'); if(!m) return; m.classList.toggle('hidden'); if(b) b.setAttribute('aria-expanded', m.classList.contains('hidden')?'false':'true'); })()" class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 grid place-items-center hover:bg-white/10 text-white" aria-label="Menü" aria-expanded="false" aria-controls="hamburgerMenu"><i class="fa-solid fa-bars"></i></button>
+      <button id="hamburgerBtn" onclick="(function(){ var m=document.getElementById('hamburgerMenu'); var b=document.getElementById('hamburgerBtn'); if(!m) return; m.classList.toggle('hidden'); if(b) b.setAttribute('aria-expanded', m.classList.contains('hidden')?'false':'true'); })()" class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 grid place-items-center hover:bg-white/10 text-white" aria-label="Menü" aria-expanded="false" aria-controls="hamburgerMenu">☰</button>
     </div>
   </div>
 </nav>
 <!-- HAMBURGER MENÜ — sağ en üst 3 nokta, tıklayınca sırayla -->
 <div id="hamburgerMenu" class="fixed top-[68px] right-4 z-50 hidden w-[280px] bg-[#0F0F11] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
   <div class="p-2 flex flex-col">
-    <button onclick="try{switchTab('github')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('github'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-user w-5 text-center text-zinc-500"></i> Hakkımda</button>
-    <button onclick="try{switchTab('yetenekler')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('yetenekler'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-code w-5 text-center text-zinc-500"></i> Yetenekler</button>
-    <button onclick="try{switchTab('projeler')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('projeler'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-folder-open w-5 text-center text-zinc-500"></i> Projeler</button>
-    <button onclick="try{switchTab('arcade')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('arcade'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-gamepad w-5 text-center text-zinc-500"></i> Arcade</button>
-    <button onclick="try{switchTab('blog')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('blog'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-book w-5 text-center text-zinc-500"></i> Blog</button>
-    <button onclick="try{switchTab('playground')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('playground'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-laptop-code w-5 text-center text-zinc-500"></i> Playground</button>
-    <button onclick="try{switchTab('terminal')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('terminal'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-terminal w-5 text-center text-zinc-500"></i> Terminal</button>
-    <button onclick="try{switchTab('evren')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('evren'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-earth-asia w-5 text-center text-zinc-500"></i> Evren</button>
-    <button onclick="try{switchTab('wall')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('wall'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-paint-roller w-5 text-center text-zinc-500"></i> Duvar</button>
-    <button onclick="try{switchTab('surec')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('surec'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-clock-rotate-left w-5 text-center text-zinc-500"></i> Süreç</button>
-    <button onclick="try{switchTab('iletisim')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('iletisim'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition"><i class="fa-solid fa-envelope w-5 text-center text-zinc-500"></i> İletişim</button>
-    <button id="hamburgerAdminBtn" onclick="try{openAdminPanel()}catch(e){} document.getElementById('hamburgerMenu').classList.add('hidden')" class="hidden text-left px-4 py-3 flex items-center gap-3 hover:bg-amber-500/10 rounded-xl text-sm text-amber-300 transition"><i class="fa-solid fa-bolt w-5 text-center"></i> Admin Paneli</button>
+    <button onclick="try{switchTab('github')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('github'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">👤 Hakkımda</button>
+    <button onclick="try{switchTab('yetenekler')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('yetenekler'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">💻 Yetenekler</button>
+    <button onclick="try{switchTab('projeler')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('projeler'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">📁 Projeler</button>
+    <button onclick="try{switchTab('arcade')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('arcade'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">🎮 Arcade</button>
+    <button onclick="try{switchTab('blog')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('blog'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">📖 Blog</button>
+    <button onclick="try{switchTab('playground')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('playground'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">💻 Playground</button>
+    <button onclick="try{switchTab('terminal')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('terminal'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">>_ Terminal</button>
+    <button onclick="try{switchTab('evren')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('evren'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">🌏 Evren</button>
+    <button onclick="try{switchTab('wall')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('wall'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">🎨 Duvar</button>
+    <button onclick="try{switchTab('surec')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('surec'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">🕒 Süreç</button>
+    <button onclick="try{switchTab('iletisim')}catch(e){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));var t=document.getElementById('iletisim'); if(t) t.classList.add('active');} document.getElementById('hamburgerMenu').classList.add('hidden')" class="text-left px-4 py-3 flex items-center gap-3 hover:bg-white/[0.06] rounded-xl text-sm text-zinc-300 hover:text-white transition">✉️ İletişim</button>
+    <button id="hamburgerAdminBtn" onclick="try{openAdminPanel()}catch(e){} document.getElementById('hamburgerMenu').classList.add('hidden')" class="hidden text-left px-4 py-3 flex items-center gap-3 hover:bg-amber-500/10 rounded-xl text-sm text-amber-300 transition">⚡ Admin Paneli</button>
   </div>
 </div>
 <script>
@@ -362,11 +360,11 @@ function toggleHamburger(){
       </p>
       <!-- Tech Tags — yazılımcı dosyasından -->
       <div class="flex flex-wrap gap-2 text-xs font-mono text-zinc-400 mt-4">
-        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-brands fa-js mr-1 text-yellow-400"></i>#JavaScript</span>
-        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-brands fa-python mr-1 text-blue-400"></i>#Python</span>
-        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-brands fa-react mr-1 text-cyan-400"></i>#React</span>
-        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-solid fa-cube mr-1 text-violet-400"></i>#FullStack</span>
-        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10"><i class="fa-solid fa-gamepad mr-1 text-emerald-400"></i>#GameDev</span>
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10">#JavaScript</span>
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10">#Python</span>
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10">#React</span>
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10">#FullStack</span>
+        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10">#GameDev</span>
       </div>
       <div class="flex flex-wrap gap-3 mt-8">
         <a href="#github" class="bg-white text-black px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200 transition inline-flex items-center gap-2 btn-micro"><span data-i18n="hero.cta1">GitHub Projelerimi Gör</span> <span>↓</span></a>
@@ -397,20 +395,20 @@ function toggleHamburger(){
           <div class="text-xs font-mono tracking-[0.2em] text-violet-400">ÖNE ÇIKAN — TRUST NO ONE</div>
           <div class="font-grotesk text-xl font-bold text-white mt-2 leading-tight">Gizli servis, tek oyuncu.<br>Kime güveneceksin?</div>
           <p class="text-sm text-zinc-400 mt-2">Python tabanlı, yayında. Hemen oyna.</p>
-          <a href="https://github.com/keremmkilincc-wq/TRUST-NO-ONE" target="_blank" class="mt-4 inline-flex bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-full text-sm font-medium btn-micro"><i class="fa-solid fa-gamepad mr-1"></i> Oyunu İncele →</a>
+          <a href="https://github.com/keremmkilincc-wq/TRUST-NO-ONE" target="_blank" class="mt-4 inline-flex bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-full text-sm font-medium btn-micro"> Oyunu İncele →</a>
           <div class="mt-4 flex gap-2">
-            <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full"><i class="fa-brands fa-python mr-1"></i>Python</span>
+            <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">Python</span>
             <span class="text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">Game</span>
           </div>
         </div>
       </div>
       <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-4 glass-panel glass-panel-hover transition-all">
-        <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/20 grid place-items-center text-cyan-300"><i class="fa-solid fa-map"></i></div>
+        <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/20 grid place-items-center text-cyan-300">🗺️</div>
         <div class="font-grotesk font-semibold text-white mt-3 text-sm" data-i18n="bento.map">Harita Tasarımı</div>
         <div class="text-xs text-zinc-500 mt-1" data-i18n="bento.mapSub">Level & environment</div>
       </div>
       <div class="rounded-[20px] border border-white/10 bg-[#0F0F11] p-4 glass-panel glass-panel-hover transition-all">
-        <div class="w-10 h-10 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/20 grid place-items-center text-fuchsia-300"><i class="fa-solid fa-user-astronaut"></i></div>
+        <div class="w-10 h-10 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/20 grid place-items-center text-fuchsia-300">👨‍🚀</div>
         <div class="font-grotesk font-semibold text-white mt-3 text-sm" data-i18n="bento.char">Karakter</div>
         <div class="text-xs text-zinc-500 mt-1" data-i18n="bento.charSub">2D / konsept</div>
       </div>
@@ -507,7 +505,7 @@ function toggleHamburger(){
   </div>
   <div class="grid lg:grid-cols-2 gap-8 items-start">
     <div class="space-y-4">
-      <h3 class="text-sm font-semibold text-cyan-400 flex items-center gap-2"><i class="fa-solid fa-layer-group"></i> Teknik Yetkinlikler</h3>
+      <h3 class="text-sm font-semibold text-cyan-400 flex items-center gap-2"> Teknik Yetkinlikler</h3>
       <div class="glass-panel p-4 rounded-xl border border-white/10 space-y-2">
         <div class="flex justify-between text-sm"><span class="font-medium text-zinc-200">Frontend (React, Tailwind, JS ES6+)</span><span class="font-mono text-cyan-400">92%</span></div>
         <div class="w-full h-2.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" style="width:92%"></div></div>
@@ -528,7 +526,7 @@ function toggleHamburger(){
     <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 shadow-xl">
       <div class="bg-white/[0.03] px-4 py-3 border-b border-white/10 flex items-center justify-between">
         <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span><span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="ml-2 text-xs font-mono text-zinc-500">developer.js</span></div>
-        <button onclick="copyDevCode()" id="copyDevBtn" class="text-xs font-mono text-zinc-400 hover:text-cyan-400 flex items-center gap-1"><i class="fa-regular fa-copy"></i> Kopyala</button>
+        <button onclick="copyDevCode()" id="copyDevBtn" class="text-xs font-mono text-zinc-400 hover:text-cyan-400 flex items-center gap-1">📋 Kopyala</button>
       </div>
       <pre class="p-5 font-mono text-xs sm:text-sm text-zinc-300 overflow-x-auto leading-relaxed bg-black/30"><code><span class="text-purple-400">const</span> <span class="text-yellow-400">developer</span> = {
     <span class="text-cyan-400">name</span>: <span class="text-green-300">'Kerem KILINÇ'</span>,
@@ -964,9 +962,9 @@ function toggleHamburger(){
       <span>•</span><span class="text-zinc-300">keremmkilincc-wq.github.io</span>
     </div>
     <div class="flex items-center gap-5 text-zinc-400">
-      <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hover:text-cyan-400 transition"><i class="fa-brands fa-github text-lg"></i></a>
-      <a href="#" class="hover:text-cyan-400 transition"><i class="fa-brands fa-linkedin text-lg"></i></a>
-      <a href="#" class="hover:text-cyan-400 transition"><i class="fa-brands fa-twitter text-lg"></i></a>
+      <a href="https://github.com/keremmkilincc-wq" target="_blank" class="hover:text-cyan-400 transition">GH</a>
+      <a href="#" class="hover:text-cyan-400 transition">in</a>
+      <a href="#" class="hover:text-cyan-400 transition">𝕏</a>
       <a href="#iletisim" onclick="switchTab('iletisim')" class="hover:text-white text-sm">İletişim</a>
     </div>
   </div>
@@ -2644,7 +2642,7 @@ function copyDevCode(){
   const code=`const developer = {\n    name: 'Kerem KILINÇ',\n    role: 'Software Developer',\n    focus: ['GameDev','FullStack'],\n    getProfile(){ return \`Hello, I am \${this.name}\`; }\n};`;
   navigator.clipboard.writeText(code).then(()=>{
     const b=document.getElementById('copyDevBtn');
-    if(b){ b.innerHTML='<i class="fa-solid fa-check text-green-400"></i> Kopyalandı!'; setTimeout(()=> b.innerHTML='<i class="fa-regular fa-copy"></i> Kopyala',2000); }
+    if(b){ b.innerHTML='✓ Kopyalandı!'; setTimeout(()=> b.innerHTML='📋 Kopyala',2000); }
   });
 }
 function initTerminal(){
