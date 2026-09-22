@@ -31,12 +31,13 @@
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <script>
-// Tailwind CDN prod uyarısını sustur (sarı yazı) — daha geniş
+// Tailwind CDN prod uyarısını sustur — case-insensitive, warn/log/info hepsi
 (function(){
-  const ow=console.warn, ol=console.log;
-  function isTailwind(a){ const s=a.map(x=>String(x)).join(' '); return s.includes('cdn.tailwindcss.com') || s.includes('should not be used in production'); }
+  const ow=console.warn, ol=console.log, oi=console.info;
+  function isTailwind(a){ const s=a.map(x=>String(x)).join(' ').toLowerCase(); return s.includes('cdn.tailwindcss') || s.includes('should not be used'); }
   console.warn=function(...a){ if(isTailwind(a)) return; return ow.apply(console,a); };
   console.log=function(...a){ if(isTailwind(a)) return; return ol.apply(console,a); };
+  console.info=function(...a){ if(isTailwind(a)) return; return oi.apply(console,a); };
 })();
 </script>
 <script>
@@ -2702,12 +2703,6 @@ document.addEventListener('DOMContentLoaded',()=>{
         const hm=document.getElementById('hamburgerMenu');
         if(hm) hm.classList.add('hidden');
       };
-    }
-    const hb=document.getElementById('hamburgerBtn');
-    const hm=document.getElementById('hamburgerMenu');
-    if(hb && hm && !hb._fb){
-      hb._fb=true;
-      hb.addEventListener('click', ()=> hm.classList.toggle('hidden'));
     }
     window.addEventListener('keydown', e=>{
       const t=e.target;
