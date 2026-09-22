@@ -2504,7 +2504,7 @@ function savePat(){
   const msg=document.getElementById('patMsg');
   if(!v){ msg.textContent='Token boş'; msg.className='text-xs text-center rounded-xl px-3 py-2 bg-red-500/10 border border-red-500/20 text-red-300'; msg.classList.remove('hidden'); return; }
   localStorage.setItem('github_pat', v);
-  msg.textContent='✅ Kaydedildi — artık ortak veri GitHub'a yazılacak';
+  msg.textContent='✅ Kaydedildi — artık ortak veri GitHub’a yazılacak';
   msg.className='text-xs text-center rounded-xl px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300';
   msg.classList.remove('hidden');
 }
