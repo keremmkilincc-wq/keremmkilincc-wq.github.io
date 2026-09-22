@@ -963,6 +963,15 @@ function toggleHamburger(){
 </footer>
 
 <script>
+try{ localStorage.getItem('test'); localStorage.removeItem('test'); }catch(e){
+  window.localStorage = {
+    _d:{},
+    getItem(k){ return this._d[k]||null; },
+    setItem(k,v){ this._d[k]=String(v); },
+    removeItem(k){ delete this._d[k]; },
+    clear(){ this._d={}; }
+  };
+}
 const USER="keremmkilincc-wq";
 const langColor={JavaScript:"#f1e05a",Python:"#3572A5",HTML:"#e34c26",CSS:"#563d7c",TypeScript:"#2b7489"};
 const langGradient={JavaScript:"from-yellow-400 to-amber-500",Python:"from-blue-500 to-cyan-400",HTML:"from-orange-500 to-red-500",JavaScript:"from-yellow-400 to-amber-500"};
@@ -1726,8 +1735,9 @@ const themeDefs=[
   {id:'monochrome',name:'Monochrome',c:'#a1a1aa',c2:'#d4d4d8'},
   {id:'cyberpunk',name:'Cyberpunk',c:'#ec4899',c2:'#f472b6'}
 ];
-let curLang=localStorage.getItem('lang')||'tr';
-let curTheme=localStorage.getItem('theme')||'midnight';
+let curLang, curTheme;
+try{ curLang=localStorage.getItem('lang')||'tr'; }catch(e){ curLang='tr'; }
+try{ curTheme=localStorage.getItem('theme')||'midnight'; }catch(e){ curTheme='midnight'; }
 function applyLang(l){
   curLang=l; localStorage.setItem('lang',l);
   document.documentElement.lang=l;
@@ -1776,7 +1786,7 @@ function openSettings(){
   syncSettingsAccount();
 }
 function closeSettings(){ document.getElementById('settingsModal').classList.add('hidden'); }
-let userName = localStorage.getItem('arcadeUser') || '';
+let userName; try{ userName=localStorage.getItem('arcadeUser')||''; }catch(e){ userName=''; }
 function checkUsername(){
   if(!userName){
     document.getElementById('usernameModal').classList.remove('hidden');
@@ -1887,8 +1897,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 // ===== AUTH — Giriş Yap (6 5 1 4) — admin sadece keremmkilincc@gmail.com =====
 const ADMIN_EMAIL='keremmkilincc@gmail.com';
-let authEmail=localStorage.getItem('auth_email')||'';
-let authRole=localStorage.getItem('auth_role')||''; // 'admin' | 'guest' | ''
+let authEmail, authRole;
+try{ authEmail=localStorage.getItem('auth_email')||''; }catch(e){ authEmail=''; }
+try{ authRole=localStorage.getItem('auth_role')||''; }catch(e){ authRole=''; } // 'admin' | 'guest' | ''
 function isAdmin(){ return authEmail.toLowerCase()===ADMIN_EMAIL.toLowerCase() && authRole==='admin'; }
 function updateAuthUI(){
   const loginBtn=document.getElementById('loginBtn');
